@@ -1,0 +1,118 @@
+// ==========================================
+// VIREX FEATURED PROJECTS (DỰ ÁN TIÊU BIỂU)
+// ==========================================
+
+.panel-featured-projects {
+    padding: 80px 0 0 0;
+    background-color: #fff;
+
+    .project-header {
+        text-align: center;
+        margin-bottom: 45px;
+
+        .title {
+            font-family: 'Manrope', sans-serif;
+            font-size: 36px;
+            font-weight: 850;
+            color: #000;
+            margin: 0;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+
+            @media (max-width: 767px) {
+                font-size: 28px;
+            }
+        }
+    }
+
+    .project-grid {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .project-column {
+        width: 25%;
+        margin: 0;
+        padding: 0;
+
+        @media (max-width: 959px) {
+            width: 50%;
+        }
+
+        @media (max-width: 479px) {
+            width: 50%;
+        }
+    }
+
+    .project-card-virex {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 800px; // 800px on PC
+        overflow: hidden;
+        text-decoration: none;
+
+        @media (max-width: 959px) {
+            height: 500px;
+        }
+
+        @media (max-width: 767px) {
+            height: 350px;
+        }
+
+        @media (max-width: 479px) {
+            height: 200px;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .project-title-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 50px 20px 25px 20px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
+            text-align: center;
+            transition: background 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+
+            @media (max-width: 479px) {
+                padding: 20px 10px 10px 10px;
+            }
+
+            .project-name {
+                font-family: 'Manrope', sans-serif;
+                font-size: 13.5px;
+                font-weight: 800;
+                color: #fff;
+                margin: 0;
+                text-transform: uppercase;
+                line-height: 1.4;
+                letter-spacing: 0.3px;
+
+                @media (max-width: 479px) {
+                    font-size: 11px !important;
+                }
+            }
+        }
+
+        &:hover {
+            img {
+                transform: scale(1.08);
+            }
+
+            .project-title-overlay {
+                background: linear-gradient(to top, rgba(0, 109, 58, 0.9) 0%, rgba(0, 109, 58, 0.5) 60%, rgba(0, 109, 58, 0) 100%);
+            }
+        }
+    }
+}

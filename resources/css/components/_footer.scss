@@ -1,0 +1,181 @@
+// ==========================================
+// VIREX FOOTER STYLING
+// ==========================================
+
+.footer {
+    background-color: #083a20; // Deep Pine Green
+    padding: 65px 0 0 0;
+    border-bottom: 6px solid #006D3A; // Green bottom border
+    font-family: 'Manrope', sans-serif;
+    color: rgba(255, 255, 255, 0.7);
+
+    .footer-grid {
+        margin-bottom: 20px;
+    }
+
+    .footer-col {
+        &.brand-col {
+            padding-right: 15px;
+        }
+
+        .brand-title {
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 850;
+            color: #fff;
+            margin: 0 0 15px 0;
+            line-height: 1.45;
+            text-transform: uppercase;
+        }
+
+        .brand-desc {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+        }
+
+        .office-info {
+            .office-title {
+                font-family: 'Manrope', sans-serif;
+                font-size: 14px;
+                font-weight: 750;
+                color: #fff;
+                margin: 0 0 12px 0;
+                text-transform: uppercase;
+            }
+        }
+
+        .col-title {
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 750;
+            color: #fff;
+            margin-bottom: 25px;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .col-links {
+            padding: 0;
+            margin: 0;
+
+            li {
+                margin-bottom: 12px;
+
+                a {
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 13.5px;
+                    text-decoration: none;
+                    transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+                    display: inline-block;
+
+                    &:hover {
+                        color: #fff;
+                        padding-left: 5px;
+                    }
+                }
+            }
+        }
+
+        .contact-details {
+            padding: 0;
+            margin: 0;
+
+            li {
+                margin-bottom: 10px;
+                font-size: 13.5px;
+                line-height: 1.5;
+                color: rgba(255, 255, 255, 0.7);
+
+                a {
+                    color: rgba(255, 255, 255, 0.7);
+                    text-decoration: none;
+                    transition: color 0.2s ease;
+
+                    &:hover {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+
+    .footer-copyright-bar {
+        margin-top: 50px;
+        padding: 25px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+        p {
+            font-family: 'Manrope', sans-serif;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.45);
+            margin: 0;
+            line-height: 1.6;
+        }
+    }
+
+    .footer-bottom-brand {
+        margin-top: 20px;
+        text-align: center;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5vw;
+        user-select: none;
+        padding-bottom: 30px;
+        overflow: hidden;
+
+        .brand-char {
+            font-size: 11vw;
+            font-weight: 900;
+            font-family: 'Manrope', sans-serif;
+            line-height: 1;
+            color: transparent;
+            -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.15);
+            transition: all 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: inline-block;
+
+            // Initial state for entrance animation
+            opacity: 0;
+            transform: translateX(-50px) scale(0.9);
+            filter: blur(2px);
+
+            &:hover {
+                color: #fff;
+                -webkit-text-stroke: 1.5px #fff;
+                transform: translateY(-8px) scale(1.05) !important;
+            }
+        }
+
+        &.reveal-active {
+            .brand-char {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+                filter: blur(0);
+                transition: opacity 0.8s cubic-bezier(0.25, 0.8, 0.25, 1),
+                            transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1),
+                            filter 0.8s cubic-bezier(0.25, 0.8, 0.25, 1),
+                            color 0.4s ease,
+                            -webkit-text-stroke 0.4s ease;
+
+                @for $i from 1 through 5 {
+                    &:nth-child(#{$i}) {
+                        transition-delay: #{$i * 0.12}s;
+                    }
+                }
+            }
+        }
+
+        &.reveal-complete {
+            .brand-char {
+                transition-delay: 0s !important;
+                transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                            color 0.4s ease,
+                            -webkit-text-stroke 0.4s ease;
+            }
+        }
+    }
+}

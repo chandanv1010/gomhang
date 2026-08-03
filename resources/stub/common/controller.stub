@@ -1,0 +1,138 @@
+<?php  
+namespace App\Http\Controllers\Backend\V2\{{namespace}};
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Requests\{{namespace}}\{{module}}\StoreRequest;
+use App\Http\Requests\{{namespace}}\{{module}}\UpdateRequest;
+use App\Services\V2\Impl\{{namespace}}\{{module}}Service;
+use App\Models\Language;
+
+class {{module}}Controller extends Controller {
+
+    private $service;
+
+    protected $language;
+
+    public function __construct(
+        {{module}}Service $service
+    )
+    {
+        $this->service = $service;
+        $this->middleware(function($request, $next){
+            $locale = app()->getLocale();
+            $language = Language::where('canonical', $locale)->first();
+            $this->language = $language->id;
+            return $next($request);
+        });
+    }
+
+    public function index(Request $request){
+        $this->authorize('modules', '{{snake_namespace}}.{{snake_module}}.index');
+        $records = $this->service->pagination($request);
+        $config = [
+            ...$this->config(),
+            'extendJs' => true
+        ];
+        $template = 'backend.{{snake_namespace}}.{{snake_module}}.index';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            'records'
+        ));
+    }
+
+    public function create(){
+        $this->authorize('modules', '{{snake_namespace}}.{{snake_module}}.create');
+        $config = [
+            ...$this->config(),
+            'method' => 'create',
+            'extendJs' => true
+        ];
+        $template = 'backend.{{snake_namespace}}.{{snake_module}}.store';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config'
+        ));
+    }
+
+    public function edit($id){
+        $this->authorize('modules', '{{snake_namespace}}.{{snake_module}}.update');
+        if(!$record = $this->service->findById($id)){
+            return redirect()->route('{{snake_namespace}}.{{snake_module}}.index')->with('error','Bản ghi không tồn tại'); 
+        }
+        $config = [
+            ...$this->config(),
+            'method' => 'update',
+            'extendJs' => true
+        ];
+        $template = 'backend.{{snake_namespace}}.{{snake_module}}.store';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            'record'
+        ));     
+    }
+
+    public function store(StoreRequest $request)
+    {
+        $this->authorize('modules', '{{snake_namespace}}.{{snake_module}}.create');
+        $response = $this->service->save($request, 'store');
+        return $this->handleActionResponse($response, $request, redirectRoute: '{{snake_namespace}}.{{snake_module}}.index');
+    }
+
+
+    public function update($id, UpdateRequest $request){
+        $this->authorize('modules', '{{snake_namespace}}.{{snake_module}}.update');
+        $response = $this->service->save($request, 'update', $id);
+        return $this->handleActionResponse($response, $request, redirectRoute: '{{snake_namespace}}.{{snake_module}}.index');
+    }
+
+    public function delete($id){
+        $this->authorize('modules', '{{snake_namespace}}.{{snake_module}}.destroy');
+        $record = $this->service->findById($id);
+        $this->checkExists($record);
+        $config = [
+            ...$this->config(),
+            'method' => 'update'
+        ];
+        $template = 'backend.{{snake_namespace}}.{{snake_module}}.delete';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            'record'
+        ));
+    }
+
+    public function destroy($id, Request $request){
+        $this->authorize('modules', '{{snake_namespace}}.{{snake_module}}.destroy');
+        $response = $this->service->destroy($id);
+        return $this->handleActionResponse($response, $request, message: 'Xóa bản ghi thành công', redirectRoute: '{{snake_namespace}}.{{snake_module}}.index');
+        
+    }
+
+    private function config(): array{
+        return $config = [
+            'model' => '{{module}}',
+            'seo' => $this->seo()
+        ];
+    }
+
+    private function seo(){
+        return [
+            'index' => [
+                'title' => 'Quản lý {{module_name}}',
+                'table' => 'Danh sách {{module_name}}'
+            ],
+            'create' => [
+                'title' => 'Thêm mới {{module_name}}'
+            ],
+            'update' => [
+                'title' => 'Cập nhật {{module_name}}'
+            ],
+            'delete' => [
+                'title' => 'Xóa {{module_name}}'
+            ]
+        ];
+    }
+
+}

@@ -1,0 +1,145 @@
+<?php  
+namespace App\Http\Controllers\Backend\V2\{{namespace}};
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Requests\{{namespace}}\{{module}}\StoreRequest;
+use App\Http\Requests\{{namespace}}\{{module}}\UpdateRequest;
+use App\Services\V2\Impl\{{namespace}}\{{module}}Service;
+use App\Models\Language;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\Http\Resources\{{module}}Resource;
+
+class {{module}}Controller extends Controller {
+
+
+    private $service;
+    protected $language;
+
+    public function __construct(
+        {{module}}Service $service
+    )
+    {
+        $this->service = $service;
+        $this->middleware(function($request, $next){
+            $locale = app()->getLocale();
+            $language = Language::where('canonical', $locale)->first();
+            $this->language = $language->id;
+            return $next($request);
+        });
+    }
+
+    public function index(Request $request){
+        $this->authorize('modules', '{{snake_module}}.index');
+        ${{camelModule}}s = $this->service->pagination($request);
+        $config = [
+            'model' => '{{module}}',
+            'seo' => $this->seo(),
+            'extendJs' => true
+        ];
+        $template = 'backend.{{snake_namespace}}.{{snake_module}}.index';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            '{{camelModule}}s'
+        ));
+    }
+
+    public function create(){
+        $this->authorize('modules', '{{snake_module}}.create');
+        $config = [
+            'model' => '{{module}}',
+            'seo' => $this->seo(),
+            'method' => 'create',
+            'extendJs' => true
+        ];
+        $dropdown = $this->service->dropdown();
+        $template = 'backend.{{snake_namespace}}.{{snake_module}}.store';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            'dropdown'
+        ));
+    }
+
+    public function edit($id){
+        $this->authorize('modules', '{{snake_module}}.update');
+        if(!${{camelModule}} = $this->service->findById($id)){
+            return redirect()->route('{{snake_namespace}}.{{snake_module}}.index')->with('error','Bản ghi không tồn tại'); 
+        }
+        $config = [
+            'model' => '{{module}}',
+            'seo' => $this->seo(),
+            'method' => 'update',
+            'extendJs' => true
+        ];
+        $dropdown = $this->service->dropdown();
+        $template = 'backend.{{snake_namespace}}.{{snake_module}}.store';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            '{{camelModule}}',
+            'dropdown'
+        ));     
+    }
+    
+    public function store(StoreRequest $request){
+        if($response = $this->service->save($request, 'store')){
+            return redirect()->back()->with('success', 'Khởi tạo bản ghi thành công');
+        }
+        return redirect()->back()->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+    }
+
+    public function update($id, UpdateRequest $request){
+        $this->authorize('modules', '{{snake_module}}.update');
+        if($response = $this->service->save($request, 'update', $id)){
+            return redirect()->back()->with('success', 'Cập nhật bản ghi thành công');
+        }
+        return redirect()->back()->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+    }
+
+    public function delete($id){
+        $this->authorize('modules', '{{snake_module}}.destroy');
+        if(!${{camelModule}} = $this->service->findById($id)){
+            return redirect()->route('{{snake_module}}.index')->with('error','Bản ghi không tồn tại'); 
+        }
+        $config = [
+            'model' => '{{module}}',
+            'seo' => $this->seo(),
+            'method' => 'update'
+        ];
+        $template = 'backend.{{snake_namespace}}.{{snake_module}}.delete';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            '{{camelModule}}'
+        ));
+    }
+
+    public function destroy($id){
+        $this->authorize('modules', '{{snake_module}}.destroy');
+        if($response = $this->service->destroy($id)){
+            return redirect()->route('{{snake_module}}.index')->with('success', 'Xóa bản ghi thành công');
+        }
+        return redirect()->back()->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+    }
+
+
+    private function seo(){
+        return [
+            'index' => [
+                'title' => 'Quản lý {{moduleName}}',
+                'table' => 'Danh sách {{moduleName}}'
+            ],
+            'create' => [
+                'title' => 'Thêm mới {{moduleName}}'
+            ],
+            'update' => [
+                'title' => 'Cập nhật {{moduleName}}'
+            ],
+            'delete' => [
+                'title' => 'Xóa {{moduleName}}'
+            ]
+        ];
+    }
+
+}

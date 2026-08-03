@@ -1,0 +1,158 @@
+{
+  "resources/css/app.scss": {
+    "file": "assets/app-fa9b75d5.css",
+    "isEntry": true,
+    "src": "resources/css/app.scss"
+  },
+  "resources/css/app_backend.scss": {
+    "file": "assets/app_backend-13fe898f.css",
+    "isEntry": true,
+    "src": "resources/css/app_backend.scss"
+  },
+  "resources/js/app.backend.js": {
+    "file": "assets/app.backend-0662e519.js",
+    "isEntry": true,
+    "src": "resources/js/app.backend.js"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-ec305ef6.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/vendor/backend/css/patterns/3.png": {
+    "file": "assets/3-0791e57f.png",
+    "src": "resources/vendor/backend/css/patterns/3.png"
+  },
+  "resources/vendor/backend/css/patterns/4.png": {
+    "file": "assets/4-37b25141.png",
+    "src": "resources/vendor/backend/css/patterns/4.png"
+  },
+  "resources/vendor/backend/css/patterns/header-profile-skin-1.png": {
+    "file": "assets/header-profile-skin-1-056d7f8a.png",
+    "src": "resources/vendor/backend/css/patterns/header-profile-skin-1.png"
+  },
+  "resources/vendor/backend/css/patterns/header-profile-skin-2.png": {
+    "file": "assets/header-profile-skin-2-768b2137.png",
+    "src": "resources/vendor/backend/css/patterns/header-profile-skin-2.png"
+  },
+  "resources/vendor/backend/css/patterns/header-profile-skin-3.png": {
+    "file": "assets/header-profile-skin-3-e68e73e5.png",
+    "src": "resources/vendor/backend/css/patterns/header-profile-skin-3.png"
+  },
+  "resources/vendor/backend/css/patterns/header-profile.png": {
+    "file": "assets/header-profile-c0590989.png",
+    "src": "resources/vendor/backend/css/patterns/header-profile.png"
+  },
+  "resources/vendor/backend/css/patterns/shattered.png": {
+    "file": "assets/shattered-241155c2.png",
+    "src": "resources/vendor/backend/css/patterns/shattered.png"
+  },
+  "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.eot": {
+    "file": "assets/fontawesome-webfont-7bfcab6d.eot",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.eot"
+  },
+  "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.svg": {
+    "file": "assets/fontawesome-webfont-fc378232.svg",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.svg"
+  },
+  "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.ttf": {
+    "file": "assets/fontawesome-webfont-aa58f33f.ttf",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.ttf"
+  },
+  "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.woff": {
+    "file": "assets/fontawesome-webfont-ba0c59de.woff",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.woff"
+  },
+  "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.woff2": {
+    "file": "assets/fontawesome-webfont-2adefcbc.woff2",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.woff2"
+  },
+  "resources/vendor/backend/fonts/glyphicons-halflings-regular.eot": {
+    "file": "assets/glyphicons-halflings-regular-13634da8.eot",
+    "src": "resources/vendor/backend/fonts/glyphicons-halflings-regular.eot"
+  },
+  "resources/vendor/backend/fonts/glyphicons-halflings-regular.svg": {
+    "file": "assets/glyphicons-halflings-regular-d985cda0.svg",
+    "src": "resources/vendor/backend/fonts/glyphicons-halflings-regular.svg"
+  },
+  "resources/vendor/backend/fonts/glyphicons-halflings-regular.ttf": {
+    "file": "assets/glyphicons-halflings-regular-e3950440.ttf",
+    "src": "resources/vendor/backend/fonts/glyphicons-halflings-regular.ttf"
+  },
+  "resources/vendor/backend/fonts/glyphicons-halflings-regular.woff": {
+    "file": "assets/glyphicons-halflings-regular-a26394f7.woff",
+    "src": "resources/vendor/backend/fonts/glyphicons-halflings-regular.woff"
+  },
+  "resources/vendor/backend/fonts/glyphicons-halflings-regular.woff2": {
+    "file": "assets/glyphicons-halflings-regular-fe185d11.woff2",
+    "src": "resources/vendor/backend/fonts/glyphicons-halflings-regular.woff2"
+  },
+  "resources/vendor/backend/img/landing/avatar_all.png": {
+    "file": "assets/avatar_all-ac5c097a.png",
+    "src": "resources/vendor/backend/img/landing/avatar_all.png"
+  },
+  "resources/vendor/backend/img/landing/header_one.jpg": {
+    "file": "assets/header_one-bfc5f94d.jpg",
+    "src": "resources/vendor/backend/img/landing/header_one.jpg"
+  },
+  "resources/vendor/backend/img/landing/header_two.jpg": {
+    "file": "assets/header_two-5d856dd5.jpg",
+    "src": "resources/vendor/backend/img/landing/header_two.jpg"
+  },
+  "resources/vendor/backend/img/landing/word_map.png": {
+    "file": "assets/word_map-20e178bf.png",
+    "src": "resources/vendor/backend/img/landing/word_map.png"
+  },
+  "resources/vendor/frontend/fonts/UTM-Avo/UTM Avo.ttf": {
+    "file": "assets/UTM Avo-7b277458.ttf",
+    "src": "resources/vendor/frontend/fonts/UTM-Avo/UTM Avo.ttf"
+  },
+  "resources/vendor/frontend/fonts/UTM-Avo/UTM AvoBold.ttf": {
+    "file": "assets/UTM AvoBold-e43f8856.ttf",
+    "src": "resources/vendor/frontend/fonts/UTM-Avo/UTM AvoBold.ttf"
+  },
+  "resources/vendor/frontend/resources/fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.eot": {
+    "file": "assets/fontawesome-webfont-7bfcab6d.eot",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.eot"
+  },
+  "resources/vendor/frontend/resources/fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.svg": {
+    "file": "assets/fontawesome-webfont-fc378232.svg",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.svg"
+  },
+  "resources/vendor/frontend/resources/fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf": {
+    "file": "assets/fontawesome-webfont-aa58f33f.ttf",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.ttf"
+  },
+  "resources/vendor/frontend/resources/fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.woff": {
+    "file": "assets/fontawesome-webfont-ba0c59de.woff",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.woff"
+  },
+  "resources/vendor/frontend/resources/fonts/font-awesome-4.7.0/fonts/fontawesome-webfont.woff2": {
+    "file": "assets/fontawesome-webfont-2adefcbc.woff2",
+    "src": "resources/vendor/backend/font-awesome/fonts/fontawesome-webfont.woff2"
+  },
+  "resources/vendor/frontend/resources/fonts/uicons-regular-straight.woff2": {
+    "file": "assets/uicons-regular-straight-e013f9ca.woff2",
+    "src": "resources/vendor/frontend/resources/fonts/uicons-regular-straight.woff2"
+  },
+  "resources/vendor/frontend/resources/img/brand-icon.png": {
+    "file": "assets/brand-icon-4ee8d9eb.png",
+    "src": "resources/vendor/frontend/resources/img/brand-icon.png"
+  },
+  "resources/vendor/frontend/resources/img/icon/cat-bg.png": {
+    "file": "assets/cat-bg-869329a2.png",
+    "src": "resources/vendor/frontend/resources/img/icon/cat-bg.png"
+  },
+  "resources/vendor/frontend/resources/img/project/Check.png": {
+    "file": "assets/Check-9f9f3aa8.png",
+    "src": "resources/vendor/frontend/resources/img/project/Check.png"
+  },
+  "resources/vendor/frontend/resources/img/ribbon.png": {
+    "file": "assets/ribbon-bc5d35d2.png",
+    "src": "resources/vendor/frontend/resources/img/ribbon.png"
+  },
+  "resources/vendor/frontend/resources/img/spiner.svg": {
+    "file": "assets/spiner-e52b9b42.svg",
+    "src": "resources/vendor/frontend/resources/img/spiner.svg"
+  }
+}

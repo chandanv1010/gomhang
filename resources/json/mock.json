@@ -1,0 +1,466 @@
+ {
+    "commit": [
+        {
+            "image": "/vendor/frontend/img/project/commit-1.png",
+            "languages": {
+                "name": "Tin cậy",
+                "description": "Với kinh nghiệm hơn 5 năm hoạt động và phục vụ du khách trong - ngoài nước, CTIHSK tự tin là thương hiệu lữ hành tin cậy hàng đầu trên thị trường"
+            }
+        },
+        {
+            "image": "/vendor/frontend/img/project/commit-2.png",
+            "languages": {
+                "name": "Chất lượng",
+                "description": "Luôn đặt chất lượng và lợi ích của khách hàng lên hàng đầu để mang lại những hành trình trọn vẹn cùng chi phí tối ưu"
+            }
+        },
+        {
+            "image": "/vendor/frontend/img/project/commit-3.png",
+            "languages": {
+                "name": "Tận tâm",
+                "description": "Lắng nghe và giải đáp mọi mong muốn của khách hàng để không ngừng cải thiện chất lượng cho mỗi sản phẩm/dịch vụ"
+            }
+        }
+    ],
+    "intro": [
+        {
+            "image": "/vendor/frontend/img/project/intro-image.png",
+            "category": "Về chúng tôi",
+            "languages": {
+                "canonical": "/",
+                "name": "Chào mừng bạn đến với <br> hệ thống CTIHSK",
+                "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                "content": "<p>Tỉ lệ đỗ học bổng cao</p><p>Thương hiệu du học uy tín nhất</p><p>Chi phí tốt nhất thị trường</p><p>Hỗ trợ hậu mãi tốt nhất</p><p>Hợp tác hơn 50 trường Đại học</p><p>Đội ngũ nhân sự tận tâm</p><p>Có hệ thống tra cứu thông tin</p>"
+            }
+        }
+    ],
+    "marquee": [
+        {
+            "languages": {
+                "name": "Có nên cho trẻ đi du học sớm?",
+                "canonical": "/"
+            }
+        },
+        {
+            "languages": {
+                "name": "Tổng hợp thông tin đơn vị cấp thư giới thiệu?",
+                "canonical": "/"
+            }
+        },
+        {
+            "languages": {
+                "name": "Nên học ngành gì khi du học trung quốc",
+                "canonical": "/"
+            }
+        }
+    ],
+    "event": [
+        {
+            "album": [
+                "/vendor/frontend/img/project/event-1.png",
+                "/vendor/frontend/img/project/event-2.png",
+                "/vendor/frontend/img/project/event-3.png",
+                "/vendor/frontend/img/project/event-4.png"
+            ],
+            "languages": {
+                "canonical": "/",
+                "name": "Sự kiện - Nổi bật",
+                "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+            }
+        }
+    ],
+    "schoolarship": [
+        {
+            "languages": {
+                "name": "Học Bổng Nổi Bật",
+                "canonical": "/"
+            },
+            "children": [
+                {
+                    "languages": {
+                        "name": "Tất cả",
+                        "canonical": "/"
+                    }
+                },
+                {
+                    "languages": {
+                        "name": "Học bổng chính phủ trung quốc",
+                        "canonical": "/"
+                    }
+                },
+                {
+                    "languages": {
+                        "name": "Học Bổng Khổng Tử",
+                        "canonical": "/"
+                    }
+                },
+                {
+                    "languages": {
+                        "name": "Học Bổng Thành Phố",
+                        "canonical": "/"
+                    }
+                },
+                {
+                    "languages": {
+                        "name": "Học Bổng Trường",
+                        "canonical": "/"
+                    }
+                }
+                
+            ],
+            "items": [
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/"
+                    },
+                    "rate": "73.7"
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/scholarship/hoc-bong-truong-dai-hoc-nong-nghiep-hoa-trung.jpeg",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/"
+                    },
+                    "rate": "73.7"
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/scholarship/hoc-bong-truong-dai-hoc-cong-nghe-bac-kinh.jpeg",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/"
+                    },
+                    "rate": "73.7"
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/"
+                    },
+                    "rate": "73.7"
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/scholarship/hoc-bong-khu-tu-tri-tan-cuong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/"
+                    },
+                    "rate": "73.7"
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/scholarship/hoc-bong-truong-dai-hoc-hang-khong-nam-xuong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/"
+                    },
+                    "rate": "73.7"
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/scholarship/hoc-bong-csc-loai-a-hoc-bong-bo-thuong-mai%20(2).png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/"
+                    },
+                    "rate": "73.7"
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/scholarship/hoc-bong-thac-si-tai-chinh-dai-hoc-tai-chinh-kinh-te-thuong-hai%20(1).png-35.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/"
+                    },
+                    "rate": "73.7"
+                }
+            ]
+        }
+    ],
+    "schoolarshipType": [
+        {
+            "languages": {
+                "name": "Các loại học bổng",
+                "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                "canonical": "/"
+            },
+            "items": [
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "languages": {
+                        "name": "Chongqing Information Technology College Scholarship",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                }
+            ]
+        }
+    ],
+    "major": [
+        {
+            "image": "/vendor/frontend/img/project/major-image.png",
+            "languages": {
+                "name": "Chuyên Ngành Học",
+                "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                "canonical": "/"
+            },
+            "items": [
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "rate": "65",
+                    "languages": {
+                        "name": "Tâm lý học",
+                        "canonical": "/",
+                        "description": "<p>Chinese :资源与环境经济学</p><p>English :Western Economics</p><p>Expertise :Economics</p><p>Level :2</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/6200e43a-b51f-46a7-8a3a-a55e18f50629.jpeg",
+                    "rate": "65",
+                    "languages": {
+                        "name": "Tâm lý học",
+                        "canonical": "/",
+                        "description": "<p>Chinese :资源与环境经济学</p><p>English :Western Economics</p><p>Expertise :Economics</p><p>Level :2</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "languages": {
+                        "name": "Tâm lý học",
+                        "canonical": "/",
+                        "description": "<p>Chinese :资源与环境经济学</p><p>English :Western Economics</p><p>Expertise :Economics</p><p>Level :2</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "languages": {
+                        "name": "Tâm lý học",
+                        "canonical": "/",
+                        "description": "<p>Chinese :资源与环境经济学</p><p>English :Western Economics</p><p>Expertise :Economics</p><p>Level :2</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "languages": {
+                        "name": "Tâm lý học",
+                        "canonical": "/",
+                        "description": "<p>Chinese :资源与环境经济学</p><p>English :Western Economics</p><p>Expertise :Economics</p><p>Level :2</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "languages": {
+                        "name": "Tâm lý học",
+                        "canonical": "/",
+                        "description": "<p>Chinese :资源与环境经济学</p><p>English :Western Economics</p><p>Expertise :Economics</p><p>Level :2</p>"
+                    }
+                }
+            ]
+        }
+    ],
+    "review": [
+        {
+            "languages": {
+                "name": "Review các trường đại học",
+                "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                "canonical": "/"
+            },
+            "items": [
+                {
+                    "image": "/vendor/frontend/img/project/hoc-bong.png",
+                    "rate": "65",
+                    "logo": "/vendor/frontend/img/project/logo-truong.png",
+                    "languages": {
+                        "name": "Đại học Bắc Kinh",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                        "extraDescription": "<p>Truong tong hop</p><p>Khu Vuc: Bac Kinh</p><p>Ma Truong: 0001</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/6200e43a-b51f-46a7-8a3a-a55e18f50629.jpeg",
+                    "rate": "65",
+                    "logo": "/vendor/frontend/img/project/logo-truong.png",
+                    "languages": {
+                        "name": "Đại học Bắc Kinh",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                        "extraDescription": "<p>Truong tong hop</p><p>Khu Vuc: Bac Kinh</p><p>Ma Truong: 0001</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "logo": "/vendor/frontend/img/project/logo-truong.png",
+                    "languages": {
+                        "name": "Đại học Bắc Kinh",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                        "extraDescription": "<p>Truong tong hop</p><p>Khu Vuc: Bac Kinh</p><p>Ma Truong: 0001</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "logo": "/vendor/frontend/img/project/logo-truong.png",
+                    "languages": {
+                        "name": "Đại học Bắc Kinh",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                        "extraDescription": "<p>Truong tong hop</p><p>Khu Vuc: Bac Kinh</p><p>Ma Truong: 0001</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "logo": "/vendor/frontend/img/project/logo-truong.png",
+                    "languages": {
+                        "name": "Đại học Bắc Kinh",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                        "extraDescription": "<p>Truong tong hop</p><p>Khu Vuc: Bac Kinh</p><p>Ma Truong: 0001</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "logo": "/vendor/frontend/img/project/logo-truong.png",
+                    "languages": {
+                        "name": "Đại học Bắc Kinh",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                        "extraDescription": "<p>Truong tong hop</p><p>Khu Vuc: Bac Kinh</p><p>Ma Truong: 0001</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "logo": "/vendor/frontend/img/project/logo-truong.png",
+                    "languages": {
+                        "name": "Đại học Bắc Kinh",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                        "extraDescription": "<p>Truong tong hop</p><p>Khu Vuc: Bac Kinh</p><p>Ma Truong: 0001</p>"
+                    }
+                },
+                {
+                    "image": "https://cdn.studyinchina.io/school/449d086e-f90e-436e-856b-ff28ad6abf30.jpeg",
+                    "rate": "65",
+                    "logo": "/vendor/frontend/img/project/logo-truong.png",
+                    "languages": {
+                        "name": "Đại học Bắc Kinh",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                        "extraDescription": "<p>Truong tong hop</p><p>Khu Vuc: Bac Kinh</p><p>Ma Truong: 0001</p>"
+                    }
+                }
+            ]
+        }
+    ],
+    "news": [
+        {
+            "languages": {
+                "name": "Cẩm nang - sự kiện",
+                "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025",
+                "canonical": "/"
+            },
+            "items": [
+                {
+                    "image": "/vendor/frontend/img/project/news.png",
+                    "created_at": "16/09/2025",
+                    "languages": {
+                        "name": "Top 8 chuyên ngành đào tạo thế mạnh của Trung Quốc",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/news.png",
+                    "created_at": "16/09/2025",
+                    "languages": {
+                        "name": "Top 8 chuyên ngành đào tạo thế mạnh của Trung Quốc",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/news.png",
+                    "created_at": "16/09/2025",
+                    "languages": {
+                        "name": "Top 8 chuyên ngành đào tạo thế mạnh của Trung Quốc",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                },
+                {
+                    "image": "/vendor/frontend/img/project/news.png",
+                    "created_at": "16/09/2025",
+                    "languages": {
+                        "name": "Top 8 chuyên ngành đào tạo thế mạnh của Trung Quốc",
+                        "canonical": "/",
+                        "description": "CTIHSK rất hân hạnh và vinh dự khi được đồng hành cùng bạn trong hành trình chinh phục ước mơ DU HỌC TRUNG QUỐC 2025"
+                    }
+                }
+            ]
+        }
+    ]
+}

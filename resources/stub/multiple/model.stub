@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Validation\Rule;
+use App\Traits\HasQuery;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class {{module}} extends Model
+{
+   use HasFactory, SoftDeletes, HasQuery;
+
+    protected $fillable = [
+        'image',
+        'album',
+        'publish',
+        'follow',
+        'order',
+        'user_id',
+        '{{snake_module}}_catalogue_id',
+        'viewed',
+    ];
+
+    protected $relationable = [
+       
+    ];
+
+    public function getRelationable(){
+        return $this->relationable;
+    }
+
+    protected $table = '{{snake_module}}s';
+
+    protected $with = ['{{snake_module}}_catalogues'];
+
+    public function languages(){
+        return $this->belongsToMany(Language::class, '{{snake_module}}_language' , '{{snake_module}}_id', 'language_id')
+        ->withPivot(
+            '{{snake_module}}_id',
+            'language_id',
+            'name',
+            'canonical',
+            'meta_title',
+            'meta_keyword',
+            'meta_description',
+            'description',
+            'content'
+        )->where('language_id', config('app.language_id'));
+    }
+
+    public function {{snake_module}}_catalogues(){
+        return $this->belongsToMany({{snake_module}}Catalogue::class, '{{snake_module}}_catalogue_{{snake_module}}' , '{{snake_module}}_id', '{{snake_module}}_catalogue_id');
+    }
+
+    public function users(): BelongsTo{
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+
+}

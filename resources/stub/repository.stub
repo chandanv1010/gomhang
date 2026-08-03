@@ -1,0 +1,17 @@
+<?php  
+namespace App\Repositories\{{namespace}};
+use App\Models\{{module}};
+use App\Repositories\BaseRepository;
+
+class {{module}}Repo  extends BaseRepository{
+
+    protected $model;
+
+    public function __construct(
+        {{module}} $model
+    )
+    {
+        $this->model = $model;
+        parent::__construct($model);
+    }
+}

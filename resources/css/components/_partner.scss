@@ -1,0 +1,112 @@
+// ==========================================
+// VIREX PARTNER LOGOS STYLING
+// ==========================================
+
+.panel-partner {
+    padding: 60px 0 80px 0;
+    background-color: #FAF8F5; // Light cream background
+    border-top: 1px solid #f0f0f0;
+
+    .partner-header {
+        display: block;
+        text-align: center;
+        margin-bottom: 45px;
+
+        .partner-title {
+            font-family: 'Manrope', sans-serif;
+            font-size: 32px;
+            font-weight: 850;
+            color: #000;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+
+            .highlight-green {
+                color: #006D3A;
+            }
+
+            @media (max-width: 959px) {
+                font-size: 28px;
+            }
+
+            @media (max-width: 767px) {
+                font-size: 24px;
+            }
+        }
+
+        .partner-subtitle {
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin: 0;
+
+            @media (max-width: 767px) {
+                font-size: 13px;
+            }
+        }
+    }
+
+    .partner-swiper {
+        width: 100%;
+        padding: 10px 0 45px 0; // Space at bottom for pagination dots
+        position: relative;
+    }
+
+    .partner-slide-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .partner-logo-card {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 150px;
+        width: 100%;
+        opacity: 1; // Full color as in Image 3
+        filter: none; // No grayscale
+        transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+
+        &:hover {
+            transform: scale(1.05);
+        }
+
+        img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+    }
+
+    // Swiper Custom Pagination
+    .partner-pagination {
+        position: absolute;
+        bottom: 0 !important;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        z-index: 10;
+
+        .swiper-pagination-bullet {
+            width: 8px;
+            height: 8px;
+            background: #ccc;
+            opacity: 0.6;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+
+            &.swiper-pagination-bullet-active {
+                background: #006D3A; // Dark green
+                opacity: 1;
+                width: 24px; // Modern stretched active dot
+                border-radius: 4px;
+            }
+        }
+    }
+}
