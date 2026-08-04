@@ -5,7 +5,7 @@
 <div class="login-wrapper">
     <div class="login-card login-card--register">
 
-        <h2 class="title">Tạo tài khoản mới</h2>
+        <h1 class="title">Tạo tài khoản mới</h1>
         <p class="subtitle">Vui lòng điền đầy đủ thông tin bên dưới để đăng ký.</p>
 
         @if (session('error'))

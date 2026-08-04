@@ -11,7 +11,10 @@
                 <div class="shape shape-right"></div>
             </div>
             <div class="uk-container uk-container-center cat-hero-container">
-                <h1 class="cat-hero-title">{{ $postCatalogue->name }}</h1>
+                {{-- On an article page the h1 is the article title further down;
+                     this hero shows the section name, so it must not also be an h1.
+                     .cat-hero-title carries the styling, so the look is unchanged. --}}
+                <p class="cat-hero-title">{{ $postCatalogue->name }}</p>
                 <ul class="uk-list uk-clearfix uk-flex uk-flex-middle uk-flex-center cat-hero-breadcrumbs">
                     <li><a href="/">Trang chủ</a></li>
                     @if(!is_null($breadcrumb))

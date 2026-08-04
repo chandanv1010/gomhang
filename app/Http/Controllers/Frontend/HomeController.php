@@ -70,12 +70,35 @@ class HomeController extends FrontendController
             ->get();
 
         $system = $this->system;
+        // The seo_meta_* keys do not exist in the systems table, so ?? never fired
+        // and the homepage shipped an empty <title> and no description at all.
+        // Fall back through the keys that do exist, then to the brand name.
+        $brand = system_brand($this->system);
+        $homeTitle = trim((string) ($this->system['seo_meta_title'] ?? ''));
+        if ($homeTitle === '') {
+            $slogan = trim((string) ($this->system['homepage_slogan'] ?? ''));
+            $homeTitle = $slogan !== ''
+                ? $brand . ' - ' . $slogan
+                : $brand . ' - Sỉ lẻ phụ kiện công nghệ chính hãng';
+        }
+
+        $homeDescription = trim((string) ($this->system['seo_meta_description'] ?? ''));
+        if ($homeDescription === '') {
+            $homeDescription = trim((string) ($this->system['homepage_short_intro'] ?? ''));
+        }
+        if ($homeDescription === '') {
+            $homeDescription = $brand . ' - phụ kiện điện thoại, sạc, cáp, tai nghe chính hãng. '
+                . 'Bảo hành 12 tháng, đổi mới 8 ngày đầu, giao hàng toàn quốc, '
+                . 'kiểm tra sản phẩm trước khi thanh toán.';
+        }
+
         $seo = [
-            'meta_title' => $this->system['seo_meta_title'] ?? '',
-            'meta_keyword' => $this->system['seo_meta_keyword'] ?? '',
-            'meta_description' => $this->system['seo_meta_description'] ?? '',
-            'meta_image' => $this->system['seo_meta_images'] ?? '',
+            'meta_title' => $homeTitle,
+            'meta_keyword' => trim((string) ($this->system['seo_meta_keyword'] ?? '')),
+            'meta_description' => $homeDescription,
+            'meta_image' => ($this->system['seo_meta_images'] ?? '') ?: ($this->system['homepage_logo'] ?? ''),
             'canonical' => config('app.url'),
+            'og_type' => 'website',
         ];
         $schema = $this->schema($seo);
         $template = 'frontend.homepage.home.index';

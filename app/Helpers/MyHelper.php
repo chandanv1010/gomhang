@@ -451,14 +451,46 @@ if(!function_exists('write_url')){
 }
 
 if(!function_exists('seo')){
-    function seo($model = null, $page = 1){
+    /**
+     * Meta tags for a model-backed page.
+     *
+     * @param  string  $ogType  'product' or 'article' where it applies, so the page
+     *                          does not claim og:type=website for everything.
+     */
+    function seo($model = null, $page = 1, string $ogType = 'website'){
         $canonical = ($page > 1) ? write_url($model->canonical, true, false).'/trang-'.$page.config('apps.general.suffix'): write_url($model->canonical, true, true);
+
+        // ?? only falls back on null, so an empty meta_title from the admin used to
+        // ship an empty <title>. Compare against '' as well.
+        $title = trim((string)($model->meta_title ?? ''));
+        if($title === ''){
+            $title = trim((string)($model->name ?? ''));
+        }
+        if($page > 1){
+            // Paginated pages need distinct titles, otherwise they read as duplicates.
+            $title .= ' - Trang ' . $page;
+        }
+
+        $description = trim((string)($model->meta_description ?? ''));
+        if($description === ''){
+            // Was $model->descipriont - a typo, so this fallback never ran and pages
+            // without an explicit meta description shipped an empty one.
+            $description = cut_string_and_decode($model->description ?? '', 168);
+        }
+        if(trim((string) $description) === ''){
+            // Posts often have no summary; the opening of the body is better than nothing.
+            $description = cut_string_and_decode($model->content ?? '', 168);
+        }
+
         return [
-            'meta_title' => ($model->meta_title) ?? $model->name,
-            'meta_keyword' => ($model->meta_keyword) ?? '',
-            'meta_description' => ($model->meta_description) ?? cut_string_and_decode($model->descipriont, 168),
-            'meta_image' => $model->image,
+            'meta_title' => $title,
+            'meta_keyword' => trim((string)($model->meta_keyword ?? '')),
+            'meta_description' => $description,
+            'meta_image' => $model->image ?? '',
             'canonical' => $canonical,
+            'og_type' => $ogType,
+            // Page 2 onwards adds nothing new for search engines.
+            'follow' => ($page > 1) ? 'noindex,follow' : 'index,follow',
         ];
     }
 }

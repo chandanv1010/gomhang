@@ -12,6 +12,7 @@ use App\Services\V1\Product\ProductService;
 use App\Services\V1\Core\WidgetService;
 use App\Repositories\Product\ProductRepository;
 use App\Repositories\Post\PostRepository;
+use App\Support\Schema;
 use App\Services\V1\Product\CompareService;
 
 
@@ -345,90 +346,45 @@ class ProductCatalogueController extends FrontendController
         ]));
     }
 
+    /**
+     * Structured data for a product listing. Rebuilt on App\Support\Schema; the
+     * hand-written JSON it replaced was syntactically invalid.
+     */
     private function schema($productCatalogue, $products, $breadcrumb)
     {
+        $language = optional($productCatalogue->languages->first())->pivot;
 
-        $cat_name = $productCatalogue->languages->first()->pivot->name;
-
-        $cat_canonical = write_url($productCatalogue->languages->first()->pivot->canonical);
-
-        $cat_description = strip_tags($productCatalogue->languages->first()->pivot->description);
-
-        $totalProducts = $products->total();
-
-        $itemListElements = '';
-
-        $position = 1;
-
-        foreach ($products as $product) {
-            $image = $product->image;
-            $name = $product->languages->first()->pivot->name;
-            $canonical = write_url($product->languages->first()->pivot->canonical);
-            $itemListElements .= "
-                {
-                    \"@type\": \"ListItem\",
-                    \"position\": $position,
-                    \"item\": {
-                        \"@type\": \"Product\",
-                        \"name\": \"" . $name . "\",
-                        \"url\": \"" . $canonical . "\",
-                        \"image\": \"" . $image . "\"
-                    }
-                },";
-            $position++;
-        }
-
-        $itemListElements = rtrim($itemListElements, ',');
-
-        $itemBreadcrumbElements = '';
-
-        $positionBreadcrumb = 2;
-
-        foreach ($breadcrumb as $key => $item) {
-            $name = $item->languages->first()->pivot->name;
-            $canonical = write_url($item->languages->first()->pivot->canonical);
-            $itemBreadcrumbElements .= "
-                {
-                    \"@type\": \"ListItem\",
-                    \"position\": $positionBreadcrumb,
-                    \"name\": \"" . $name . "\",
-                    \"item\": \"" . $canonical . "\",
-                },";
-            $positionBreadcrumb++;
-        }
-
-        $itemBreadcrumbElements = rtrim($itemBreadcrumbElements, ',');
-
-        $schema = "<script type='application/ld+json'>
-            {
-                \"@type\": \"BreadcrumbList\",
-                \"itemListElement\": [
-                    {
-                        \"@type\": \"ListItem\",
-                        \"position\": 1,
-                        \"name\": \" Trang chủ  \",
-                        \"item\": \" " . config('app.url') . " \"
-                    },
-                    $itemBreadcrumbElements
-                ]
-            },
-            {
-                \"@context\": \"https://schema.org\",
-                \"@type\": \"CollectionPage\",
-                \"name\": \"" . $cat_name . "\",
-                \"description\": \" " . $cat_description . " \",
-                \"url\": \"" . $cat_canonical . "\",
-                \"mainEntity\": {
-                    \"@type\": \"ItemList\",
-                    \"name\": \" " . $cat_name . " \",
-                    \"numberOfItems\": $totalProducts,
-                    \"itemListElement\": [
-                        $itemListElements
-                    ]
-                }
+        $trail = [['name' => 'Trang chủ', 'url' => config('app.url')]];
+        foreach (($breadcrumb ?? []) as $item) {
+            $itemLanguage = optional($item->languages->first())->pivot;
+            if (!$itemLanguage) {
+                continue;
             }
-            </script>";
-        return $schema;
+            $trail[] = ['name' => $itemLanguage->name, 'url' => write_url($itemLanguage->canonical)];
+        }
+        // Drop the trailing url: the last crumb is the page being viewed.
+        if (count($trail) > 1) {
+            unset($trail[count($trail) - 1]['url']);
+        }
+
+        $items = [];
+        foreach ($products as $product) {
+            $items[] = [
+                'name' => $product->name ?? '',
+                'url' => write_url($product->canonical ?? ''),
+            ];
+        }
+
+        return Schema::script([
+            Schema::organization($this->system),
+            Schema::webSite($this->system),
+            Schema::breadcrumb($trail),
+            Schema::collectionPage([
+                'name' => $language->name ?? '',
+                'url' => write_url($language->canonical ?? ''),
+                'description' => $language->description ?? '',
+            ], $items),
+        ]);
     }
 
     private function config()

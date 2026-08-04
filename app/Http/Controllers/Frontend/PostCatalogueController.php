@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\FrontendController;
+use App\Support\Schema;
 use App\Repositories\Post\PostCatalogueRepository;
 use App\Services\V1\Post\PostCatalogueService;
 use App\Services\V1\Post\PostService;
@@ -114,86 +115,44 @@ class PostCatalogueController extends FrontendController
         ));
     }
 
+    /**
+     * Structured data for a post listing. Rebuilt on App\Support\Schema; the
+     * hand-written JSON it replaced was syntactically invalid.
+     */
     private function schema($postCatalogue, $posts, $breadcrumb)
     {
+        $language = optional($postCatalogue->languages->first())->pivot;
 
-        $cat_name = $postCatalogue->languages->first()->pivot->name;
-
-        $cat_canonical = write_url($postCatalogue->languages->first()->pivot->canonical);
-
-        $cat_description = strip_tags($postCatalogue->languages->first()->pivot->description);
-
-        $itemListElements = '';
-
-        $position = 1;
-
-        foreach ($posts as $post) {
-            $name = $post->languages->first()->pivot->name;
-            $canonical = write_url($post->languages->first()->pivot->canonical);
-            $itemListElements .= "
-                {
-                    \"@type\": \"BlogPosting\",
-                    \"headline\": \" " . $name . " \",
-                    \"url\": \" " . $canonical . " \",
-                    \"datePublished\": \" " . convertDateTime($post->created_at, 'd-m-Y') . " \",
-                    \"author\": {
-                        \"@type\": \" Person  \",
-                        \"name\": \" An Hưng \",
-                    }
-                },";
-            $position++;
-        }
-
-        $itemListElements = rtrim($itemListElements, ',');
-
-        $itemBreadcrumbElements = '';
-
-        $positionBreadcrumb = 2;
-
-        foreach ($breadcrumb as $key => $item) {
-            $name = $item->languages->first()->pivot->name;
-            $canonical = write_url($item->languages->first()->pivot->canonical);
-            $itemBreadcrumbElements .= "
-                {
-                    \"@type\": \"ListItem\",
-                    \"position\": $positionBreadcrumb,
-                    \"name\": \"" . $name . "\",
-                    \"item\": \"" . $canonical . "\",
-                },";
-            $positionBreadcrumb++;
-        }
-
-        $itemBreadcrumbElements = rtrim($itemBreadcrumbElements, ',');
-
-        $schema = "<script type='application/ld+json'>
-            {
-                \"@type\": \"BreadcrumbList\",
-                \"itemListElement\": [
-                    {
-                        \"@type\": \"ListItem\",
-                        \"position\": 1,
-                        \"name\": \" Trang chủ  \",
-                        \"item\": \" " . config('app.url') . " \"
-                    },
-                    $itemBreadcrumbElements
-                ]
-            },
-            {
-                \"@context\": \"https://schema.org\",
-                \"@type\": \"Blog\",
-                \"name\": \"" . $cat_name . "\",
-                \"description\": \" " . $cat_description . " \",
-                \"url\": \"" . $cat_canonical . "\",
-                \"publisher\": [
-                    \"@type\": \"Organization\",
-                    \"name\": \" An Hưng \",
-                ],
-                \"blogPost\": {
-                    $itemListElements
-                }
+        $trail = [['name' => 'Trang chủ', 'url' => config('app.url')]];
+        foreach (($breadcrumb ?? []) as $item) {
+            $itemLanguage = optional($item->languages->first())->pivot;
+            if (!$itemLanguage) {
+                continue;
             }
-            </script>";
-        return $schema;
+            $trail[] = ['name' => $itemLanguage->name, 'url' => write_url($itemLanguage->canonical)];
+        }
+        if (count($trail) > 1) {
+            unset($trail[count($trail) - 1]['url']);
+        }
+
+        $items = [];
+        foreach ($posts as $post) {
+            $postLanguage = optional($post->languages->first())->pivot;
+            $items[] = [
+                'name' => $postLanguage->name ?? ($post->name ?? ''),
+                'url' => write_url($postLanguage->canonical ?? ($post->canonical ?? '')),
+            ];
+        }
+
+        return Schema::script([
+            Schema::organization($this->system),
+            Schema::breadcrumb($trail),
+            Schema::collectionPage([
+                'name' => $language->name ?? '',
+                'url' => write_url($language->canonical ?? ''),
+                'description' => $language->description ?? '',
+            ], $items),
+        ]);
     }
 
    

@@ -67,7 +67,9 @@
             <div class="sile-widget-container">
                 <div class="sile-widget-header">
                     <img src="/userfiles/image/slide/logo.png" alt="Icon" class="sile-icon-logo" onerror="this.style.display='none'">
-                    <h2>SỈ LẺ HÀNG CÔNG NGHỆ</h2>
+                    {{-- This is the homepage's main heading, so it is the h1.
+                         The page had no h1 at all. --}}
+                    <h1>SỈ LẺ HÀNG CÔNG NGHỆ</h1>
                 </div>
 
                 <div class="products-grid-wrapper" id="products-grid">
@@ -98,7 +100,7 @@
                                     <img src="{{ image($product->image) }}" alt="{{ $prodName }}" loading="lazy">
                                 </div>
                                 <div class="product-info-box">
-                                    <h4 class="product-title">{{ $prodName }}</h4>
+                                    <h2 class="product-title">{{ $prodName }}</h2>
                                     
                                     <div class="product-price-row">
                                         <span class="product-sale-price">{{ convert_price($salePrice, true) }}đ</span>
@@ -130,7 +132,7 @@
             <div class="sidebar-box warranty-box-container mb20">
                 <div class="warranty-box-header">
                     <img src="/userfiles/image/slide/logo.png" alt="" class="warranty-header-icon" onerror="this.style.display='none'">
-                    <h4>BẢO HÀNH GIÁ</h4>
+                    <h3>BẢO HÀNH GIÁ</h3>
                 </div>
                 <div class="warranty-box-body">
                     <div class="warranty-seal-img-box">
@@ -158,7 +160,7 @@
 
             <!-- Box 3: Filter Category -->
             <div class="sidebar-box filter-box-container mb20">
-                <h5 class="filter-box-title">Sản Phẩm</h5>
+                <h4 class="filter-box-title">Sản Phẩm</h4>
                 <select class="sidebar-category-select-dropdown" onchange="if(this.value) window.location.href=this.value;">
                     <option value="">Chọn một danh mục</option>
                     @foreach($allCategories as $cat)
@@ -171,7 +173,7 @@
             <div class="sidebar-box intro-box-container">
                 <div class="intro-box-header">
                     <img src="/userfiles/image/slide/logo.png" alt="" class="intro-header-icon" onerror="this.style.display='none'">
-                    <h4>Giới thiệu {{ system_brand($system ?? null) }}</h4>
+                    <h3>Giới thiệu {{ system_brand($system ?? null) }}</h3>
                 </div>
                 <div class="intro-box-body">
                     <!-- Social icons row -->
@@ -229,7 +231,7 @@
                         <div class="news-image-box">
                             <img src="{{ $post->image }}" alt="{{ $postTitle }}" loading="lazy">
                         </div>
-                        <h4 class="news-title-link">{{ $postTitle }}</h4>
+                        <h3 class="news-title-link">{{ $postTitle }}</h3>
                     </a>
                 </div>
             @endforeach
@@ -463,6 +465,7 @@
     height: 28px;
     object-fit: contain;
 }
+.sile-widget-header h1,
 .sile-widget-header h2,
 .news-section-header h2 {
     font-size: 20px;
@@ -621,7 +624,9 @@
     height: 20px;
     object-fit: contain;
 }
+.warranty-box-header h3,
 .warranty-box-header h4,
+.intro-box-header h3,
 .intro-box-header h4 {
     font-size: 14px;
     font-weight: bold;

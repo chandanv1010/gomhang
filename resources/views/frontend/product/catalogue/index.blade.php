@@ -41,7 +41,7 @@
                 <!-- Phụ kiện theo chủng loại -->
                 @if(isset($chungLoaiList) && count($chungLoaiList))
                     <div class="root-section-block">
-                        <h3 class="root-section-title">Phụ kiện theo chủng loại</h3>
+                        <h2 class="root-section-title">Phụ kiện theo chủng loại</h2>
                         <div class="root-tags-cloud">
                             @foreach($chungLoaiList as $item)
                                 @php
@@ -59,7 +59,7 @@
                 <!-- Phụ kiện iPhone -->
                 @if(isset($iphoneList) && count($iphoneList))
                     <div class="root-section-block">
-                        <h3 class="root-section-title">Phụ kiện iPhone</h3>
+                        <h2 class="root-section-title">Phụ kiện iPhone</h2>
                         <div class="root-tags-cloud">
                             @foreach($iphoneList as $item)
                                 @php
@@ -77,7 +77,7 @@
                 <!-- Phụ kiện Samsung -->
                 @if(isset($samsungList) && count($samsungList))
                     <div class="root-section-block">
-                        <h3 class="root-section-title">Phụ kiện Samsung</h3>
+                        <h2 class="root-section-title">Phụ kiện Samsung</h2>
                         <div class="root-tags-cloud">
                             @foreach($samsungList as $item)
                                 @php
@@ -95,7 +95,7 @@
                 <!-- Brands list (Khối 2) for Root Category -->
                 @if(isset($brands) && $brands->isNotEmpty())
                     <div class="root-section-block root-brands-block" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 25px;">
-                        <h3 class="root-section-title">Thương hiệu nổi bật</h3>
+                        <h2 class="root-section-title">Thương hiệu nổi bật</h2>
                         <div class="brands-logos-grid">
                             @foreach($brands as $brand)
                                 @php
@@ -185,7 +185,7 @@
                                                 <img src="{{ $image }}" alt="{{ $title }}" loading="lazy">
                                             </div>
                                             <div class="product-info-box">
-                                                <h4 class="product-title">{{ $title }}</h4>
+                                                <h2 class="product-title">{{ $title }}</h2>
                                                 
                                                 <div class="product-price-row">
                                                     <span class="product-sale-price">{{ convert_price($priceInfo['priceSale'], true) }}đ</span>
@@ -233,7 +233,7 @@
                     <div class="sidebar-box warranty-box-container mb20">
                         <div class="warranty-box-header">
                             <img src="/userfiles/image/slide/logo.png" alt="" class="warranty-header-icon" onerror="this.style.display='none'">
-                            <h4>BẢO HÀNH GIÁ</h4>
+                            <h3>BẢO HÀNH GIÁ</h3>
                         </div>
                         <div class="warranty-box-body">
                             <div class="warranty-seal-img-box">
@@ -277,7 +277,7 @@
                         $priceActive = request()->filled('price_min') || request()->filled('price_max');
                     @endphp
                     <div class="sidebar-box filter-box-container mb20">
-                        <h5 class="filter-box-title">Khoảng giá</h5>
+                        <h4 class="filter-box-title">Khoảng giá</h4>
                         <form action="" method="GET" class="price-filter" id="price-filter"
                               data-ceiling="{{ $priceCeiling }}">
                             {{-- Keep the other active filters when submitting. --}}
@@ -333,7 +333,7 @@
 
                     <!-- Box 3: Filter Category Select box -->
                     <div class="sidebar-box filter-box-container mb20">
-                        <h5 class="filter-box-title">Danh mục khác</h5>
+                        <h4 class="filter-box-title">Danh mục khác</h4>
                         <select class="sidebar-category-select-dropdown" onchange="if(this.value) window.location.href=this.value;">
                             <option value="">Chọn một danh mục</option>
                             @foreach($allCategories as $cat)
@@ -350,7 +350,7 @@
                     <div class="sidebar-box intro-box-container">
                         <div class="intro-box-header">
                             <img src="/userfiles/image/slide/logo.png" alt="" class="intro-header-icon" onerror="this.style.display='none'">
-                            <h4>Giới thiệu {{ system_brand($system ?? null) }}</h4>
+                            <h3>Giới thiệu {{ system_brand($system ?? null) }}</h3>
                         </div>
                         <div class="intro-box-body">
                             <div class="social-links-row mb15">
@@ -665,7 +665,9 @@
     height: 20px;
     object-fit: contain;
 }
+.warranty-box-header h3,
 .warranty-box-header h4,
+.intro-box-header h3,
 .intro-box-header h4 {
     font-size: 14px;
     font-weight: bold;

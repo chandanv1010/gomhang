@@ -5,7 +5,7 @@
 <div class="login-wrapper">
     <div class="login-card">
 
-        <h2 class="title">Đăng nhập tài khoản</h2>
+        <h1 class="title">Đăng nhập tài khoản</h1>
         <p class="subtitle">Chào mừng khách hàng đã quay lại! Vui lòng điền thông tin bên dưới.</p>
 
         {{-- Why CustomerAuth sent the visitor here. Passed as a view variable

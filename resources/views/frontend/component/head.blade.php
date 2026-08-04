@@ -1,32 +1,79 @@
-<base href="{{ config('app.url') }}" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1,user-scalable=0">
-<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-<meta name="robots" content="index,follow"/>
-<meta name="author" content="{{ $system['homepage_company'] }}"/>
-<meta name="copyright" content="{{ $system['homepage_company'] }}" />
+@php
+    // SEO values with fallbacks, so no page ships an empty title or description.
+    $brandName    = system_brand($system ?? null);
+    $siteUrl      = rtrim((string) config('app.url'), '/');
+
+    $metaTitle    = trim((string) ($seo['meta_title'] ?? '')) ?: $brandName;
+    $metaDesc     = trim((string) ($seo['meta_description'] ?? ''));
+    $metaKeywords = trim((string) ($seo['meta_keyword'] ?? ''));
+    $canonical    = \App\Support\Schema::absolute($seo['canonical'] ?? request()->url());
+
+    // og:image has to be absolute; fall back to the site logo so a share is never blank.
+    $metaImage    = \App\Support\Schema::absolute(
+        ($seo['meta_image'] ?? '') ?: ($system['homepage_logo'] ?? '')
+    );
+
+    // Per-page robots directive; search and other thin pages pass 'noindex,follow'.
+    $robots       = trim((string) ($seo['follow'] ?? '')) ?: 'index,follow';
+
+    // 'product' on a product page, 'article' on a post, otherwise 'website'.
+    $ogType       = trim((string) ($seo['og_type'] ?? '')) ?: 'website';
+@endphp
+<base href="{{ $siteUrl }}/" />
+<meta charset="utf-8" />
+{{-- maximum-scale=1 / user-scalable=0 blocked pinch zoom, which fails WCAG 1.4.4. --}}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<meta http-equiv="refresh" content="1800" />
-<link rel="icon" href="{{ $system['homepage_favicon'] }}" type="image/png" sizes="30x30">
-<!-- GOOGLE -->
-<title>{{ $seo['meta_title'] }}</title>
-<meta name="description"  content="{{ $seo['meta_description'] }}" />
-<meta name="keyword"  content="{{ $seo['meta_keyword'] }}" />
-<link rel="canonical" href="{{ $seo['canonical'] }}" />		
+
+{{-- Removed: <meta http-equiv="refresh" content="1800">. It reloaded every page
+     every 30 minutes, discarding anything a visitor had typed or scrolled to, and
+     fails WCAG 2.2.1. --}}
+
+<meta name="robots" content="{{ $robots }}" />
+<meta name="author" content="{{ $brandName }}" />
+<meta name="copyright" content="{{ $brandName }}" />
+@if(!empty($system['homepage_favicon']))
+    <link rel="icon" href="{{ $system['homepage_favicon'] }}" type="image/png" sizes="30x30">
+@endif
+
+<title>{{ $metaTitle }}</title>
+@if($metaDesc !== '')
+    <meta name="description" content="{{ $metaDesc }}" />
+@endif
+@if($metaKeywords !== '')
+    {{-- The correct attribute is "keywords"; the old markup wrote "keyword". --}}
+    <meta name="keywords" content="{{ $metaKeywords }}" />
+@endif
+<link rel="canonical" href="{{ $canonical }}" />
+
+{{-- Open Graph --}}
 <meta property="og:locale" content="vi_VN" />
-<!-- for Facebook -->
-<meta property="og:title" content="{{ $seo['meta_title'] }}" />
-<meta property="og:type" content="website" />
-<meta property="og:image" content="{{ $seo['meta_image'] }}" />
-<meta property="og:url" content="{{ $seo['canonical'] }}" />		
-<meta property="og:description" content="{{ $seo['meta_description'] }}" />
-<meta property="og:site_name" content="" />
-<meta property="fb:admins" content=""/>
-<meta property="fb:app_id" content="" />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="{{ $seo['meta_title'] }}" />
-<meta name="twitter:description" content="{{ $seo['meta_description'] }}" />
-<meta name="twitter:image" content="{{ $seo['meta_image'] }}" />
+<meta property="og:site_name" content="{{ $brandName }}" />
+<meta property="og:type" content="{{ $ogType }}" />
+<meta property="og:title" content="{{ $metaTitle }}" />
+<meta property="og:url" content="{{ $canonical }}" />
+@if($metaDesc !== '')
+    <meta property="og:description" content="{{ $metaDesc }}" />
+@endif
+@if($metaImage !== '')
+    <meta property="og:image" content="{{ $metaImage }}" />
+    <meta property="og:image:alt" content="{{ $metaTitle }}" />
+@endif
+
+{{-- Twitter. Empty fb:admins / fb:app_id tags were dropped: a tag with no value
+     is worse than no tag. --}}
+<meta name="twitter:card" content="{{ $metaImage !== '' ? 'summary_large_image' : 'summary' }}" />
+<meta name="twitter:title" content="{{ $metaTitle }}" />
+@if($metaDesc !== '')
+    <meta name="twitter:description" content="{{ $metaDesc }}" />
+@endif
+@if($metaImage !== '')
+    <meta name="twitter:image" content="{{ $metaImage }}" />
+@endif
+
+{{-- preconnect so the font handshake starts before the CSS is parsed --}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">

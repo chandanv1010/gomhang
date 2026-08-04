@@ -69,7 +69,7 @@
                                     <img src="{{ $image }}" alt="{{ $title }}" loading="lazy">
                                 </div>
                                 <div class="product-info-box">
-                                    <h3 class="product-title">{{ $title }}</h3>
+                                    <h2 class="product-title">{{ $title }}</h2>
                                     <div class="product-price-row">
                                         <span class="product-sale-price">{{ convert_price($priceInfo['priceSale'], true) }}đ</span>
                                         @if($priceInfo['percent'] > 0)
@@ -118,9 +118,9 @@
                                 <img src="{{ $postImage }}" alt="{{ $postTitle }}" loading="lazy">
                             </a>
                             <div class="search-post-item__body">
-                                <h3 class="search-post-item__title">
+                                <h2 class="search-post-item__title">
                                     <a href="{{ $postHref }}">{{ $postTitle }}</a>
-                                </h3>
+                                </h2>
                                 @if(!empty($post->created_at))
                                     <time class="search-post-item__date" datetime="{{ \Carbon\Carbon::parse($post->created_at)->toDateString() }}">
                                         {{ \Carbon\Carbon::parse($post->created_at)->format('d/m/Y') }}

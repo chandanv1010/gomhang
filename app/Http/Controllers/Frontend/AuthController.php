@@ -30,12 +30,16 @@ class AuthController extends FrontendController
 
     public function index(){
         $system = $this->system;
+        // Login/register pages add nothing to a search index, but they still need
+        // a title and description so a shared link is not blank.
         $seo = [
-            'meta_title' => 'Trang đăng nhập - Hệ thống website '.$this->system['homepage_company'],
+            'meta_title' => 'Đăng nhập tài khoản - ' . system_brand($this->system),
             'meta_keyword' => '',
-            'meta_description' => '',
+            'meta_description' => 'Đăng nhập tài khoản ' . system_brand($this->system)
+                . ' để theo dõi đơn hàng, xem lịch sử mua hàng và thanh toán nhanh hơn.',
             'meta_image' => '',
-            'canonical' => route('customer.login')
+            'canonical' => route('customer.login'),
+            'follow' => 'noindex,follow',
         ];
         // pull() reads and removes, so the reason CustomerAuth gave for sending the
         // visitor here is shown once and not again on a later visit.
@@ -50,11 +54,13 @@ class AuthController extends FrontendController
   
     public function register(){
         $seo = [
-            'meta_title' => 'Trang đăng ký - Hệ thống website '. $this->system['homepage_company'],
+            'meta_title' => 'Tạo tài khoản mới - ' . system_brand($this->system),
             'meta_keyword' => '',
-            'meta_description' => '',
+            'meta_description' => 'Tạo tài khoản ' . system_brand($this->system)
+                . ' để mua hàng nhanh hơn, theo dõi đơn hàng và nhận ưu đãi dành riêng cho khách thành viên.',
             'meta_image' => '',
-            'canonical' => route('customer.register')
+            'canonical' => route('customer.register'),
+            'follow' => 'noindex,follow',
         ];
         $system = $this->system;
         return view('frontend.auth.customer.register',compact(

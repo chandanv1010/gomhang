@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Support\Schema;
 
 class ProductController extends FrontendController
 {
@@ -153,7 +154,7 @@ class ProductController extends FrontendController
         $customer = Auth::guard('customer')->user();
         $voucher_product = (!is_null($customer)) ? $this->voucherService->getVoucherForProduct($id, $carts, $customer->id) : null;
         $system = $this->system;
-        $seo = seo($product);
+        $seo = seo($product, 1, 'product');
         $schema = $this->schema($product, $productCatalogue, $breadcrumb);
         $template = 'frontend.product.product.index';
 
@@ -179,116 +180,70 @@ class ProductController extends FrontendController
         ));
     }
 
+    /**
+     * Structured data for the product page.
+     *
+     * Rebuilt on App\Support\Schema: the hand-written JSON here was invalid (two
+     * top level objects with no array around them), named a brand from another
+     * company, sent an empty offers.price and emitted aggregateRating with zero
+     * reviews - any one of which voids the Product rich result.
+     */
     private function schema($product, $productCatalogue, $breadcrumb)
     {
-        $image = $product->image;
-        $name = $product->languages->first()->pivot->name;
-        $totalReviews = $product->reviews()->where('status', 1)->count();
-        $totalRate = number_format($product->reviews()->where('status', 1)->avg('score'), 1);
-        $description = strip_tags($product->languages->first()->pivot->description);
-        $cat_name = $productCatalogue->languages->first()->pivot->name;
-        $cat_canonical = write_url($productCatalogue->languages->first()->pivot->canonical);
-        $reviewListElements = '';
-        foreach ($product->reviews as $review) {
-            $rating = generateStar($review->score);
-            $created_at = convertDateTime($review->created_at);
-            $reviewListElements .= "
-                {
-                    \"@type\": \"Review\",
-                    \"reviewRating\": {
-                        \"@type\": \"Rating\",
-                        \"ratingValue\": \"" . $rating . "\",
-                        \"bestRating\": \"5\"
-                    },
-                    \"author\": {
-                        \"@type\": \"Person\",
-                        \"name\": \"" . $review->fullname . "\"
-                    },
-                    \"reviewBody\": \"" . $review->description . "\",
-                    \"datePublished\": \"" . $created_at . "\"
-                },";
+        $language = $product->languages->first()->pivot ?? null;
+        $priceInfo = getProductPriceInfo($product);
+
+        // Breadcrumb: home, then the catalogue trail, then this product.
+        $trail = [['name' => 'Trang chủ', 'url' => config('app.url')]];
+        foreach (($breadcrumb ?? []) as $item) {
+            $itemLanguage = $item->languages->first()->pivot ?? null;
+            if (!$itemLanguage) {
+                continue;
+            }
+            $trail[] = [
+                'name' => $itemLanguage->name,
+                'url' => write_url($itemLanguage->canonical),
+            ];
+        }
+        $trail[] = ['name' => $language->name ?? ''];
+
+        $approvedReviews = $product->reviews->where('status', 1);
+
+        // Brand comes from the product's own brand attribute, not a constant.
+        $brandName = '';
+        $brandCatalogueId = (int) config('apps.general.brandAttributeCatalogueId');
+        foreach (($product->attributeCatalogue ?? []) as $attributeCatalogue) {
+            if ((int) ($attributeCatalogue->id ?? 0) !== $brandCatalogueId) {
+                continue;
+            }
+            $brandName = optional(collect($attributeCatalogue->attributes ?? [])->first())->name ?? '';
+            break;
         }
 
-        $reviewListElements = rtrim($reviewListElements, ',');
-
-        $itemBreadcrumbElements = '';
-
-        $positionBreadcrumb = 2;
-
-        foreach ($breadcrumb as $key => $item) {
-            $name = $item->languages->first()->pivot->name;
-            $canonical = write_url($item->languages->first()->pivot->canonical);
-            $itemBreadcrumbElements .= "
-                {
-                    \"@type\": \"ListItem\",
-                    \"position\": $positionBreadcrumb,
-                    \"name\": \"" . $name . "\",
-                    \"item\": \"" . $canonical . "\",
-                },";
-            $positionBreadcrumb++;
-        }
-
-        $itemBreadcrumbElements = rtrim($itemBreadcrumbElements, ',');
-
-        $schema = "
-            <script type=\"application/ld+json\">
-                {
-                    \"@type\": \"BreadcrumbList\",
-                    \"itemListElement\": [
-                        {
-                            \"@type\": \"ListItem\",
-                            \"position\": 1,
-                            \"name\": \" Trang chủ  \",
-                            \"item\": \" " . config('app.url') . " \"
-                        },
-                        $itemBreadcrumbElements
-                    ]
-                },
-                {
-                    \"@context\": \"https://schema.org\",
-                    \"@type\": \"Product\",
-                    \"name\": \" " . $name . " \",
-                    \"description\": \"  " . $description . "  \",
-                    \"image\": \"  " . $image . "  \",
-                    \"brand\": {
-                        \"@type\": \"Brand\",
-                        \"name\": \"An Hưng\"
-                    },
-                    \"manufacturer\": {
-                        \"@type\": \"Organization\",
-                        \"name\": \"An Hưng\",
-                        \"url\": \" " . config('app.url') . "\"
-                    },
-                    \"material\": \" " . $cat_name . " \",
-                    \"category\": \" " . $cat_canonical . " \",
-                    \"sku\": \"\",
-                    \"mpn\": \"\",
-                    \"offers\": {
-                        \"@type\": \"Offer\",
-                        \"price\": \"\",
-                        \"priceCurrency\": \"\",
-                        \"availability\": \"\",
-                        \"seller\": {
-                            \"@type\": \"Organization\",
-                            \"name\": \"An Hưng\"
-                        },
-                        \"priceValidUntil\": \"\",
-                        \"itemCondition\": \"https://schema.org/NewCondition\"
-                    },
-                    \"aggregateRating\": {
-                        \"@type\": \"AggregateRating\",
-                        \"ratingValue\": \" " . $totalRate . "  \",
-                        \"reviewCount\": \" " . $totalReviews . "\"
-                    },
-                    \"review\": [
-                        $reviewListElements
-                    ]
-                }
-            </script>
-        ";
-
-        return $schema;
-
+        return Schema::script([
+            Schema::organization($this->system),
+            Schema::breadcrumb($trail),
+            Schema::product([
+                'name' => $language->name ?? '',
+                'url' => write_url($language->canonical ?? ''),
+                'image' => image($product->image),
+                'description' => $language->description ?? '',
+                'sku' => $product->code ?? '',
+                'brand' => $brandName,
+                'category' => optional($productCatalogue->languages->first())->pivot->name ?? '',
+                'price' => $priceInfo['priceSale'],
+                'priceValidUntil' => $priceInfo['endDate'],
+                'inStock' => ((int) ($product->stock ?? 0)) > 0,
+                'ratingValue' => $approvedReviews->avg('score'),
+                'reviewCount' => $approvedReviews->count(),
+                'reviews' => $approvedReviews->map(fn ($review) => [
+                    'score' => $review->score,
+                    'author' => $review->fullname,
+                    'body' => $review->description,
+                    'date' => $review->created_at,
+                ])->all(),
+            ], $this->system),
+        ]);
     }
 
     private function config()

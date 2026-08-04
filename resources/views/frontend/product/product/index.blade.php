@@ -210,7 +210,7 @@
                                      page background, and only the clock is boxed - one plain white
                                      panel, no per-digit tiles. --}}
                                 <div class="flash-sale-container" id="flash-sale-container">
-                                    <h4 class="flash-sale-title">FLASH SALE</h4>
+                                    <h2 class="flash-sale-title">FLASH SALE</h2>
                                     <div class="flash-sale-campaign" id="flash-sale-campaign">{{ $priceInfo['promotionName'] }}</div>
                                     <div class="countdown-shell">
                                         <div class="countdown-timer-wrapper" id="countdown-timer">

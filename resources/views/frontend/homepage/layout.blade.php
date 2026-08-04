@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+{{-- The site is Vietnamese; it declared lang="en", which misleads screen readers,
+     translation prompts and search engines. --}}
+<html lang="vi">
     <head>
         {{-- {{ $system['script_1'] }} --}}
         @include('frontend.component.head')

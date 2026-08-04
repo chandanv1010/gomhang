@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\FrontendController;
+use App\Support\Schema;
 use Illuminate\Http\Request;
 use App\Repositories\Post\PostCatalogueRepository;
 use App\Services\V1\Post\PostCatalogueService;
@@ -88,7 +89,7 @@ class postController extends FrontendController
         
         $config = $this->config();
         $system = $this->system;
-        $seo = seo($post);
+        $seo = seo($post, 1, 'article');
         
         $lastestNews = Post::with(['languages'])->orderBy('order', 'desc')->orderBy('id', 'desc')->where(['publish' => 2])->limit(8)->get();
 
@@ -119,97 +120,38 @@ class postController extends FrontendController
         ));
     }
 
-    private function schema($post, $postCatalogue, $breadcrumb){
+    /**
+     * Structured data for an article. Rebuilt on App\Support\Schema; the
+     * hand-written JSON it replaced was syntactically invalid.
+     */
+    private function schema($post, $postCatalogue, $breadcrumb)
+    {
+        $language = optional($post->languages->first())->pivot;
 
-        $image = $post->image;
-
-        $name = $post->languages->first()->pivot->name;
-
-        $description = strip_tags($post->languages->first()->pivot->description);
-
-        $canonical = write_url($post->languages->first()->pivot->canonical);
-
-        $itemBreadcrumbElements = '';
-
-        $positionBreadcrumb = 2;
-
-        foreach ($breadcrumb as $key => $item) {
-
-            $name = $item->languages->first()->pivot->name;
-
-            $canonical = write_url($item->languages->first()->pivot->canonical);
-
-            $itemBreadcrumbElements .= "
-                {
-                    \"@type\": \"ListItem\",
-                    \"position\": $positionBreadcrumb,
-                    \"name\": \"" . $name . "\",
-                    \"item\": \"" . $canonical . "\",
-                },";
-            $positionBreadcrumb++;
+        $trail = [['name' => 'Trang chủ', 'url' => config('app.url')]];
+        foreach (($breadcrumb ?? []) as $item) {
+            $itemLanguage = optional($item->languages->first())->pivot;
+            if (!$itemLanguage) {
+                continue;
+            }
+            $trail[] = ['name' => $itemLanguage->name, 'url' => write_url($itemLanguage->canonical)];
         }
+        $trail[] = ['name' => $language->name ?? ''];
 
-        $itemBreadcrumbElements = rtrim($itemBreadcrumbElements, ',');
-
-        $schema = "
-            <script type=\"application/ld+json\">
-                {
-                    \"@type\": \"BreadcrumbList\",
-                    \"itemListElement\": [
-                        {
-                            \"@type\": \"ListItem\",
-                            \"position\": 1,
-                            \"name\": \" Trang chủ  \",
-                            \"item\": \" ". config('app.url') . " \"
-                        },
-                        $itemBreadcrumbElements
-                    ]
-                },
-                {
-                    \"@context\": \"https://schema.org\",
-                    \"@type\": \"BlogPosting\",
-                    \"headline\": \" " . $name .  " \",
-                    \"description\": \"  " . $description .  "  \",
-                    \"image\": \"  " . $image .  "  \",
-                    \"url\": \"  " . $canonical .  "  \",
-                    \"datePublished\": \"  " . convertDateTime($post->created_at, 'd-m-y') .  "  \",
-                    \"dateModified\": \"  " . convertDateTime($post->created_at, 'd-m-y') .  "  \",
-                    \"author\": [
-                        \"@type\": \"Person\",
-                        \"name\": \"\",
-                        \"url\": \"\",
-                    ],
-                    \"publisher\": [
-                        \"@type\": \"Organization\",
-                        \"name\": \" An Hưng  \",
-                        \"logo\": [
-                            \"@type\": \"ImageObject\",
-                            \"url\": \"   \",
-                        ],
-                    ],
-                    \"mainEntityOfPage\": [
-                        \"@type\": \"Organization\",
-                        \"@id\": \" " . $canonical . " \",
-                    ],
-                    \"articleSection\": \"  " . $postCatalogue->languages->first()->pivot->name .  "  \",
-                    \" keywords \": \"  \",
-                    \" timeRequired \": \"  \",
-                    \"about\": [
-                        \"@type\": \"Thing\",
-                        \"name\": \" \",
-                    ],
-                    \"mentions\": [
-                        {
-                            \"@type\": \"Product\",
-                            \"name\": \" \",
-                        }
-                    ],
-                }
-            </script>
-        ";
-        return $schema;
-
-    } 
+        return Schema::script([
+            Schema::organization($this->system),
+            Schema::breadcrumb($trail),
+            Schema::article([
+                'headline' => $language->name ?? '',
+                'url' => write_url($language->canonical ?? ''),
+                'image' => image($post->image),
+                'description' => $language->description ?? '',
+                'datePublished' => $post->created_at ?? null,
+                'dateModified' => $post->updated_at ?? null,
+                'section' => optional(optional($postCatalogue)->languages->first())->pivot->name ?? '',
+            ], $this->system),
+        ]);
+    }
 
     private function config(){
         return [

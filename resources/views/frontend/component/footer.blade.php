@@ -16,7 +16,7 @@
             @endphp
             @if(count($showroomsHn))
                 <div class="footer-col showroom-col">
-                    <h3>Showroom Hà Nội</h3>
+                    <h2>Showroom Hà Nội</h2>
                     @if(!empty($system['contact_showroom_hours']))
                         <p class="showroom-hours">Mở cửa: {{ $system['contact_showroom_hours'] }}</p>
                     @endif
@@ -38,7 +38,7 @@
             @endphp
             @if(count($showroomsHcm))
                 <div class="footer-col showroom-col">
-                    <h3>Showroom TP. Hồ Chí Minh</h3>
+                    <h2>Showroom TP. Hồ Chí Minh</h2>
                     @if(!empty($system['contact_showroom_hcm_hours']))
                         <p class="showroom-hours">Mở cửa: {{ $system['contact_showroom_hcm_hours'] }}</p>
                     @endif
@@ -52,7 +52,7 @@
 
             <!-- Middle-Right: Điện thoại, liên hệ -->
             <div class="footer-col contact-col">
-                <h3>Điện thoại, liên hệ</h3>
+                <h2>Điện thoại, liên hệ</h2>
                 <p class="contact-hours">Hoạt động: {{ $system['contact_showroom_hours'] ?? '8h-22h' }}</p>
                 <ul class="contact-phones-list">
                     <li><i class="fa fa-phone"></i> Gọi mua hàng: <a href="tel:{{ $system['contact_contact_buy'] ?? '0934439055' }}">{{ $system['contact_contact_buy'] ?? '093.443.9055' }}</a></li>
@@ -64,7 +64,7 @@
 
             <!-- Right: Hỗ trợ & Chính sách -->
             <div class="footer-col policies-col">
-                <h3>Chính sách & Hỗ trợ</h3>
+                <h2>Chính sách & Hỗ trợ</h2>
                 <ul class="showroom-list">
                     <li><i class="fa fa-angle-right"></i> <a href="{{ $system['contact_footer_shipping_link'] ?? '#' }}">Chính sách vận chuyển</a></li>
                     <li><i class="fa fa-angle-right"></i> <a href="{{ $system['contact_footer_privacy_link'] ?? '#' }}">Chính sách bảo mật</a></li>
@@ -138,6 +138,7 @@
 .footer-col {
     flex: 1;
 }
+.footer-col h2,
 .footer-col h3 {
     color: #ffffff;
     font-size: 15px;
