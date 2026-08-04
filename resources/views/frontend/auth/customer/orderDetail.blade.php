@@ -235,11 +235,11 @@
                                                             {{ $item->qty ?? 0 }}</td>
                                                         <td class="uk-text-right">
                                                             <span class="uk-text-bold uk-text-primary"
-                                                                style="font-size: 15px;">{{ convert_price($item->price ?? 0, true) }}₫</span>
+                                                                style="font-size: 15px;">{{ convert_price($item->price ?? 0, true) }}đ</span>
                                                         </td>
                                                         <td class="uk-text-right">
                                                             <strong class="uk-text-bold uk-text-primary"
-                                                                style="font-size: 15px;">{{ convert_price(($item->price ?? 0) * ($item->qty ?? 0), true) }}₫</strong>
+                                                                style="font-size: 15px;">{{ convert_price(($item->price ?? 0) * ($item->qty ?? 0), true) }}đ</strong>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -270,7 +270,7 @@
 
                                         {{-- GIÁ TỔNG CỘNG ĐƯA LÊN NGANG --}}
                                         <span class="uk-text-bold" style="font-size: 26px; color: #d32f2f;">
-                                            {{ convert_price($finalTotal, true) }}₫
+                                            {{ convert_price($finalTotal, true) }}đ
                                         </span>
                                     </div>
 
@@ -284,7 +284,7 @@
                                                             giá:</span>
                                                         <span class="uk-text-bold uk-text-danger"
                                                             style="font-size: 15px;">
-                                                            -{{ convert_price($promotionDiscount, true) }}₫
+                                                            -{{ convert_price($promotionDiscount, true) }}đ
                                                         </span>
                                                     </div>
                                                 </div>
@@ -296,7 +296,7 @@
                                                         <span class="uk-text-bold" style="font-size: 15px;">Phí vận
                                                             chuyển:</span>
                                                         <span class="uk-text-bold" style="font-size: 15px;">
-                                                            {{ convert_price($shipping, true) }}₫
+                                                            {{ convert_price($shipping, true) }}đ
                                                         </span>
                                                     </div>
                                                 </div>

@@ -22,11 +22,28 @@
     $wishlistIds = $wishlistItems->pluck('id')->toArray();
     $isWishlisted = in_array($product->id, $wishlistIds);
 
-    // Flash sale countdown end date configuration
+    // Flash sale runs off the promotion campaigns attached to this product.
+    // There is deliberately no synthetic end date: showing a countdown when no
+    // campaign exists advertises a deadline the shop is not committed to.
     $endDate = $priceInfo['endDate'];
-    if (empty($endDate) && $priceInfo['percent'] > 0) {
-        $endDate = date('Y-m-t 23:59:59'); // Fallback to end of month for visual correctness
+    $promotionChain = $priceInfo['chain'];
+
+    // Only worth rendering the block if there is a deadline to count down to, or
+    // a later campaign to roll on to.
+    $showFlashSale = !empty($endDate) || count($promotionChain) > ($priceInfo['hasPromotion'] ? 1 : 0);
+
+    // Brand mark above the gallery, as in the reference design. getAttribute()
+    // has already grouped the product's attributes by catalogue.
+    $brandCatalogueId = (int) config('apps.general.brandAttributeCatalogueId');
+    $brandAttribute = null;
+    foreach (($product->attributeCatalogue ?? []) as $attrCatalogue) {
+        if ((int) ($attrCatalogue->id ?? 0) !== $brandCatalogueId) {
+            continue;
+        }
+        $brandAttribute = collect($attrCatalogue->attributes ?? [])->first();
+        break;
     }
+    $brandLogo = $brandAttribute ? brand_logo($brandAttribute) : null;
 @endphp
 
 @extends('frontend.homepage.layout')
@@ -66,6 +83,11 @@
                         <div class="uk-grid uk-grid-collapse">
                             <!-- Left: 4/5 Swiper -->
                             <div class="uk-width-4-5">
+                                @if($brandLogo)
+                                    <div class="prd-brand-mark">
+                                        <img src="{{ $brandLogo }}" alt="{{ $brandAttribute->name ?? '' }}" loading="lazy">
+                                    </div>
+                                @endif
                                 <div class="product-gallery">
                                     @if (isset($list_image) && !empty($list_image))
                                         <div class="product-list_image">
@@ -161,94 +183,205 @@
                     <div class="uk-width-large-1-2">
                         <div class="product-info">
                             <!-- Title -->
-                            <h1 class="prd-name" style="font-size: 24px; font-weight: bold; color: #111; margin-bottom: 8px;">{{ $prd_title }}</h1>
+                            <h1 class="prd-name" style="font-size: 20px; font-weight: 600; color: #1a1a1a; line-height: 1.35; margin-bottom: 6px;">{{ $prd_title }}</h1>
                             
-                            <!-- Tags row -->
-                            <div class="prd-tags-row uk-flex uk-flex-middle" style="gap: 8px; margin-bottom: 15px; font-size: 13px;">
-                                <span style="color: #666; font-weight: 500;">Tag sản phẩm</span>
-                                <span style="background: #2f80ed; color: #ffffff; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px;">B</span>
-                            </div>
+                            {{-- The "Tag sản phẩm B" row that used to sit here was hardcoded
+                                 placeholder markup, not product data, and the reference design
+                                 has no such row. Removed rather than hidden. --}}
 
                             <!-- Price row -->
-                            <div class="prd-price-block uk-flex uk-flex-middle" style="gap: 15px; margin-bottom: 20px;">
-                                <span class="price-highlight" style="color: #d61c00 !important; font-size: 24px; font-weight: bold; margin-left: 0;">
-                                    {{ convert_price($priceInfo['priceSale'], true) }}₫
+                            {{-- The ids let the flash sale script re-price in place when one
+                                 campaign ends and the next takes over. --}}
+                            <div class="prd-price-block uk-flex uk-flex-middle" style="gap: 10px; margin-bottom: 18px;">
+                                <span class="price-highlight" id="prd-price-sale" style="color: #e02b1d !important; font-size: 23px; font-weight: 700; margin-left: 0;">
+                                    {{ convert_price($priceInfo['priceSale'], true) }}đ
                                 </span>
-                                @if($priceInfo['percent'] > 0)
-                                    <span class="old-price" style="text-decoration: line-through; color: #888; font-size: 14px;">
-                                        {{ convert_price($priceInfo['price'], true) }}₫
-                                    </span>
-                                    <span class="discount-badge" style="border: 1px solid #d61c00; color: #d61c00; background: #fff8f7; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">
-                                        Giảm {{ $priceInfo['percent'] }}%
-                                    </span>
-                                @endif
+                                <span class="old-price" id="prd-price-old" style="text-decoration: line-through; color: #9a9a9a; font-size: 13px; @if($priceInfo['percent'] <= 0) display: none; @endif">
+                                    {{ convert_price($priceInfo['price'], true) }}đ
+                                </span>
+                                <span class="discount-badge" id="prd-price-badge" style="border: 1px solid #cfcfcf; color: #333; background: #ffffff; padding: 3px 9px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; @if($priceInfo['percent'] <= 0) display: none; @endif">
+                                    Giảm {{ $priceInfo['percent'] }}%
+                                </span>
                             </div>
 
                             <!-- FLASH SALE countdown timer boxes -->
-                            @if(!empty($endDate))
-                                <div class="flash-sale-container" style="border: 1px solid #ffebe9; background: #fff9f8; border-radius: 6px; padding: 15px; margin-bottom: 20px;">
-                                    <h4 class="flash-sale-title" style="color: #d61c00; font-weight: bold; text-align: center; text-transform: uppercase; margin: 0 0 12px 0; font-size: 15px; letter-spacing: 0.5px;">FLASH SALE</h4>
-                                    <div class="countdown-timer-wrapper" id="countdown-timer" style="display: flex; justify-content: center; gap: 15px;">
-                                        <div class="timer-unit-box" style="text-align: center;">
-                                            <span class="timer-num-box" id="days" style="display: block; width: 45px; height: 45px; line-height: 45px; font-size: 20px; font-weight: bold; color: #d61c00; background: #ffffff; border: 1px solid #ffd1cd; border-radius: 4px;">0</span>
-                                            <span class="timer-label" style="font-size: 11px; color: #666; margin-top: 4px; display: block;">Ngày</span>
-                                        </div>
-                                        <div class="timer-unit-box" style="text-align: center;">
-                                            <span class="timer-num-box" id="hours" style="display: block; width: 45px; height: 45px; line-height: 45px; font-size: 20px; font-weight: bold; color: #d61c00; background: #ffffff; border: 1px solid #ffd1cd; border-radius: 4px;">00</span>
-                                            <span class="timer-label" style="font-size: 11px; color: #666; margin-top: 4px; display: block;">Giờ</span>
-                                        </div>
-                                        <div class="timer-unit-box" style="text-align: center;">
-                                            <span class="timer-num-box" id="minutes" style="display: block; width: 45px; height: 45px; line-height: 45px; font-size: 20px; font-weight: bold; color: #d61c00; background: #ffffff; border: 1px solid #ffd1cd; border-radius: 4px;">00</span>
-                                            <span class="timer-label" style="font-size: 11px; color: #666; margin-top: 4px; display: block;">Phút</span>
-                                        </div>
-                                        <div class="timer-unit-box" style="text-align: center;">
-                                            <span class="timer-num-box" id="seconds" style="display: block; width: 45px; height: 45px; line-height: 45px; font-size: 20px; font-weight: bold; color: #d61c00; background: #ffffff; border: 1px solid #ffd1cd; border-radius: 4px;">00</span>
-                                            <span class="timer-label" style="font-size: 11px; color: #666; margin-top: 4px; display: block;">Giây</span>
+                            @if($showFlashSale)
+                                {{-- Layout follows the reference: the FLASH SALE label sits on the
+                                     page background, and only the clock is boxed - one plain white
+                                     panel, no per-digit tiles. --}}
+                                <div class="flash-sale-container" id="flash-sale-container">
+                                    <h4 class="flash-sale-title">FLASH SALE</h4>
+                                    <div class="flash-sale-campaign" id="flash-sale-campaign">{{ $priceInfo['promotionName'] }}</div>
+                                    <div class="countdown-shell">
+                                        <div class="countdown-timer-wrapper" id="countdown-timer">
+                                            <div class="timer-unit-box">
+                                                <span class="timer-num" id="days">0</span>
+                                                <span class="timer-label">Ngày</span>
+                                            </div>
+                                            <div class="timer-unit-box">
+                                                <span class="timer-num" id="hours">00</span>
+                                                <span class="timer-label">Giờ</span>
+                                            </div>
+                                            <div class="timer-unit-box">
+                                                <span class="timer-num" id="minutes">00</span>
+                                                <span class="timer-label">Phút</span>
+                                            </div>
+                                            <div class="timer-unit-box">
+                                                <span class="timer-num" id="seconds">00</span>
+                                                <span class="timer-label">Giây</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <script>
-                                    document.addEventListener("DOMContentLoaded", function() {
-                                        var endDateStr = "{{ $endDate }}";
-                                        if (endDateStr) {
-                                            var countDownDate = new Date(endDateStr.replace(/-/g, "/")).getTime();
-                                            var x = setInterval(function() {
-                                                var now = new Date().getTime();
-                                                var distance = countDownDate - now;
-                                                
-                                                if (distance < 0) {
-                                                    clearInterval(x);
-                                                    document.getElementById("countdown-timer").innerHTML = "<div class='expired-msg' style='color:#777; font-weight:bold;'>Khuyến mãi kết thúc</div>";
-                                                    return;
-                                                }
-                                                
-                                                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                                                
-                                                document.getElementById("days").innerText = days;
-                                                document.getElementById("hours").innerText = (hours < 10 ? "0" : "") + hours;
-                                                document.getElementById("minutes").innerText = (minutes < 10 ? "0" : "") + minutes;
-                                                document.getElementById("seconds").innerText = (seconds < 10 ? "0" : "") + seconds;
-                                            }, 1000);
+                                    /**
+                                     * A product can sit in several promotion campaigns. The server sends
+                                     * the whole sequence of segments - best discount first, each one
+                                     * starting where the previous ended - so when a campaign expires the
+                                     * page re-prices itself and counts down to the next one instead of
+                                     * freezing on "Khuyến mãi kết thúc" until a reload.
+                                     */
+                                    document.addEventListener("DOMContentLoaded", function () {
+                                        var chain = @json($promotionChain);
+                                        var fullPrice = {{ (float) $priceInfo['price'] }};
+
+                                        if (!Array.isArray(chain) || !chain.length) {
+                                            return;
                                         }
+
+                                        var el = {
+                                            box: document.getElementById("flash-sale-container"),
+                                            timer: document.getElementById("countdown-timer"),
+                                            campaign: document.getElementById("flash-sale-campaign"),
+                                            sale: document.getElementById("prd-price-sale"),
+                                            old: document.getElementById("prd-price-old"),
+                                            badge: document.getElementById("prd-price-badge"),
+                                            days: document.getElementById("days"),
+                                            hours: document.getElementById("hours"),
+                                            minutes: document.getElementById("minutes"),
+                                            seconds: document.getElementById("seconds")
+                                        };
+
+                                        // "2026-08-10 23:59:59" is not portable across browsers; slashes are.
+                                        function stamp(value) {
+                                            return value ? new Date(String(value).replace(/-/g, "/")).getTime() : null;
+                                        }
+
+                                        function money(value) {
+                                            return Math.round(value).toLocaleString("vi-VN") + "đ";
+                                        }
+
+                                        function segmentAt(time) {
+                                            for (var i = 0; i < chain.length; i++) {
+                                                var startsAt = stamp(chain[i].startsAt);
+                                                var endsAt = stamp(chain[i].endsAt);
+                                                if (startsAt <= time && (endsAt === null || endsAt > time)) {
+                                                    return chain[i];
+                                                }
+                                            }
+                                            return null;
+                                        }
+
+                                        /** The next campaign due to start after $time, if any. */
+                                        function nextSegmentAfter(time) {
+                                            var soonest = null;
+                                            for (var i = 0; i < chain.length; i++) {
+                                                var startsAt = stamp(chain[i].startsAt);
+                                                if (startsAt > time && (soonest === null || startsAt < stamp(soonest.startsAt))) {
+                                                    soonest = chain[i];
+                                                }
+                                            }
+                                            return soonest;
+                                        }
+
+                                        function showPrice(segment) {
+                                            if (segment) {
+                                                el.sale.innerText = money(segment.priceSale);
+                                                el.old.innerText = money(segment.price);
+                                                el.badge.innerText = "Giảm " + segment.percent + "%";
+                                                el.old.style.display = "";
+                                                el.badge.style.display = "";
+                                            } else {
+                                                el.sale.innerText = money(fullPrice);
+                                                el.old.style.display = "none";
+                                                el.badge.style.display = "none";
+                                            }
+                                        }
+
+                                        function writeClock(distance) {
+                                            var second = 1000, minute = 60 * second, hour = 60 * minute, day = 24 * hour;
+                                            var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+
+                                            el.days.innerText = Math.floor(distance / day);
+                                            el.hours.innerText = pad(Math.floor((distance % day) / hour));
+                                            el.minutes.innerText = pad(Math.floor((distance % hour) / minute));
+                                            el.seconds.innerText = pad(Math.floor((distance % minute) / second));
+                                        }
+
+                                        var shownSegmentId = null;
+
+                                        function tick() {
+                                            var now = Date.now();
+                                            var active = segmentAt(now);
+
+                                            // Re-price only when the winning campaign actually changes.
+                                            var id = active ? active.promotion_id : null;
+                                            if (id !== shownSegmentId) {
+                                                shownSegmentId = id;
+                                                showPrice(active);
+                                                if (el.campaign) {
+                                                    el.campaign.innerText = active ? (active.name || "") : "";
+                                                }
+                                            }
+
+                                            if (active && stamp(active.endsAt) !== null) {
+                                                writeClock(stamp(active.endsAt) - now);
+                                                return;
+                                            }
+
+                                            if (active) {
+                                                // Open ended campaign: a countdown would be meaningless.
+                                                el.timer.innerHTML = "<div style='color:#d61c00; font-weight:bold;'>Áp dụng đến khi có thông báo mới</div>";
+                                                return;
+                                            }
+
+                                            // Between campaigns: count down to the one that starts next.
+                                            var upcoming = nextSegmentAfter(now);
+                                            if (upcoming) {
+                                                el.campaign.innerText = "Sắp diễn ra: " + (upcoming.name || "");
+                                                writeClock(stamp(upcoming.startsAt) - now);
+                                                return;
+                                            }
+
+                                            // Nothing left at all.
+                                            clearInterval(handle);
+                                            if (el.box) {
+                                                el.box.style.display = "none";
+                                            }
+                                        }
+
+                                        tick();
+                                        var handle = setInterval(tick, 1000);
                                     });
                                 </script>
                             @endif
 
                             <!-- Buy Action Box -->
-                            <div class="buy-action-box uk-flex uk-flex-middle" style="gap: 15px; margin-bottom: 25px;">
-                                <!-- Add to Cart badge button (red boundary) -->
-                                <a href="#" class="add-to-cart-badge-btn addToCart" data-id="{{ $product->id }}" style="width: 50px; height: 50px; border: 1px solid #d61c00; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #d61c00; text-decoration: none !important; transition: all 0.2s;">
-                                    <i class="fa fa-shopping-cart" style="font-size: 24px;"></i>
+                            <div class="buy-action-box">
+                                {{-- Outlined cart button: icon with a small plus, and its own caption
+                                     underneath, as in the reference. --}}
+                                <a href="#" class="add-to-cart-badge-btn addToCart" data-id="{{ $product->id }}" aria-label="Thêm vào giỏ">
+                                    <span class="cart-icon-stack">
+                                        <i class="fa fa-shopping-cart"></i>
+                                        <i class="fa fa-plus cart-icon-plus" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="cart-btn-caption">Thêm vào giỏ</span>
                                 </a>
-                                
-                                <!-- Mua Nhanh orange button -->
-                                <a href="#" class="buy-now-orange-btn addToCart" data-id="{{ $product->id }}" data-redirect="1" style="flex-grow: 1; background: #ff7f16; color: #ffffff !important; border-radius: 4px; text-align: center; padding: 12px 10px; font-weight: bold; font-size: 14px; text-decoration: none !important; transition: all 0.2s; line-height: 1.3;">
-                                    MUA NHANH<br>
-                                    <span style="font-size: 11px; font-weight: normal; opacity: 0.9;">(Giao nhanh hoặc nhận tại cửa hàng)</span>
+
+                                <a href="#" class="buy-now-orange-btn addToCart" data-id="{{ $product->id }}" data-redirect="1">
+                                    <span class="buy-now-title">MUA NHANH</span>
+                                    <span class="buy-now-sub">(Giao nhanh hoặc nhận tại cửa hàng)</span>
                                 </a>
                             </div>
 
@@ -265,12 +398,12 @@
                             </div>
 
                             <!-- Shipping / Showrooms tabs box -->
-                            <div class="prd-shipping-tabs-box" style="background: #fdfdfd; border: 1px solid #eeeeee; border-radius: 6px; overflow: hidden; margin-bottom: 25px;">
-                                <div class="shipping-tabs-header uk-flex" style="background: #f5f5f5; border-bottom: 1px solid #eeeeee;">
-                                    <div class="shipping-tab active" id="tab-hn" style="flex: 1; text-align: center; padding: 10px; font-weight: bold; cursor: pointer; background: #ffffff; border-right: 1px solid #eeeeee;">Hà Nội</div>
-                                    <div class="shipping-tab" id="tab-tq" style="flex: 1; text-align: center; padding: 10px; font-weight: bold; cursor: pointer; color: #666;">Toàn Quốc</div>
+                            <div class="prd-shipping-tabs-box">
+                                <div class="shipping-tabs-header">
+                                    <div class="shipping-tab active" id="tab-hn">Hà Nội</div>
+                                    <div class="shipping-tab" id="tab-tq">Toàn Quốc</div>
                                 </div>
-                                <div class="shipping-tabs-content" style="padding: 15px; font-size: 13px; line-height: 1.6; color: #444;">
+                                <div class="shipping-tabs-content">
                                     <!-- Hanoi content -->
                                     <div id="content-hn">
                                         <p style="margin-top: 0; margin-bottom: 10px; font-weight: 500; color: #27ae60;">
@@ -305,22 +438,21 @@
                                     var contentHn = document.getElementById("content-hn");
                                     var contentTq = document.getElementById("content-tq");
                                     
+                                    // Toggle a class rather than writing inline colours, so the tab
+                                    // appearance stays defined in one place (the stylesheet).
                                     if (tabHn && tabTq) {
-                                        tabHn.addEventListener("click", function() {
-                                            tabHn.style.background = "#ffffff";
-                                            tabHn.style.color = "#333";
-                                            tabTq.style.background = "transparent";
-                                            tabTq.style.color = "#666";
-                                            contentHn.style.display = "block";
-                                            contentTq.style.display = "none";
+                                        function selectTab(activeTab, inactiveTab, showContent, hideContent) {
+                                            activeTab.classList.add("active");
+                                            inactiveTab.classList.remove("active");
+                                            showContent.style.display = "block";
+                                            hideContent.style.display = "none";
+                                        }
+
+                                        tabHn.addEventListener("click", function () {
+                                            selectTab(tabHn, tabTq, contentHn, contentTq);
                                         });
-                                        tabTq.addEventListener("click", function() {
-                                            tabTq.style.background = "#ffffff";
-                                            tabTq.style.color = "#333";
-                                            tabHn.style.background = "transparent";
-                                            tabHn.style.color = "#666";
-                                            contentTq.style.display = "block";
-                                            contentHn.style.display = "none";
+                                        tabTq.addEventListener("click", function () {
+                                            selectTab(tabTq, tabHn, contentTq, contentHn);
                                         });
                                     }
                                 });
@@ -369,7 +501,7 @@
                             <span style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: #d61c00;"></span>
                         </h2>
                     </div>
-                    <div class="detail-tab-body prd-shipping-policy" style="padding: 20px 0; font-size: 14px; line-height: 1.7; color: #444;">
+                    <div class="detail-tab-body prd-shipping-policy prd-rich-content" style="padding: 20px 0; font-size: 14px; line-height: 1.7; color: #444;">
                         {!! $product->content !!}
                     </div>
                 </div>
@@ -384,7 +516,11 @@
                             </h2>
                         </div>
 
-                        <div class="products-grid-wrapper" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                        {{-- No inline grid-template-columns here: an inline style beats the
+                             stylesheet's media queries, so the related products stayed at four
+                             columns on a phone and each card collapsed to ~75px. The
+                             .products-grid-wrapper class already handles 4 / 2 / 1 columns. --}}
+                        <div class="products-grid-wrapper">
                             @foreach ($productRelated as $valPost)
                                 @php
                                     $rTitle = $valPost->name ?? '';
@@ -401,14 +537,14 @@
                                             <h4 class="product-title">{{ $rTitle }}</h4>
                                             
                                             <div class="product-price-row">
-                                                <span class="product-sale-price">{{ convert_price($rPriceInfo['priceSale'], true) }}₫</span>
+                                                <span class="product-sale-price">{{ convert_price($rPriceInfo['priceSale'], true) }}đ</span>
                                                 @if($rPriceInfo['percent'] > 0)
                                                     <span class="product-discount-badge">Giảm {{ $rPriceInfo['percent'] }}%</span>
                                                 @endif
                                             </div>
                                             @if($rPriceInfo['percent'] > 0)
                                                 <div class="product-old-price-row">
-                                                    <span class="product-old-price">{{ convert_price($rPriceInfo['price'], true) }}₫</span>
+                                                    <span class="product-old-price">{{ convert_price($rPriceInfo['price'], true) }}đ</span>
                                                 </div>
                                             @endif
                                         </div>
@@ -581,15 +717,9 @@
     text-decoration: line-through;
 }
 
-/* Shipping tabs styles */
-.shipping-tab:hover {
-    color: #d61c00 !important;
-}
-.shipping-tab.active {
-    background: #ffffff !important;
-    color: #333 !important;
-    border-top: 2px solid #d61c00;
-}
+/* Shipping tab appearance lives further down in this stylesheet, in the block
+   that matches the reference design. The rules that used to be here forced a
+   white pill with !important, which no later rule could override. */
 
 /* Swiper slider fit */
 .big-swiper {
@@ -603,6 +733,276 @@
     height: auto;
     object-fit: contain;
 }
+
+/* ------------------------------------------------------------------
+   Price / flash sale / buy actions - styled to match the reference
+   product page. Colours are read off the reference screenshot, so the
+   exact hexes are close approximations rather than brand tokens.
+   ------------------------------------------------------------------ */
+
+/* --- Brand mark above the gallery ------------------------------- */
+.prd-brand-mark {
+    margin-bottom: 12px;
+    padding-left: 2px;
+}
+.prd-brand-mark img {
+    max-height: 20px;
+    max-width: 110px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    opacity: .85;
+}
+
+/* --- Flash sale ------------------------------------------------- */
+.flash-sale-container {
+    margin-bottom: 22px;
+}
+.flash-sale-title {
+    margin: 0;
+    color: #e02b1d;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.flash-sale-campaign {
+    margin: 2px 0 8px;
+    color: #9a9a9a;
+    font-size: 12px;
+    text-align: center;
+}
+.flash-sale-campaign:empty {
+    display: none;
+}
+.countdown-shell {
+    border: 1px solid #e6e6e6;
+    border-radius: 6px;
+    background: #fff;
+    padding: 14px 8px;
+}
+.countdown-timer-wrapper {
+    display: flex;
+    justify-content: center;
+}
+.timer-unit-box {
+    flex: 1 1 0;
+    text-align: center;
+}
+.timer-num {
+    display: block;
+    color: #e02b1d;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.15;
+}
+.timer-label {
+    display: block;
+    margin-top: 3px;
+    color: #444;
+    font-size: 13px;
+}
+
+/* --- Buy actions ------------------------------------------------ */
+.buy-action-box {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+.add-to-cart-badge-btn {
+    display: flex;
+    flex: 0 0 74px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 4px;
+    border: 1px solid #e02b1d;
+    border-radius: 6px;
+    background: #fff;
+    color: #e02b1d !important;
+    text-decoration: none !important;
+    transition: background .2s, box-shadow .2s;
+}
+.add-to-cart-badge-btn:hover {
+    background: #fff6f5;
+    box-shadow: 0 2px 8px rgba(224, 43, 29, .15);
+}
+/* The plus sits on the cart glyph, so the two read as one mark. */
+.cart-icon-stack {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+}
+.cart-icon-stack .fa-shopping-cart {
+    font-size: 22px;
+}
+.cart-icon-plus {
+    position: absolute;
+    top: -3px;
+    right: -7px;
+    font-size: 9px;
+}
+.cart-btn-caption {
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1.1;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.buy-now-orange-btn {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    /* The reference button is a horizontal orange gradient, deeper on the left. */
+    background: linear-gradient(90deg, #f4761b 0%, #fb8c3c 55%, #ff9c52 100%);
+    color: #fff !important;
+    text-align: center;
+    text-decoration: none !important;
+    transition: filter .2s;
+}
+.buy-now-orange-btn:hover {
+    filter: brightness(1.05);
+}
+.buy-now-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+.buy-now-sub {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+/* --- Shipping tabs ---------------------------------------------- */
+.prd-shipping-tabs-box {
+    margin-bottom: 24px;
+}
+.shipping-tabs-header {
+    display: flex;
+    gap: 2px;
+}
+.shipping-tab {
+    padding: 8px 22px;
+    border-radius: 4px 4px 0 0;
+    background: transparent;
+    color: #666;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+.shipping-tab:hover {
+    color: #0d6e5a;
+}
+.shipping-tab.active {
+    background: #0d6e5a;
+    color: #fff;
+}
+.shipping-tabs-content {
+    padding: 14px 16px;
+    background: #fafafa;
+    border-radius: 0 4px 4px 4px;
+    color: #444;
+    font-size: 13.5px;
+    line-height: 1.7;
+}
+
+/* ------------------------------------------------------------------
+   Product description typography.
+
+   The content is HTML written in the admin editor, and the theme's reset
+   strips list markers and table borders, so an editor's bullet list and
+   spec table rendered as flat unstyled text. These rules only apply
+   inside the description block, so they cannot leak into the layout.
+   ------------------------------------------------------------------ */
+.prd-rich-content h2,
+.prd-rich-content h3,
+.prd-rich-content h4 {
+    color: #1a1a1a;
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 26px 0 10px;
+}
+.prd-rich-content > *:first-child { margin-top: 0; }
+.prd-rich-content h2 { font-size: 21px; }
+.prd-rich-content h3 { font-size: 17px; }
+.prd-rich-content h4 { font-size: 15px; }
+
+.prd-rich-content p { margin: 0 0 12px; }
+.prd-rich-content a { color: #d61c00; text-decoration: underline; }
+.prd-rich-content strong { color: #222; }
+
+.prd-rich-content ul,
+.prd-rich-content ol {
+    margin: 0 0 14px;
+    padding-left: 22px;
+}
+/* The theme resets markers with `ul li { list-style: none }`. Setting
+   list-style on the ul alone is not enough: list-style-type inherits, and an
+   inherited value always loses to a rule that matches the li directly. So the
+   marker has to be declared on the li itself. */
+.prd-rich-content ul > li { list-style: disc outside; }
+.prd-rich-content ol > li { list-style: decimal outside; }
+.prd-rich-content li {
+    display: list-item;
+    margin-bottom: 6px;
+    padding-left: 2px;
+}
+.prd-rich-content li::marker { color: #d61c00; }
+
+.prd-rich-content table {
+    width: 100%;
+    margin: 0 0 16px;
+    border-collapse: collapse;
+    font-size: 13.5px;
+}
+.prd-rich-content th,
+.prd-rich-content td {
+    border: 1px solid #e4e4e4;
+    padding: 9px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+.prd-rich-content th {
+    background: #f7f7f7;
+    font-weight: 700;
+    color: #222;
+}
+.prd-rich-content tbody tr:nth-child(even) td { background: #fbfbfb; }
+
+.prd-rich-content blockquote {
+    margin: 0 0 16px;
+    padding: 12px 16px;
+    border-left: 3px solid #d61c00;
+    background: #fff8f7;
+    color: #555;
+}
+.prd-rich-content blockquote p:last-child { margin-bottom: 0; }
+
+.prd-rich-content code {
+    background: #f3f4f6;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 12.5px;
+    color: #b3261e;
+}
+.prd-rich-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Wide spec tables must scroll inside the block, never widen the page. */
+.prd-rich-content { overflow-x: auto; }
 </style>
 
 @endsection

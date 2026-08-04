@@ -96,9 +96,16 @@
 @endsection
 @section('script')
 <script>
-    document.querySelector('.logout-btn').addEventListener('click', function() {
-        if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
-            window.location.href = "{{ route('customer.logout') }}";
-        }
-    }); 
+    // The logout button is optional on this page, so do not assume it exists.
+    var logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+            if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
+                window.location.href = "{{ route('customer.logout') }}";
+            }
+        });
+    }
 </script>
+{{-- This @section was never closed, so Blade's ob_start() for it stayed open for
+     the rest of the request. --}}
+@endsection

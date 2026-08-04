@@ -23,12 +23,13 @@ class RouterController extends FrontendController
     public function index(string $canonical = '', Request $request)
     {
         $this->getRouter($canonical);
-        if (!is_null($this->router) && !empty($this->router)) {
-            $method = 'index';
-            echo app($this->router->controllers)->{$method}($this->router->module_id, $request);
-        } else {
+        if (is_null($this->router) || empty($this->router)) {
             abort(404);
         }
+
+        // Return the result instead of echoing it, so the markup lands in the
+        // response body rather than straight on PHP's output stream.
+        return app($this->router->controllers)->index($this->router->module_id, $request);
     }
 
     public function page(string $canonical = '', $page = 1, Request $request)
@@ -36,12 +37,11 @@ class RouterController extends FrontendController
         $this->getRouter($canonical);
         $request->merge(['page' => $page]);
         $page = (!isset($page)) ? 1 : $page;
-        if (!is_null($this->router) && !empty($this->router)) {
-            $method = 'index';
-            echo app($this->router->controllers)->{$method}($this->router->module_id, $request, $page);
-        } else {
+        if (is_null($this->router) || empty($this->router)) {
             abort(404);
         }
+
+        return app($this->router->controllers)->index($this->router->module_id, $request, $page);
     }
 
     public function getRouter($canonical)

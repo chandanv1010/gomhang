@@ -48,7 +48,13 @@ class HomeController extends FrontendController
                 'keyword' => 'solution-product',
                 'children' => true
             ],
-            ['keyword' => 'si-le-cong-nghe'],
+            [
+                'keyword' => 'si-le-cong-nghe',
+                // This is the widget that renders product cards with prices, so it
+                // needs promotion pricing attached. Without it the homepage showed
+                // full price while the catalogue showed the discount.
+                'promotion' => true
+            ],
             ['keyword' => 'featured-project'],
             ['keyword' => 'homepage-news'],
             ['keyword' => 'homepage-video'],

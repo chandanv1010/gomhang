@@ -26,7 +26,18 @@ class WidgetService extends BaseService
     protected $productCatalogueRepository;
     protected $productService;
 
+    /**
+     * Per-process memo of assembled widgets, keyed by the request params and
+     * language. Harmless under php-fpm where the process ends with the request,
+     * but it outlives a single test - and would outlive a request under a
+     * long-running server - so it has to be resettable.
+     */
     protected static $widgetCache = [];
+
+    public static function flushCache(): void
+    {
+        static::$widgetCache = [];
+    }
 
     public function __construct(
         WidgetRepository $widgetRepository,
@@ -343,15 +354,16 @@ class WidgetService extends BaseService
                 continue;
             }
 
-            foreach ($objectsForWidget as $object) {
-                // Handle promotions if needed
-                $params = $paramsMap->get($widget->keyword, []);
-                if (isset($params['promotion']) && $params['promotion']) {
-                    $promotedObjects = $this->applyPromotions(collect([$object]), $model);
-                    $object = $promotedObjects->first();
-                }
+            // Promotions are applied to the whole set at once. This used to call
+            // applyPromotions(collect([$object])) inside the loop, which meant one
+            // promotion query per product - 65 queries on the homepage instead of 1.
+            $params = $paramsMap->get($widget->keyword, []);
+            if (isset($params['promotion']) && $params['promotion']) {
+                $objectsForWidget = $this->applyPromotions($objectsForWidget->values(), $model);
+            }
 
-                $widget->object = $widget->object ?? collect();
+            $widget->object = $widget->object ?? collect();
+            foreach ($objectsForWidget as $object) {
                 $widget->object->push($object);
             }
 
@@ -779,20 +791,53 @@ class WidgetService extends BaseService
         return $recursiveCache[$cacheKey] = array_unique($ids);
     }
 
+    /** parent_id => [child ids], loaded once per table. */
+    protected static $childrenMapCache = [];
+
+    public static function flushChildrenMap(): void
+    {
+        static::$childrenMapCache = [];
+    }
+
     /**
-     * Recursive helper to collect all children IDs
+     * The whole parent -> children map in one query.
+     *
+     * This used to run `SELECT id ... WHERE parent_id = ?` once per node while
+     * recursing, which was 60 queries on the homepage for a table of 60 rows.
+     */
+    private function childrenMap(string $tableName): array
+    {
+        if (isset(static::$childrenMapCache[$tableName])) {
+            return static::$childrenMapCache[$tableName];
+        }
+
+        $rows = DB::select("SELECT id, parent_id FROM {$tableName} WHERE deleted_at IS NULL");
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int) $row->parent_id][] = (int) $row->id;
+        }
+
+        return static::$childrenMapCache[$tableName] = $map;
+    }
+
+    /**
+     * Collect all descendant ids, walking the in-memory map instead of querying
+     * per level. $ids doubles as the visited set, so a cycle cannot loop forever.
      */
     private function collectChildrenIds(string $tableName, int $parentId, array &$ids): void
     {
-        $children = DB::select("
-            SELECT id FROM {$tableName} 
-            WHERE parent_id = ? AND deleted_at IS NULL
-        ", [$parentId]);
+        $map = $this->childrenMap($tableName);
 
-        foreach ($children as $child) {
-            if (!in_array($child->id, $ids)) {
-                $ids[] = $child->id;
-                $this->collectChildrenIds($tableName, $child->id, $ids);
+        $queue = $map[$parentId] ?? [];
+        while (!empty($queue)) {
+            $id = array_pop($queue);
+            if (in_array($id, $ids, true)) {
+                continue;
+            }
+            $ids[] = $id;
+            foreach ($map[$id] ?? [] as $childId) {
+                $queue[] = $childId;
             }
         }
     }
@@ -805,17 +850,12 @@ class WidgetService extends BaseService
         if (!in_array($model, ['Product', 'ProductCatalogue']) && !$objects->isNotEmpty()) {
             return $objects;
         }
-        $productIds = $objects->pluck('id')->toArray();
-        if(!empty($productIds) && is_array($productIds)){
-            $promotions = $this->promotionRepository->findByProduct($productIds);
-            if($promotions->isNotEmpty()){
-                $promotionMap = $promotions->keyBy('product_id');
-                foreach($objects as $index => $product){
-                    if($promotionMap->has($product->id)){
-                        $objects[$index]->promotions = $promotionMap->get($product->id);
-                    }
-                }
-            }
+        $productIds = $objects->pluck('id')->filter()->values()->toArray();
+        if(!empty($productIds)){
+            // Same pricing rules as catalogue and detail pages, so the homepage
+            // cannot disagree with them.
+            app(\App\Services\V1\Product\PromotionPricingService::class)
+                ->attachToMany($objects, $productIds);
         }
         return $objects;
     }

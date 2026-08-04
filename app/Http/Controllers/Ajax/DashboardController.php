@@ -222,15 +222,9 @@ class DashboardController extends Controller
         if(!count($productIds) &&!is_array($productIds)){
             return response()->json(['html' => $html]);
         }
-        $promotions = $this->promotionRepository->findByProduct($productIds);
-        if($promotions->isNotEmpty()){
-                $promotionMap = $promotions->keyBy('product_id');
-                foreach($products as $index => $product){
-                    if($promotionMap->has($product->id)){
-                        $products[$index]->promotions = $promotionMap->get($product->id);
-                    }
-                }
-            }
+        app(\App\Services\V1\Product\PromotionPricingService::class)
+            ->attachToMany($products, $productIds);
+
         $html = view('frontend.component.product-item-switch', ['products' => $products])->render();
         return response()->json(['html' => $html]);
     }

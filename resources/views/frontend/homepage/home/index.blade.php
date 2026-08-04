@@ -85,9 +85,12 @@
                                     $prodCanonical = $product->languages->canonical ?? '';
                                 }
                             }
-                            $originalPrice = $product->price;
-                            $percent = $product->percent ?? 0;
-                            $salePrice = ($percent > 0) ? ($originalPrice * (100 - $percent) / 100) : $originalPrice;
+                            // Same helper as the catalogue and detail pages so all
+                            // three agree on the promotion price.
+                            $priceInfo = getProductPriceInfo($product);
+                            $originalPrice = $priceInfo['price'];
+                            $salePrice = $priceInfo['priceSale'];
+                            $percent = $priceInfo['percent'];
                         @endphp
                         <div class="product-grid-item" data-id="{{ $product->id }}">
                             <a href="{{ write_url($prodCanonical) }}" class="product-link">
@@ -98,14 +101,14 @@
                                     <h4 class="product-title">{{ $prodName }}</h4>
                                     
                                     <div class="product-price-row">
-                                        <span class="product-sale-price">{{ convert_price($salePrice, true) }}₫</span>
+                                        <span class="product-sale-price">{{ convert_price($salePrice, true) }}đ</span>
                                         @if($percent > 0)
                                             <span class="product-discount-badge">Giảm {{ $percent }}%</span>
                                         @endif
                                     </div>
                                     @if($percent > 0)
                                         <div class="product-old-price-row">
-                                            <span class="product-old-price">{{ convert_price($originalPrice, true) }}₫</span>
+                                            <span class="product-old-price">{{ convert_price($originalPrice, true) }}đ</span>
                                         </div>
                                     @endif
                                 </div>
@@ -168,7 +171,7 @@
             <div class="sidebar-box intro-box-container">
                 <div class="intro-box-header">
                     <img src="/userfiles/image/slide/logo.png" alt="" class="intro-header-icon" onerror="this.style.display='none'">
-                    <h4>Giới thiệu Gom</h4>
+                    <h4>Giới thiệu {{ system_brand($system ?? null) }}</h4>
                 </div>
                 <div class="intro-box-body">
                     <!-- Social icons row -->
@@ -179,13 +182,13 @@
                         </a>
                         <a href="{{ $system['homepage_intro_tiktok'] ?? '#' }}" target="_blank" class="social-btn tiktok-btn">
                             <img src="/userfiles/image/slide/logo.png" alt="TikTok" style="width: 14px; height: 14px; margin-right: 4px; display: inline-block; vertical-align: middle; filter: brightness(0) invert(1);" onerror="this.style.display='none'">
-                            <span>Gomhang.vn</span>
+                            <span>{{ system_website_label($system ?? null) }}</span>
                         </a>
                     </div>
                     <!-- Intro Storefront image -->
                     @if(!empty($system['homepage_intro_image']))
                         <div class="intro-banner-img-box">
-                            <img src="{{ $system['homepage_intro_image'] }}" alt="Giới thiệu Gom">
+                            <img src="{{ $system['homepage_intro_image'] }}" alt="Giới thiệu {{ system_brand($system ?? null) }}">
                         </div>
                     @endif
                 </div>
@@ -317,18 +320,29 @@
 }
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 0;
     margin-bottom: 0;
 }
 @media (max-width: 767px) {
     .grid-container {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 @media (max-width: 479px) {
     .grid-container {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+@media (max-width: 767px) {
+    /* Square via aspect-ratio so the circle stays round while it shrinks. */
+    .grid-item-circle {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
+    .grid-item-link {
+        padding: 16px 6px;
     }
 }
 .grid-item-link {
@@ -346,8 +360,12 @@
 .grid-item-link:hover {
     background-color: #fafafa;
 }
+/* Fixed at 110px this circle was wider than a grid column on a phone (3 columns
+   of ~100px usable), and .panel-accessories-grid has overflow:hidden, so the
+   right-hand column was silently clipped. Let it shrink to the column. */
 .grid-item-circle {
     width: 110px;
+    max-width: 100%;
     height: 110px;
     border-radius: 50%;
     background-color: #f8f8f8;
@@ -363,9 +381,12 @@
     border-color: #d61c00;
     box-shadow: 0 3px 8px rgba(214, 28, 0, 0.12);
 }
+/* Fill the circle instead of a hard 110px. A fixed width here set the grid
+   item's min-content width, and `1fr` means `minmax(auto, 1fr)`, so the columns
+   could not shrink below it - which is what pushed the grid past the viewport. */
 .grid-item-circle img {
-    width: 110px;
-    height: 110px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
 }
 .grid-item-label {

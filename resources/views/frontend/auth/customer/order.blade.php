@@ -95,21 +95,21 @@
                                                     <td class="uk-text-right">
                                                         @if ($promotionDiscount > 0)
                                                             <span
-                                                                class="uk-text-danger">-{{ convert_price($promotionDiscount, true) }}₫</span>
+                                                                class="uk-text-danger">-{{ convert_price($promotionDiscount, true) }}đ</span>
                                                         @else
                                                             <span class="uk-text-muted">-</span>
                                                         @endif
                                                     </td>
                                                     <td class="uk-text-right">
                                                         @if ($shipping > 0)
-                                                            <span>{{ convert_price($shipping, true) }}₫</span>
+                                                            <span>{{ convert_price($shipping, true) }}đ</span>
                                                         @else
                                                             <span class="uk-text-muted">-</span>
                                                         @endif
                                                     </td>
                                                     <td class="uk-text-right">
                                                         <strong class="uk-text-primary"
-                                                            style="font-size: 16px; font-weight: bold;">{{ convert_price($finalTotal, true) }}₫</strong>
+                                                            style="font-size: 16px; font-weight: bold;">{{ convert_price($finalTotal, true) }}đ</strong>
                                                     </td>
                                                     <td>
                                                         @php

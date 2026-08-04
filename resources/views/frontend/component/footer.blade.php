@@ -2,30 +2,58 @@
     <div class="uk-container uk-container-center">
         <!-- Top Columns -->
         <div class="footer-top-row">
+            {{-- Showrooms come from systems (contact_showroom_1..3 and
+                 contact_showroom_hcm_1..3). Hanoi previously rendered only the first
+                 of its three configured addresses, and the HCM block was hardcoded
+                 in this template with no key to edit. --}}
             <!-- Left: Showroom Hà Nội -->
-            <div class="footer-col showroom-col">
-                <h3>Showroom Hà Nội</h3>
-                <p class="showroom-hours">Mở cửa: {{ $system['contact_showroom_hours'] ?? '8h-22h' }}</p>
-                <ul class="showroom-list">
-                    <li><i class="fa fa-map-marker"></i> {{ $system['contact_showroom_1'] ?? 'Số 83 Hàng Bông, Hoàn Kiếm: 0929.466.868' }}</li>
-                </ul>
-            </div>
+            @php
+                $showroomsHn = array_values(array_filter([
+                    $system['contact_showroom_1'] ?? null,
+                    $system['contact_showroom_2'] ?? null,
+                    $system['contact_showroom_3'] ?? null,
+                ], fn ($line) => trim((string) $line) !== ''));
+            @endphp
+            @if(count($showroomsHn))
+                <div class="footer-col showroom-col">
+                    <h3>Showroom Hà Nội</h3>
+                    @if(!empty($system['contact_showroom_hours']))
+                        <p class="showroom-hours">Mở cửa: {{ $system['contact_showroom_hours'] }}</p>
+                    @endif
+                    <ul class="showroom-list">
+                        @foreach($showroomsHn as $line)
+                            <li><i class="fa fa-map-marker"></i> {{ $line }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <!-- Middle-Left: Showroom TP. Hồ Chí Minh -->
-            <div class="footer-col showroom-col">
-                <h3>Showroom TP. Hồ Chí Minh</h3>
-                <p class="showroom-hours">Mở cửa: 8h-22h</p>
-                <ul class="showroom-list">
-                    <li><i class="fa fa-map-marker"></i> 270 Hoàng Văn Thụ, Tân Bình: 0914.83.89.89</li>
-                    <li><i class="fa fa-map-marker"></i> 1040 Cách Mạng Tháng 8, Tân Bình: 0919.89.19.00</li>
-                    <li><i class="fa fa-map-marker"></i> Số 380 Đường 3/2, Quận 10: 0912.83.89.89</li>
-                </ul>
-            </div>
+            @php
+                $showroomsHcm = array_values(array_filter([
+                    $system['contact_showroom_hcm_1'] ?? null,
+                    $system['contact_showroom_hcm_2'] ?? null,
+                    $system['contact_showroom_hcm_3'] ?? null,
+                ], fn ($line) => trim((string) $line) !== ''));
+            @endphp
+            @if(count($showroomsHcm))
+                <div class="footer-col showroom-col">
+                    <h3>Showroom TP. Hồ Chí Minh</h3>
+                    @if(!empty($system['contact_showroom_hcm_hours']))
+                        <p class="showroom-hours">Mở cửa: {{ $system['contact_showroom_hcm_hours'] }}</p>
+                    @endif
+                    <ul class="showroom-list">
+                        @foreach($showroomsHcm as $line)
+                            <li><i class="fa fa-map-marker"></i> {{ $line }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <!-- Middle-Right: Điện thoại, liên hệ -->
             <div class="footer-col contact-col">
                 <h3>Điện thoại, liên hệ</h3>
-                <p class="contact-hours">Hoạt động: 8h-22h</p>
+                <p class="contact-hours">Hoạt động: {{ $system['contact_showroom_hours'] ?? '8h-22h' }}</p>
                 <ul class="contact-phones-list">
                     <li><i class="fa fa-phone"></i> Gọi mua hàng: <a href="tel:{{ $system['contact_contact_buy'] ?? '0934439055' }}">{{ $system['contact_contact_buy'] ?? '093.443.9055' }}</a></li>
                     <li><i class="fa fa-phone"></i> Gọi tư vấn kỹ thuật: <a href="tel:{{ $system['contact_contact_support'] ?? '0934439055' }}">{{ $system['contact_contact_support'] ?? '093.443.9055' }}</a></li>

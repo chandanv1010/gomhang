@@ -59,6 +59,91 @@ if(!function_exists('image')){
     }
 }
 
+if(!function_exists('system_brand')){
+    /**
+     * Brand name from the systems table. Views used to hardcode "Gomhang.vn".
+     *
+     * @param  array|null  $system  The $system array shared with frontend views.
+     */
+    function system_brand($system = null, string $fallback = 'Gomhang.vn'){
+        $value = is_array($system) ? trim((string)($system['homepage_brand'] ?? '')) : '';
+
+        return ($value !== '') ? $value : $fallback;
+    }
+}
+
+if(!function_exists('system_website_url')){
+    /** Site URL from the systems table, e.g. https://gomhang.vn */
+    function system_website_url($system = null, string $fallback = ''){
+        $value = is_array($system) ? trim((string)($system['homepage_website'] ?? '')) : '';
+
+        return ($value !== '') ? $value : $fallback;
+    }
+}
+
+if(!function_exists('system_website_label')){
+    /**
+     * Host only, for places that show the domain as a label - printing the whole
+     * "https://..." inside a small button reads badly.
+     */
+    function system_website_label($system = null, string $fallback = 'Gomhang.vn'){
+        $url = system_website_url($system);
+        if($url === ''){
+            return $fallback;
+        }
+
+        $host = parse_url($url, PHP_URL_HOST) ?: $url;
+
+        return preg_replace('#^www\.#i', '', rtrim($host, '/'));
+    }
+}
+
+if(!function_exists('system_phone')){
+    /**
+     * Best available contact number: the sales hotline if set, otherwise the
+     * general phone. Digits only when $digitsOnly, for tel:/zalo.me links.
+     */
+    function system_phone($system = null, bool $digitsOnly = false){
+        $candidates = ['contact_hotline', 'contact_phone', 'contact_contact_buy', 'contact_contact_support'];
+        $value = '';
+        foreach($candidates as $key){
+            $candidate = is_array($system) ? trim((string)($system[$key] ?? '')) : '';
+            if($candidate !== ''){
+                $value = $candidate;
+                break;
+            }
+        }
+
+        return $digitsOnly ? preg_replace('/\D+/', '', $value) : $value;
+    }
+}
+
+if(!function_exists('brand_logo')){
+    /**
+     * Resolve the logo of a brand attribute, or null when there is nothing to
+     * show so the caller can fall back to a text badge.
+     *
+     * Order of preference:
+     *   1. the image uploaded through the admin (attributes.image)
+     *   2. the SVG bundled under public/frontend/images/brands/<canonical>.svg
+     */
+    function brand_logo($brand){
+        $uploaded = is_object($brand) ? ($brand->image ?? null) : ($brand['image'] ?? null);
+        if(!empty($uploaded)) {
+            return str_replace('/public/', '/', $uploaded);
+        }
+
+        $canonical = is_object($brand) ? ($brand->canonical ?? null) : ($brand['canonical'] ?? null);
+        if(empty($canonical)) {
+            return null;
+        }
+
+        $relative = 'frontend/images/brands/' . $canonical . '.svg';
+
+        return file_exists(public_path($relative)) ? $relative : null;
+    }
+}
+
 if(!function_exists('getGiaoHangNhanhToken')){
     function getGiaoHangNhanhToken(){
        return '21e62550-a35f-11ef-a89d-dab02cbaab48';
@@ -125,26 +210,104 @@ if(!function_exists('getPromotionPrice')){
 // }
 
 if(!function_exists('getPrice')){
+    /**
+     * Price of a product for the cart, the compare page and the product card
+     * components.
+     *
+     * This used to be a stub that returned zeros and the text "Liên Hệ". Because
+     * CartService reads it when adding to the cart, every item was added at 0đ -
+     * an order could be placed for nothing. It now shares one source of truth
+     * with the pages (getProductPriceInfo), so what a shopper sees is what the
+     * cart charges.
+     *
+     * Contract kept for existing callers: `priceSale` is 0 when there is no
+     * discount, and they fall back to `price`. Read `hasPromotion` instead of
+     * testing `priceSale > 0` if a 100%-off campaign has to be honoured.
+     *
+     * @return array{price: float, priceSale: float, percent: int, hasPromotion: bool, html: string}
+     */
     function getPrice($product = null){
-        $result = [
-            'price' => 0, 
-            'priceSale' => 0,
-            'percent' => 0, 
-            'html' => '<div class="price mt10"><div class="price-sale">Liên Hệ</div></div>'
+        if (is_null($product)) {
+            return [
+                'price' => 0.0,
+                'priceSale' => 0.0,
+                'percent' => 0,
+                'hasPromotion' => false,
+                'html' => '<div class="price mt10"><div class="price-sale">Liên Hệ</div></div>',
+            ];
+        }
+
+        $info = getProductPriceInfo($product);
+        $price = (float) $info['price'];
+        $hasPromotion = (bool) $info['hasPromotion'];
+        $priceSale = $hasPromotion ? (float) $info['priceSale'] : 0.0;
+        $percent = (int) $info['percent'];
+
+        if ($price <= 0) {
+            $html = '<div class="price mt10"><div class="price-sale">Liên Hệ</div></div>';
+        } elseif ($hasPromotion) {
+            $html = '<div class="price mt10">'
+                . '<span class="product-sale-price">' . convert_price($priceSale, true) . 'đ</span>'
+                . '<span class="product-discount-badge">Giảm ' . $percent . '%</span>'
+                . '<span class="product-old-price">' . convert_price($price, true) . 'đ</span>'
+                . '</div>';
+        } else {
+            $html = '<div class="price mt10">'
+                . '<span class="product-sale-price">' . convert_price($price, true) . 'đ</span>'
+                . '</div>';
+        }
+
+        return [
+            'price' => $price,
+            'priceSale' => $priceSale,
+            'percent' => $percent,
+            'hasPromotion' => $hasPromotion,
+            'html' => $html,
         ];
-        return $result;
     }
 }
 
 if(!function_exists('getVariantPrice')){
-    function getVariantPrice($variant, $variantPromotion){
-        $result = [
-            'price' => 0, 
-            'priceSale' => 0,
-            'percent' => 0, 
-            'html' => '<div class="price mt10"><div class="price-sale">Liên Hệ</div></div>'
+    /**
+     * Price of a specific product variant. Also previously a zero-returning stub,
+     * so variant products went into the cart free of charge too.
+     *
+     * @param  object|null  $variant           Row from product_variants (has its own price)
+     * @param  object|null  $variantPromotion  Row from PromotionRepository::findPromotionByVariantUuid()
+     * @return array{price: float, priceSale: float, percent: int, hasPromotion: bool, html: string}
+     */
+    function getVariantPrice($variant = null, $variantPromotion = null){
+        $price = (float) ($variant->price ?? 0);
+        $discount = (float) ($variantPromotion->discount ?? 0);
+
+        // A discount can never exceed the price.
+        $discount = max(0.0, min($discount, $price));
+        $hasPromotion = ($price > 0 && $discount > 0);
+
+        $priceSale = $hasPromotion ? max(0.0, $price - $discount) : 0.0;
+        $percent = $hasPromotion ? (int) round(($discount / $price) * 100) : 0;
+
+        if ($price <= 0) {
+            $html = '<div class="price mt10"><div class="price-sale">Liên Hệ</div></div>';
+        } elseif ($hasPromotion) {
+            $html = '<div class="price mt10">'
+                . '<span class="product-sale-price">' . convert_price($priceSale, true) . 'đ</span>'
+                . '<span class="product-discount-badge">Giảm ' . $percent . '%</span>'
+                . '<span class="product-old-price">' . convert_price($price, true) . 'đ</span>'
+                . '</div>';
+        } else {
+            $html = '<div class="price mt10">'
+                . '<span class="product-sale-price">' . convert_price($price, true) . 'đ</span>'
+                . '</div>';
+        }
+
+        return [
+            'price' => $price,
+            'priceSale' => $priceSale,
+            'percent' => $percent,
+            'hasPromotion' => $hasPromotion,
+            'html' => $html,
         ];
-        return $result;
     }
 }
 
@@ -837,42 +1000,57 @@ if (!function_exists('calculateCourses')) {
 }
 
 if (!function_exists('getProductPriceInfo')) {
+    /**
+     * Price a product for display. Discounts come from the promotions module and
+     * nowhere else - the old products.percent fallback is gone, so a discount on
+     * screen always corresponds to a real campaign a shopper can be held to.
+     *
+     * Expects PromotionPricingService to have attached `promotions` (the campaign
+     * in force now) and `promotionChain` (the segments after it).
+     *
+     * @return array{price: float, priceSale: float, percent: int, hasPromotion: bool,
+     *               endDate: ?string, promotionName: ?string, chain: array}
+     */
     function getProductPriceInfo($product) {
         $originalPrice = (float)($product->price ?? 0);
-        $percent = 0;
-        $salePrice = $originalPrice;
-        $hasPromotion = false;
-        $endDate = null;
+        $chain = $product->promotionChain ?? [];
 
-        if (isset($product->promotions) && !is_null($product->promotions)) {
-            $promo = $product->promotions;
-            if ($promo instanceof \Illuminate\Support\Collection || $promo instanceof \Illuminate\Database\Eloquent\Collection) {
-                $promo = $promo->first();
-            } elseif (is_array($promo)) {
-                $promo = reset($promo);
-            }
-            if ($promo && (is_object($promo) || is_array($promo))) {
-                $discount = (float)(is_object($promo) ? ($promo->discount ?? $promo->discountValue ?? 0) : ($promo['discount'] ?? $promo['discountValue'] ?? 0));
-                if ($discount > 0) {
-                    $salePrice = max(0, $originalPrice - $discount);
-                    $percent = ($originalPrice > 0) ? round(($discount / $originalPrice) * 100) : 0;
-                    $hasPromotion = true;
-                    $endDate = is_object($promo) ? ($promo->endDate ?? null) : ($promo['endDate'] ?? null);
-                }
-            }
+        $blank = [
+            'price' => $originalPrice,
+            'priceSale' => $originalPrice,
+            'percent' => 0,
+            'hasPromotion' => false,
+            'endDate' => null,
+            'promotionName' => null,
+            'chain' => is_array($chain) ? $chain : [],
+        ];
+
+        $promo = $product->promotions ?? null;
+        if ($promo instanceof \Illuminate\Support\Collection || $promo instanceof \Illuminate\Database\Eloquent\Collection) {
+            $promo = $promo->first();
+        } elseif (is_array($promo)) {
+            $promo = empty($promo) ? null : (object) $promo;
         }
 
-        if (!$hasPromotion && isset($product->percent) && $product->percent > 0) {
-            $percent = (int)$product->percent;
-            $salePrice = max(0, $originalPrice * (100 - $percent) / 100);
+        if (!is_object($promo)) {
+            return $blank;
         }
+
+        $discount = (float)($promo->discount ?? 0);
+        if ($discount <= 0 || $originalPrice <= 0) {
+            return $blank;
+        }
+
+        $discount = min($discount, $originalPrice);
 
         return [
             'price' => $originalPrice,
-            'priceSale' => $salePrice,
-            'percent' => $percent,
-            'hasPromotion' => $hasPromotion,
-            'endDate' => $endDate
+            'priceSale' => max(0.0, $originalPrice - $discount),
+            'percent' => (int) round(($discount / $originalPrice) * 100),
+            'hasPromotion' => true,
+            'endDate' => $promo->endsAt ?? null,
+            'promotionName' => $promo->name ?? null,
+            'chain' => $blank['chain'],
         ];
     }
 }

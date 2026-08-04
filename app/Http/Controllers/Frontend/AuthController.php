@@ -37,9 +37,14 @@ class AuthController extends FrontendController
             'meta_image' => '',
             'canonical' => route('customer.login')
         ];
+        // pull() reads and removes, so the reason CustomerAuth gave for sending the
+        // visitor here is shown once and not again on a later visit.
+        $authNotice = session()->pull(\App\Http\Middleware\CustomerAuth::NOTICE_KEY);
+
         return view('frontend.auth.index', compact(
             'seo',
             'system',
+            'authNotice',
         ));
     }
   
@@ -137,11 +142,18 @@ class AuthController extends FrontendController
         ]);
 
         $credentials = $request->only('email', 'password');
+        // The form has always posted a "Ghi nhớ đăng nhập" checkbox; it was being
+        // ignored, so the box did nothing.
+        $remember = $request->boolean('rememberMe');
 
-        if(Auth::guard('customer')->attempt($credentials)){
+        if(Auth::guard('customer')->attempt($credentials, $remember)){
             $user = Auth::guard('customer')->user();
+            // regenerate() migrates the session, so both the guest cart and the
+            // url.intended set by CustomerAuth survive the login.
             $request->session()->regenerate();
-            return redirect()->route('home.index')->with('success', 'Đăng nhập thành công');
+
+            return redirect()->intended(route('home.index'))
+                ->with('success', 'Đăng nhập thành công');
         }
          return back()
         ->withErrors(['login' => 'Email hoặc mật khẩu không chính xác'])

@@ -46,7 +46,7 @@
                                     <div class="order-item-voucher">Mã giảm giá: Không có</div>
                                 </td>
                                 <td>
-                                    <div class="order-item-price">{{ $price }} ₫</div>
+                                    <div class="order-item-price">{{ $price }} đ</div>
                                 </td>
                                 <td>
                                     <div class="order-item-times">x</div>
@@ -56,33 +56,33 @@
                                 </td>
                                 <td>
                                     <div class="order-item-subtotal">
-                                        {{ $subtotal }} ₫
+                                        {{ $subtotal }} đ
                                     </div>
                                 </td>
                             </tr>
                             @endforeach
                             <tr>
                                 <td colspan="5" class="text-right">Tổng tạm</td>
-                                <td class="text-right">{{ convert_price($order->cart['cartTotal'], true) }} ₫</td>
+                                <td class="text-right">{{ convert_price($order->cart['cartTotal'], true) }} đ</td>
                             </tr>
                             <tr>
                                 <td colspan="5" class="text-right">Giảm giá khuyến mại</td>
-                                <td class="text-right">- {{ convert_price($order->promotion['discount'], true) }} ₫</td>
+                                <td class="text-right">- {{ convert_price($order->promotion['discount'], true) }} đ</td>
                             </tr>
                             @php
                                 $voucher_discount = isset($order->cart['cartVoucher']) ? $order->cart['cartVoucher'] : 0;
                             @endphp
                             <tr>
                                 <td colspan="5" class="text-right">Giảm giá Voucher</td>
-                                <td class="text-right">- {{ convert_price($voucher_discount, true) }} ₫</td>
+                                <td class="text-right">- {{ convert_price($voucher_discount, true) }} đ</td>
                             </tr>
                             <tr>
                                 <td colspan="5" class="text-right">Vận chuyển</td>
-                                <td class="text-right">{{ convert_price($order->shipping, true) }} ₫</td>
+                                <td class="text-right">{{ convert_price($order->shipping, true) }} đ</td>
                             </tr>
                             <tr>
                                 <td colspan="5" class="text-right" ><strong>Tổng cuối</strong></td>
-                                <td class="text-right" style="font-size:18px;"><strong style="color:blue;">{{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'] - $voucher_discount + $order->shipping, true) }} ₫</strong></td>
+                                <td class="text-right" style="font-size:18px;"><strong style="color:blue;">{{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'] - $voucher_discount + $order->shipping, true) }} đ</strong></td>
                             </tr>
                         </tbody>
                         
@@ -95,7 +95,7 @@
                             <div class="payment-title">
                                 <div class="text_1">
                                     <span class="isConfirm">{{ __('order.confirm')[$order->confirm] }}</span>
-                                    {{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) }}₫
+                                    {{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) }}đ
                                 </div>
                                 <div class="text_2">{{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? '-' }}</div>
                             </div>

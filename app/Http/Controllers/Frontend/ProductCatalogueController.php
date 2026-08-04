@@ -11,6 +11,7 @@ use App\Services\V1\Product\ProductCatalogueService;
 use App\Services\V1\Product\ProductService;
 use App\Services\V1\Core\WidgetService;
 use App\Repositories\Product\ProductRepository;
+use App\Repositories\Post\PostRepository;
 use App\Services\V1\Product\CompareService;
 
 
@@ -31,6 +32,7 @@ class ProductCatalogueController extends FrontendController
     protected $productRepository;
     protected $lecturerRepository;
     protected $compareService;
+    protected $postRepository;
 
     public function __construct(
         ProductCatalogueRepository $productCatalogueRepository,
@@ -39,6 +41,7 @@ class ProductCatalogueController extends FrontendController
         ProductRepository $productRepository,
         WidgetService $widgetService,
         CompareService $compareService,
+        PostRepository $postRepository,
     ) {
         $this->productCatalogueRepository = $productCatalogueRepository;
         $this->productCatalogueService = $productCatalogueService;
@@ -46,6 +49,7 @@ class ProductCatalogueController extends FrontendController
         $this->widgetService = $widgetService;
         $this->productRepository = $productRepository;
         $this->compareService = $compareService;
+        $this->postRepository = $postRepository;
         parent::__construct();
     }
 
@@ -94,7 +98,7 @@ class ProductCatalogueController extends FrontendController
             ->join('attribute_catalogue_language as acl', 'ac.id', '=', 'acl.attribute_catalogue_id')
             ->where('acl.name', 'LIKE', '%Thương hiệu%')
             ->orWhere('acl.name', 'LIKE', '%Brand%')
-            ->orWhere('ac.id', 8)
+            ->orWhere('ac.id', (int) config('apps.general.brandAttributeCatalogueId'))
             ->select('ac.id')
             ->first();
 
@@ -104,7 +108,7 @@ class ProductCatalogueController extends FrontendController
                 ->join('attribute_language as al', 'a.id', '=', 'al.attribute_id')
                 ->where('al.language_id', $this->language)
                 ->where('a.attribute_catalogue_id', $brandCatId)
-                ->select('a.id', 'al.name', 'al.canonical')
+                ->select('a.id', 'a.image', 'al.name', 'al.canonical')
                 ->get();
 
             $descendantIds = $allCatalogues->filter(function($item) use ($productCatalogue) {
@@ -126,6 +130,8 @@ class ProductCatalogueController extends FrontendController
                         'id' => $bAttr->id,
                         'name' => $bAttr->name,
                         'canonical' => $bAttr->canonical,
+                        'image' => $bAttr->image,
+                        'logo' => brand_logo($bAttr),
                         'count' => $prodCount
                     ]);
                 }
@@ -204,13 +210,27 @@ class ProductCatalogueController extends FrontendController
 
     public function search(Request $request)
     {
+        $keyword = trim((string) $request->input('keyword'));
 
-        $products = $this->productRepository->search($request->input('keyword'), $this->language);
+        // Search covers products and posts. Only the active tab is paginated; the
+        // other tab shows its total so a visitor can see there are results there.
+        $type = ($request->input('type') === 'post') ? 'post' : 'product';
 
-        $productId = $products->pluck('id')->toArray();
+        $products = null;
+        $posts = null;
 
-        if (count($productId) && !is_null($productId)) {
-            $products = $this->productService->combineProductAndPromotion($productId, $products);
+        if ($type === 'product') {
+            $products = $this->productRepository->search($keyword, $this->language);
+            $productId = $products->pluck('id')->toArray();
+            if (count($productId)) {
+                $products = $this->productService->combineProductAndPromotion($productId, $products);
+            }
+            $productTotal = $products->total();
+            $postTotal = $this->postRepository->search($keyword, $this->language, 1)->total();
+        } else {
+            $posts = $this->postRepository->search($keyword, $this->language);
+            $postTotal = $posts->total();
+            $productTotal = $this->productRepository->search($keyword, $this->language)->total();
         }
 
         $config = $this->config();
@@ -222,18 +242,22 @@ class ProductCatalogueController extends FrontendController
         ], $this->language);
 
         $seo = [
-            'meta_title' => 'Tìm kiếm cho từ khóa: ' . $request->input('keyword'),
+            'meta_title' => 'Tìm kiếm cho từ khóa: ' . $keyword,
             'meta_keyword' => '',
-            'meta_description' => '',
+            // A real description helps the SERP snippet even on a noindex page.
+            'meta_description' => 'Kết quả tìm kiếm cho "' . $keyword . '" tại '
+                . system_brand($system) . ': ' . $productTotal . ' sản phẩm, ' . $postTotal . ' bài viết.',
             'meta_image' => '',
-            'canonical' => write_url('tim-kiem')
+            'canonical' => write_url('tim-kiem'),
+            // Search result pages should not be indexed.
+            'follow' => 'noindex,follow',
         ];
 
-        if (Agent::isMobile()) {
-            $template = 'mobile.product.catalogue.search';
-        } else {
-            $template = 'frontend.product.catalogue.search';
-        }
+        // There is no resources/views/mobile directory, so the mobile branch that
+        // used to be here threw "View [mobile.product.catalogue.search] not found"
+        // for every phone. The frontend template is responsive; serve it to all
+        // devices.
+        $template = 'frontend.product.catalogue.search';
 
 
         return view($template, compact(
@@ -241,7 +265,12 @@ class ProductCatalogueController extends FrontendController
             'seo',
             'system',
             'products',
-            'widgets'
+            'posts',
+            'widgets',
+            'keyword',
+            'type',
+            'productTotal',
+            'postTotal'
         ));
     }
 

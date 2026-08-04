@@ -2067,8 +2067,10 @@ ol li {
 // ============================
 // VARIABLES
 // ============================
-$wine: #8B0023;
-$wine-dark: #6a001b;
+// Brand red, matching the product pages. These were a leftover wine-shop
+// maroon (#8B0023), which made the auth pages look like a different site.
+$brand: #e02b1d;
+$brand-dark: #b3210f;
 $text-gray: #666;
 $radius: 12px;
 
@@ -2089,26 +2091,58 @@ $radius: 12px;
 // LOGIN PAGE
 // ============================
 .login-wrapper {
-    min-height: 100vh;
+    // Was min-height: 100vh, which stacked a full viewport under the site header
+    // and left the card floating in a sea of empty space.
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
+    align-items: flex-start;
+    padding: 48px 20px 64px;
+    // Replaces a 1.6 MB background texture with a gradient.
+    background: linear-gradient(180deg, #fbfbfc 0%, #f4f5f7 100%);
+
+    @media (max-width: 767px) {
+        padding: 24px 14px 40px;
+    }
 }
 
 .login-card {
     width: 100%;
     max-width: 420px;
-    background: rgba(255, 255, 255, 0.97);
-    padding: 35px 40px;
+    background: #fff;
+    padding: 32px 36px 30px;
+    border: 1px solid #ececec;
     border-radius: $radius;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, .12);
+    box-shadow: 0 6px 24px rgba(17, 24, 39, .07);
     animation: fadeIn .4s ease;
+
+    @media (max-width: 575px) {
+        padding: 24px 20px 22px;
+    }
+
+    // The register form has six fields; two columns keep it from becoming a very
+    // long scroll on desktop.
+    &.login-card--register {
+        max-width: 640px;
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 18px;
+
+            @media (max-width: 575px) {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-grid--full {
+            grid-column: 1 / -1;
+        }
+    }
 
     .title {
         font-size: 26px;
         font-weight: 700;
-        color: $wine;
+        color: $brand;
         text-align: center;
         margin-bottom: 8px;
     }
@@ -2148,7 +2182,7 @@ $radius: 12px;
                 font-size: 14px;
 
                 &:focus {
-                    @include focus-ring($wine);
+                    @include focus-ring($brand);
                 }
             }
         }
@@ -2165,11 +2199,11 @@ $radius: 12px;
         }
 
         .forgot {
-            color: $wine;
+            color: $brand;
             font-weight: 600;
 
             &:hover {
-                color: $wine-dark;
+                color: $brand-dark;
             }
         }
     }
@@ -2177,7 +2211,7 @@ $radius: 12px;
     .login-btn {
         width: 100%;
         padding: 12px;
-        background: $wine;
+        background: $brand;
         color: #fff;
         border: none;
         font-size: 16px;
@@ -2188,7 +2222,7 @@ $radius: 12px;
         font-family: var(--second-font);
 
         &:hover {
-            background: $wine-dark;
+            background: $brand-dark;
         }
     }
 
@@ -2198,11 +2232,11 @@ $radius: 12px;
         font-size: 14px;
 
         a {
-            color: $wine;
+            color: $brand;
             font-weight: 600;
 
             &:hover {
-                color: $wine-dark;
+                color: $brand-dark;
             }
         }
     }
@@ -2224,12 +2258,25 @@ $radius: 12px;
 }
 
 
-.alert-error {
-    background: #ffe3e3;
-    padding: 10px;
+.alert-error,
+.alert-success {
+    padding: 11px 14px;
+    margin-bottom: 18px;
     border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.alert-error {
+    background: #fdecea;
     border-left: 4px solid #d10000;
-    font-size: 14px;
+    color: #a01309 !important;
+}
+
+.alert-success {
+    background: #e9f7ef;
+    border-left: 4px solid #1e8e4f;
+    color: #14683a;
 }
 
 .field-error {

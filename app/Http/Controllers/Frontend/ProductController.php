@@ -73,10 +73,11 @@ class ProductController extends FrontendController
         if ($promo instanceof \Illuminate\Support\Collection || $promo instanceof \Illuminate\Database\Eloquent\Collection) {
             $promo = $promo->first();
         }
-        if (!$promo || empty($promo->endDate)) {
+        // Open ended campaigns have no deadline, so there are no days left to show.
+        if (!$promo || empty($promo->endsAt)) {
             return;
         }
-        $end = Carbon::parse($promo->endDate);
+        $end = Carbon::parse($promo->endsAt);
         $now = Carbon::now();
         $dayLefts = $now->diffInDays($end, false);
         return $dayLefts;

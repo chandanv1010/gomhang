@@ -17,6 +17,12 @@
 		],
 		'suffix' => '.html',
 		'defaultPublish' => ['publish','=', 2],
+        /*
+         * Attribute catalogue that holds brands ("Thương hiệu"). Products store
+         * their brand under this key in the products.attribute JSON column, e.g.
+         * {"8": ["25"]}, and the brand filter and brand logos both key off it.
+         */
+        'brandAttributeCatalogueId' => 8,
         'retail_customer' => 1,
         'time_expried' => 180,
         'google_client_id' => '',

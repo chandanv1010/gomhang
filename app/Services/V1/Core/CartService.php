@@ -476,14 +476,16 @@ class CartService
                 $variantPrice = getVariantPrice($variant, $variantPromotion);
                 $data['id'] =  $product->id . '_' . $variant->uuid;
                 $data['name'] = $product->languages->first()->pivot->name . ' ' . $variant->languages()->first()->pivot->name;
-                $data['price'] = ($variantPrice['priceSale'] > 0) ? $variantPrice['priceSale'] : $variantPrice['price'];
+                $data['price'] = $variantPrice['hasPromotion'] ? $variantPrice['priceSale'] : $variantPrice['price'];
                 $data['options'] = [
                     'attribute' => $payload['attribute_id'],
                 ];
             } else {
                 $product = $this->productService->combineProductAndPromotion([$product->id], $product, true);
                 $price = getPrice($product);
-                $data['price'] = ($price['priceSale'] > 0) ? $price['priceSale'] : $price['price'];
+                // Read hasPromotion rather than testing priceSale > 0, so a
+                // campaign that discounts to exactly 0 is still honoured.
+                $data['price'] = $price['hasPromotion'] ? $price['priceSale'] : $price['price'];
                 if (isset($payload['type_promotion'])) {
                     $promotion_gifts = $this->promotionService->getProTakeGiftBuyProduct($product->id);
                     $flag = false;

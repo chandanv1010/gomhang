@@ -11,12 +11,81 @@ use Illuminate\Support\Facades\DB;
  */
 class PromotionRepository extends BaseRepository
 {
+    /** Value the admin form posts for "no end date". */
+    public const NEVER_ENDS = 'accept';
+
     protected $model;
 
     public function __construct(
         Promotion $model
     ){
         $this->model = $model;
+    }
+
+    /**
+     * Every campaign that has not finished yet for the given products - both the
+     * ones running right now and the ones scheduled to start later - with the
+     * discount each one yields for that product.
+     *
+     * Unlike findByProduct() this returns one row per (product, campaign) pair
+     * instead of aggregating with MAX(). Aggregating there mixed columns from
+     * different campaigns: the discount came from the best campaign while
+     * promotion_id/endDate came from an arbitrary one, so a countdown could show
+     * another campaign's deadline. Picking the best campaign and chaining the
+     * rest is done in PHP where the ordering rules are explicit.
+     *
+     * Times are compared as full timestamps. The old code used whereDate(),
+     * which only compares the date part and kept a campaign "running" for the
+     * rest of the day after it had already ended.
+     */
+    public function findActiveAndUpcomingByProducts(array $productId = [])
+    {
+        if (empty($productId)) {
+            return collect();
+        }
+
+        $discountExpression = "
+            CASE
+                WHEN promotions.discountType = 'cash' THEN promotions.discountValue
+                WHEN promotions.discountType = 'percent' THEN products.price * promotions.discountValue / 100
+                ELSE 0
+            END
+        ";
+
+        return $this->model->select(
+            'promotions.id as promotion_id',
+            'promotions.name as promotion_name',
+            'promotions.discountValue',
+            'promotions.discountType',
+            'promotions.maxDiscountValue',
+            'promotions.startDate',
+            'promotions.endDate',
+            'promotions.neverEndDate',
+            'products.id as product_id',
+            'products.price as product_price',
+        )
+        ->selectRaw(
+            "IF(promotions.maxDiscountValue != 0,
+                LEAST({$discountExpression}, promotions.maxDiscountValue),
+                {$discountExpression}
+            ) as discount"
+        )
+        ->join('promotion_product_variant as ppv', 'ppv.promotion_id', '=', 'promotions.id')
+        ->join('products', 'products.id', '=', 'ppv.product_id')
+        ->whereNull('promotions.deleted_at')
+        ->whereNull('products.deleted_at')
+        ->where('products.publish', 2)
+        ->where('promotions.publish', 2)
+        ->whereIn('ppv.product_id', $productId)
+        // Not finished yet: either open ended ('accept' is the sentinel the
+        // admin form posts), or the deadline is still ahead.
+        ->where(function ($query) {
+            $query->where('promotions.neverEndDate', self::NEVER_ENDS)
+                ->orWhere('promotions.endDate', '>', now());
+        })
+        ->orderByDesc('discount')
+        ->orderBy('promotions.endDate')
+        ->get();
     }
 
     public function findByProduct(array $productId = []){
@@ -91,11 +160,17 @@ class PromotionRepository extends BaseRepository
         )
         ->join('promotion_product_variant as ppv', 'ppv.promotion_id', '=', 'promotions.id')
         ->join('product_variants as pv', 'pv.uuid', '=', 'ppv.variant_uuid')
+        ->whereNull('promotions.deleted_at')
         ->where('promotions.publish', 2)
         ->where('ppv.variant_uuid', $uuid)
-        ->whereDate('promotions.endDate', '>', now())
-        ->whereDate('promotions.startDate', '<', now())
-        ->orderByDesc('discount') 
+        // Compare full timestamps: whereDate() only compares the date part, so a
+        // campaign that ended this morning stayed "live" for the rest of the day.
+        ->where('promotions.startDate', '<=', now())
+        ->where(function ($query) {
+            $query->where('promotions.neverEndDate', self::NEVER_ENDS)
+                ->orWhere('promotions.endDate', '>', now());
+        })
+        ->orderByDesc('discount')
         ->first();
     }
 

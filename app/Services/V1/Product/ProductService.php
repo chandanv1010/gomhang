@@ -104,18 +104,88 @@ class ProductService extends BaseService
             }
 
             if ($brandId) {
+                $brandPath = '$."' . (int) config('apps.general.brandAttributeCatalogueId') . '"';
+
                 // Both candidates must be bound as strings so PDO sends them as
                 // text: '"25"' parses as a JSON string (how the seeder writes
                 // brands), '25' parses as a JSON number. Binding an int makes
                 // MySQL reject the argument with SQLSTATE[22032] 3146.
                 $rawCondition['whereRaw'][] = [
-                    '(JSON_CONTAINS(products.attribute, ?, \'$."8"\') OR JSON_CONTAINS(products.attribute, ?, \'$."8"\'))',
+                    "(JSON_CONTAINS(products.attribute, ?, '{$brandPath}') OR JSON_CONTAINS(products.attribute, ?, '{$brandPath}'))",
                     ['"' . $brandId . '"', (string)$brandId]
                 ];
             }
         }
 
+        $priceCondition = $this->priceRangeCondition($request);
+        if (!is_null($priceCondition)) {
+            $rawCondition['whereRaw'][] = $priceCondition;
+        }
+
         return $rawCondition;
+    }
+
+    /** Highest price the slider allows, so a stray value cannot filter everything out. */
+    public const PRICE_FILTER_MAX = 100000000;
+
+    /**
+     * Price range filter for the catalogue listing (?price_min=&price_max=).
+     *
+     * Filters on the price a shopper actually pays - list price minus the best
+     * discount in force right now - so the slider agrees with the prices shown on
+     * the cards. The discount is worked out in a correlated subquery rather than a
+     * join, which keeps it independent of the query's GROUP BY.
+     *
+     * @return array{0: string, 1: array}|null
+     */
+    private function priceRangeCondition($request): ?array
+    {
+        $hasMin = $request->filled('price_min');
+        $hasMax = $request->filled('price_max');
+
+        if (!$hasMin && !$hasMax) {
+            return null;
+        }
+
+        // convert_price() strips the thousands separators the slider posts.
+        $min = (int) convert_price($request->input('price_min', 0));
+        $max = (int) convert_price($request->input('price_max', self::PRICE_FILTER_MAX));
+
+        $min = max(0, min($min, self::PRICE_FILTER_MAX));
+        $max = max(0, min($max, self::PRICE_FILTER_MAX));
+
+        if ($max <= 0) {
+            $max = self::PRICE_FILTER_MAX;
+        }
+        if ($min > $max) {
+            [$min, $max] = [$max, $min]; // Handles a dragged-past-each-other slider.
+        }
+
+        $never = PromotionRepository::NEVER_ENDS;
+
+        $effectivePrice = "
+            (products.price - COALESCE((
+                SELECT MAX(
+                    LEAST(
+                        CASE pr.discountType
+                            WHEN 'cash' THEN pr.discountValue
+                            WHEN 'percent' THEN products.price * pr.discountValue / 100
+                            ELSE 0
+                        END,
+                        IF(pr.maxDiscountValue != 0, pr.maxDiscountValue, products.price)
+                    )
+                )
+                FROM promotion_product_variant ppv2
+                JOIN promotions pr ON pr.id = ppv2.promotion_id
+                WHERE ppv2.product_id = products.id
+                  AND pr.publish = 2
+                  AND pr.deleted_at IS NULL
+                  AND pr.startDate <= NOW()
+                  AND (pr.neverEndDate = '{$never}' OR pr.endDate > NOW())
+            ), 0))
+        ";
+
+        return ["{$effectivePrice} BETWEEN ? AND ?", [$min, $max]];
     }
 
     public function paginate($request, $languageId, $productCatalogue = null, $page = 1, $extend = [])
@@ -464,28 +534,16 @@ class ProductService extends BaseService
         ];
     }
 
+    /**
+     * @param  bool  $flag  True when $products is a single product model.
+     */
     public function combineProductAndPromotion($productId, $products, $flag = false)
     {
+        $pricing = app(PromotionPricingService::class);
 
-        $promotions = $this->promotionRepository->findByProduct($productId);
-
-        if ($promotions) {
-
-            if ($flag == true) {
-                $products->promotions = ($promotions[0]) ?? [];
-                return $products;
-            }
-
-            foreach ($products as $index => $product) {
-                foreach ($promotions as $key => $promotion) {
-                    if ($promotion->product_id == $product->id) {
-                        $products[$index]->promotions = $promotion;
-                    }
-                }
-            }
-        }
-
-        return $products;
+        return ($flag == true)
+            ? $pricing->attachToOne($products)
+            : $pricing->attachToMany($products, is_array($productId) ? $productId : []);
     }
 
     public function combineProductRelation($products)

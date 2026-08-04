@@ -23,6 +23,41 @@ class PostRepository extends BaseRepository
 
     
 
+    /**
+     * Keyword search over published posts, matching the title first and falling
+     * back to the summary so a phrase from the body still finds the article.
+     *
+     * Only the columns the search listing renders are selected - no eager loads,
+     * so it costs one query plus one count.
+     */
+    public function search(?string $keyword, int $language_id, int $perPage = 12)
+    {
+        $keyword = trim((string) $keyword);
+
+        return $this->model->select([
+                'posts.id',
+                'posts.image',
+                'posts.post_catalogue_id',
+                'posts.created_at',
+                'tb2.name',
+                'tb2.description',
+                'tb2.canonical',
+            ])
+            ->join('post_language as tb2', 'tb2.post_id', '=', 'posts.id')
+            ->where('tb2.language_id', '=', $language_id)
+            ->where('posts.publish', '=', 2)
+            ->whereNull('posts.deleted_at')
+            ->when($keyword !== '', function ($query) use ($keyword) {
+                $query->where(function ($query) use ($keyword) {
+                    $query->where('tb2.name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('tb2.description', 'LIKE', '%' . $keyword . '%');
+                });
+            })
+            ->orderByDesc('posts.id')
+            ->paginate($perPage)
+            ->withQueryString();
+    }
+
     public function getPostById(int $id = 0, $language_id = 0){
         return $this->model->select([
                 'posts.id',

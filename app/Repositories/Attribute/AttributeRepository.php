@@ -58,7 +58,9 @@ class AttributeRepository extends BaseRepository
             'attributes.id',
             'attributes.attribute_catalogue_id',
             'attributes.image',
-            'tb2.name'
+            'tb2.name',
+            // Needed to resolve the bundled brand logo by slug (see brand_logo()).
+            'tb2.canonical'
         ])
         ->join('attribute_language as tb2','tb2.attribute_id', '=' , 'attributes.id')
         ->where('tb2.language_id','=' , $languageId)

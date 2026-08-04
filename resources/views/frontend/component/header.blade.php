@@ -37,8 +37,8 @@
                                 <li><a href="{{ write_url('phu-kien-samsung') }}">Phụ kiện Samsung</a></li>
                             </ul>
                         </li>
-                        <li><a href="/kien-thuc.html" class="menu-item">KIẾN THỨC</a></li>
-                        <li><a href="/lien-he.html" class="menu-item">LIÊN HỆ</a></li>
+                        <li><a href="{{ write_url('tin-tuc-gomhang-vn') }}" class="menu-item">KIẾN THỨC</a></li>
+                        <li><a href="{{ route('contact.index') }}" class="menu-item">LIÊN HỆ</a></li>
                     </ul>
                 </nav>
             </div>
@@ -47,9 +47,17 @@
             <div class="header-right">
                 <!-- Top Row: Icons -->
                 <div class="right-top-row">
-                    <a href="/customer/login" class="icon-link-item" title="Tài khoản">
-                        <i class="fa fa-user-o"></i>
-                    </a>
+                    {{-- Was a hardcoded /customer/login, which is a 404. Send signed-in
+                         customers to their account instead of back to the login form. --}}
+                    @if(auth()->guard('customer')->check())
+                        <a href="{{ route('customer.account') }}" class="icon-link-item" title="Tài khoản của tôi">
+                            <i class="fa fa-user-o"></i>
+                        </a>
+                    @else
+                        <a href="{{ route('customer.login') }}" class="icon-link-item" title="Đăng nhập">
+                            <i class="fa fa-user-o"></i>
+                        </a>
+                    @endif
                     <a href="{{ write_url('gio-hang') }}" class="icon-link-item cart-btn" title="Giỏ hàng">
                         <i class="fa fa-shopping-cart"></i>
                         <span class="cart-badge">{{ Cart::instance('shopping')->count() }}</span>
@@ -103,8 +111,8 @@
                         <li><a href="{{ write_url('phu-kien-samsung') }}">Phụ kiện Samsung</a></li>
                     </ul>
                 </li>
-                <li><a href="/kien-thuc.html">KIẾN THỨC</a></li>
-                <li><a href="/lien-he.html">LIÊN HỆ</a></li>
+                <li><a href="{{ write_url('tin-tuc-gomhang-vn') }}">KIẾN THỨC</a></li>
+                <li><a href="{{ route('contact.index') }}">LIÊN HỆ</a></li>
             </ul>
         </nav>
     </div>
@@ -273,23 +281,32 @@
 .right-top-row {
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 12px;
     margin-bottom: 18px;
 }
+/* The glyph is 24px, but the tappable box has to be bigger: measured at a phone
+   viewport these links were only ~21x24, well under the 44px touch target. The
+   box is invisible, so the header looks unchanged. */
 .icon-link-item {
     color: #333333 !important;
     font-size: 24px;
     text-decoration: none;
     position: relative;
     transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
 }
 .icon-link-item:hover {
     color: #d61c00 !important;
 }
 .cart-badge {
     position: absolute;
-    top: -6px;
-    right: -8px;
+    /* Sits on the glyph's top-right corner, not the enlarged tap box's corner. */
+    top: 4px;
+    right: 4px;
     background-color: #d61c00;
     color: #ffffff;
     font-size: 10px;
@@ -329,11 +346,18 @@
 .search-submit-btn:hover {
     background-color: #b51700;
 }
+/* The hamburger is the main navigation control on a phone and was measuring
+   17x20 - the smallest tap target on the site. */
 .mobile-menu-btn {
-    font-size: 20px;
+    font-size: 22px;
     color: #000 !important;
     cursor: pointer;
-    margin-left: 10px;
+    margin-left: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
 }
 
 /* Mobile Offcanvas */

@@ -56,21 +56,18 @@ class ProductRepository extends BaseRepository
             ]
         )
             ->join('product_language as tb2', 'tb2.product_id', '=', 'products.id')
-            // ->join('lecturers as tb3', 'tb3.id', '=','products.lecturer_id')
-            ->with([
-                'product_catalogues',
-                'product_variants' => function ($query) use ($language_id) {
-                    $query->with(['attributes' => function ($query) use ($language_id) {
-                        $query->with(['attribute_language' => function ($query) use ($language_id) {
-                            $query->where('language_id', '=', $language_id);
-                        }]);
-                    }]);
-                },
-                'reviews',
-            ])
+            // The search listing shows an image, a title and a price. It used to
+            // eager load product_variants -> attributes -> attribute_language plus
+            // reviews and catalogues, none of which the listing reads - four extra
+            // queries per search for nothing.
             ->where('tb2.language_id', '=', $language_id)
             ->where('products.publish', '=', 2)
-            ->where('tb2.name', 'LIKE', '%' . $keyword . '%')
+            ->whereNull('products.deleted_at')
+            // Match the description too, so a phrase that is not in the title still finds the product.
+            ->where(function ($query) use ($keyword) {
+                $query->where('tb2.name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('tb2.description', 'LIKE', '%' . $keyword . '%');
+            })
             ->paginate(21)->withQueryString()->withPath(config('app.url') . 'tim-kiem');
     }
 

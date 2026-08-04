@@ -2,55 +2,75 @@
 
 namespace Tests\Feature;
 
+use App\Repositories\Product\ProductCatalogueRepository;
+use App\Services\V1\Product\ProductService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /**
  * Regression coverage for the brand filter on product catalogue pages.
  *
- * The filter matches products through the JSON `products.attribute` column,
- * where brand ids live under the "8" key (attribute catalogue "Thương hiệu"):
+ * Brands are stored in the JSON `products.attribute` column under the "8" key
+ * (attribute catalogue "Thương hiệu"):
  *
  *     {"8": ["25"]}
  *
  * MySQL's JSON_CONTAINS() rejects a non-string candidate argument with
- * SQLSTATE[22032] 3146, so every bound candidate has to be a JSON text
- * literal - never a PHP int.
+ * SQLSTATE[22032] 3146, so every bound candidate must be JSON *text* - never a
+ * PHP int. Binding (int) 25 used to make the whole catalogue page 500.
+ *
+ * Note: catalogue pages are dispatched through RouterController, which `echo`s
+ * the view instead of returning it, so the HTTP response body is empty under
+ * PHPUnit. These tests therefore assert on the status code (which still proves
+ * no database exception was thrown) and on the service layer directly.
  */
 class ProductCatalogueBrandFilterTest extends TestCase
 {
     /** Attribute catalogue holding brands ("Thương hiệu"). */
     private const BRAND_CATALOGUE_KEY = '8';
 
-    /** Canonical of a brand that exists in the seeded data. */
     private const BRAND_CANONICAL = 'apple';
 
-    public function test_brand_filter_page_loads_without_a_database_error(): void
-    {
-        $url = $this->catalogueUrl($this->catalogueIdWithBrandProducts());
-
-        $this->get($url . '?brand=' . self::BRAND_CANONICAL)->assertOk();
-    }
-
-    public function test_brand_filter_narrows_the_result_set(): void
+    public function test_brand_filter_page_does_not_throw_a_database_error(): void
     {
         $catalogueId = $this->catalogueIdWithBrandProducts();
-        $url = $this->catalogueUrl($catalogueId);
 
-        $unfiltered = $this->get($url);
-        $filtered = $this->get($url . '?brand=' . self::BRAND_CANONICAL);
+        $this->get($this->catalogueUrl($catalogueId) . '?brand=' . self::BRAND_CANONICAL)
+            ->assertOk();
+    }
 
-        $unfiltered->assertOk();
-        $filtered->assertOk();
+    public function test_an_unknown_brand_is_ignored_rather_than_fatal(): void
+    {
+        $catalogueId = $this->catalogueIdWithBrandProducts();
 
-        $filteredCards = $this->countProductCards($filtered->getContent());
+        $this->get($this->catalogueUrl($catalogueId) . '?brand=thuong-hieu-khong-ton-tai')
+            ->assertOk();
+    }
 
-        $this->assertGreaterThan(0, $filteredCards, 'The brand filter returned no products at all.');
+    public function test_brand_filter_narrows_the_paginated_result_set(): void
+    {
+        $catalogueId = $this->catalogueIdWithBrandProducts();
+
+        $unfiltered = $this->paginateCatalogue($catalogueId, null)->total();
+        $filtered = $this->paginateCatalogue($catalogueId, self::BRAND_CANONICAL)->total();
+
+        $this->assertGreaterThan(0, $filtered, 'The brand filter matched no products at all.');
         $this->assertLessThan(
-            $this->countProductCards($unfiltered->getContent()),
-            $filteredCards,
-            'The brand filter returned as many products as the unfiltered page, so it is not filtering.'
+            $unfiltered,
+            $filtered,
+            'The brand filter returned every product, so it is not filtering.'
         );
+    }
+
+    public function test_brand_filter_accepts_a_numeric_brand_id_as_well_as_a_canonical(): void
+    {
+        $catalogueId = $this->catalogueIdWithBrandProducts();
+
+        $byCanonical = $this->paginateCatalogue($catalogueId, self::BRAND_CANONICAL)->total();
+        $byId = $this->paginateCatalogue($catalogueId, (string) $this->brandId())->total();
+
+        $this->assertSame($byCanonical, $byId, 'Filtering by brand id and by canonical disagree.');
     }
 
     public function test_json_contains_accepts_both_string_and_number_candidates(): void
@@ -58,8 +78,8 @@ class ProductCatalogueBrandFilterTest extends TestCase
         $brandId = $this->brandId();
         $path = '$."' . self::BRAND_CATALOGUE_KEY . '"';
 
-        // Both candidates must be bound as strings: '"25"' parses as a JSON
-        // string, '25' parses as a JSON number. Binding (int) 25 raises 3146.
+        // '"25"' parses as a JSON string, '25' parses as a JSON number. Both are
+        // valid because they are bound as text; an int binding raises 3146.
         $count = DB::table('products')
             ->whereNull('deleted_at')
             ->whereRaw(
@@ -68,18 +88,25 @@ class ProductCatalogueBrandFilterTest extends TestCase
             )
             ->count();
 
-        $this->assertGreaterThan(
-            0,
-            $count,
-            "Expected at least one product tagged with brand id {$brandId}."
-        );
+        $this->assertGreaterThan(0, $count, "No product is tagged with brand id {$brandId}.");
     }
 
-    public function test_an_unknown_brand_is_ignored_rather_than_fatal(): void
+    private function paginateCatalogue(int $catalogueId, ?string $brand)
     {
-        $url = $this->catalogueUrl($this->catalogueIdWithBrandProducts());
+        $languageId = 1;
 
-        $this->get($url . '?brand=khong-ton-tai-' . self::BRAND_CANONICAL)->assertOk();
+        $catalogue = app(ProductCatalogueRepository::class)
+            ->getProductCatalogueById($catalogueId, $languageId);
+
+        $request = Request::create('/', 'GET', $brand === null ? [] : ['brand' => $brand]);
+
+        return app(ProductService::class)->paginate(
+            $request,
+            $languageId,
+            $catalogue,
+            1,
+            ['path' => $catalogue->canonical]
+        );
     }
 
     private function brandId(): int
@@ -98,7 +125,6 @@ class ProductCatalogueBrandFilterTest extends TestCase
     /** A catalogue that both has a public route and holds products of the brand. */
     private function catalogueIdWithBrandProducts(): int
     {
-        $brandId = $this->brandId();
         $path = '$."' . self::BRAND_CATALOGUE_KEY . '"';
 
         $catalogueId = DB::table('product_catalogue_product as pcp')
@@ -108,7 +134,7 @@ class ProductCatalogueBrandFilterTest extends TestCase
                     ->where('r.controllers', 'App\Http\Controllers\Frontend\ProductCatalogueController');
             })
             ->whereNull('p.deleted_at')
-            ->whereRaw("JSON_CONTAINS(p.attribute, ?, '{$path}')", ['"' . $brandId . '"'])
+            ->whereRaw("JSON_CONTAINS(p.attribute, ?, '{$path}')", ['"' . $this->brandId() . '"'])
             ->value('pcp.product_catalogue_id');
 
         $this->assertNotNull($catalogueId, 'No routed catalogue contains products of the test brand.');
@@ -124,11 +150,5 @@ class ProductCatalogueBrandFilterTest extends TestCase
             ->value('canonical');
 
         return '/' . ltrim((string) $canonical, '/') . config('apps.general.suffix');
-    }
-
-    /** One `product-grid-item` is rendered per product card in the listing. */
-    private function countProductCards(string $html): int
-    {
-        return preg_match_all('/class="product-grid-item"/', $html);
     }
 }

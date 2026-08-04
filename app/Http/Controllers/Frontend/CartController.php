@@ -119,11 +119,10 @@ class CartController extends FrontendController
 
         $config = $this->config();
 
-        if(Agent::isMobile()){
-            $template = 'mobile.cart.index';
-        }else{
-            $template = 'frontend.cart.index';
-        }
+        // No resources/views/mobile directory exists, so the mobile branch that
+        // used to be here threw "View [mobile.cart.index] not found" on every
+        // phone. The frontend template is responsive; serve it to all devices.
+        $template = 'frontend.cart.index';
 
         return view($template, compact(
             'config',
@@ -160,6 +159,15 @@ class CartController extends FrontendController
 
         }
 
+        // This page checks out one product picked with "Mua ngay", held in the
+        // 'pay' cart instance. Opened directly - or after that instance expired -
+        // there is nothing to pay for, and the view used to fatal on a null
+        // product. Send them to the cart instead.
+        if(is_null($product)){
+            return redirect()->route('cart.checkout')
+                ->with('error', 'Không có sản phẩm nào để thanh toán. Vui lòng chọn sản phẩm.');
+        }
+
         $widgets = $this->widgetService->getWidget([
             ['keyword' => 'showroom-system','object' => true],
         ], $this->language);
@@ -176,11 +184,10 @@ class CartController extends FrontendController
 
         $config = $this->config();
 
-        if(Agent::isMobile()){
-            $template = 'mobile.cart.pay';
-        }else{
-            $template = 'frontend.cart.pay';
-        }
+        // No resources/views/mobile directory exists, so the mobile branch that
+        // used to be here threw "View [mobile.cart.pay] not found" on every
+        // phone. The frontend template is responsive; serve it to all devices.
+        $template = 'frontend.cart.pay';
 
         return view($template, compact(
             'config',
@@ -228,11 +235,10 @@ class CartController extends FrontendController
         $config = $this->config();
 
         
-        if(Agent::isMobile()){
-            $template = 'mobile.cart.success';
-        }else{
-            $template = 'frontend.cart.success';
-        }
+        // No resources/views/mobile directory exists, so the mobile branch that
+        // used to be here threw "View [mobile.cart.success] not found" on every
+        // phone. The frontend template is responsive; serve it to all devices.
+        $template = 'frontend.cart.success';
 
         return view($template, compact(
             'config',
