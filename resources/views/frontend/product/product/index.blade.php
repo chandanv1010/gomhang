@@ -501,7 +501,11 @@
                             <span style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: #d61c00;"></span>
                         </h2>
                     </div>
-                    <div class="detail-tab-body prd-shipping-policy prd-rich-content" style="padding: 20px 0; font-size: 14px; line-height: 1.7; color: #444;">
+                    {{-- No inline padding here: an inline style beats the stylesheet, so
+                         `padding: 20px 0` wiped out the horizontal padding and the description
+                         ran flush against the card border. .detail-tab-body already sets
+                         40px/35px, dropping to 25px/20px under 767px. --}}
+                    <div class="detail-tab-body prd-shipping-policy prd-rich-content" style="font-size: 14px; line-height: 1.7; color: #444;">
                         {!! $product->content !!}
                     </div>
                 </div>
