@@ -31,11 +31,13 @@ class LogoSeeder extends Seeder
             return;
         }
 
-        // Ghi cho mọi ngôn ngữ đang có bản ghi cấu hình, để đổi ngôn ngữ vẫn ra logo mới.
-        $languageIds = DB::table('systems')->distinct()->pluck('language_id');
+        // Chỉ ghi cho ngôn ngữ còn sống trong bảng languages. Bảng systems còn sót
+        // các dòng của ngôn ngữ đã xoá mềm và cả language_id = 0 - frontend không
+        // bao giờ đọc tới, ghi vào đó chỉ làm nhiễu.
+        $languageIds = DB::table('languages')->whereNull('deleted_at')->pluck('id');
 
         if ($languageIds->isEmpty()) {
-            $this->command->error('Bảng systems đang trống - hãy cấu hình hệ thống trong admin trước.');
+            $this->command->error('Không có ngôn ngữ nào trong bảng languages - hãy tạo ngôn ngữ trong admin trước.');
             return;
         }
 
@@ -62,6 +64,9 @@ class LogoSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('Đã đặt logo: ' . self::LOGO_PATH . ' (' . $languageIds->count() . ' ngôn ngữ).');
+        $this->command->info(
+            'Đã đặt logo: ' . self::LOGO_PATH
+            . ' cho language_id ' . $languageIds->implode(', ')
+        );
     }
 }
