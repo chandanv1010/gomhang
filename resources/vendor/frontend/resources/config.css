@@ -666,7 +666,7 @@ ul li{
 .discover-text > *{
     display: inline-block;
     padding:10px 25px;
-    background: #2f5acf;
+    background: #d61c00;
     border-radius: 16px;
     cursor:pointer;
     color:#fff;
@@ -708,7 +708,7 @@ ul li{
 }
 .cart-success .table thead>tr th{
     color:#fff;
-    background: #2f5acf;
+    background: #d61c00;
     font-weight: 500;
     font-size:14px;
     vertical-align: middle;
@@ -1280,7 +1280,7 @@ ul li{
     padding: 50px 0;
 }
 .add-voucher{
-    background: #2f5acf !important;
+    background: #d61c00 !important;
 }
 .add-voucher .voucher-title,
 .add-voucher .voucher-description > *{

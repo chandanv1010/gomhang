@@ -76,7 +76,7 @@
         background: #0068ff; /* Zalo brand blue */
     }
     .floating-contact__btn--call {
-        background: #e02b1d; /* Site brand red */
+        background: #d61c00; /* Site brand red */
     }
     .floating-contact__icon {
         width: 30px;
@@ -96,7 +96,7 @@
         margin-right: 10px;
         padding: 6px 12px;
         border-radius: 20px;
-        background: #e02b1d;
+        background: #d61c00;
         color: #fff;
         font-size: 13px;
         font-weight: 700;
@@ -120,7 +120,7 @@
         animation: floating-contact-pulse 1.8s ease-out infinite;
     }
     .floating-contact__btn--zalo .floating-contact__ring { background: #0068ff; }
-    .floating-contact__btn--call .floating-contact__ring { background: #e02b1d; }
+    .floating-contact__btn--call .floating-contact__ring { background: #d61c00; }
 
     @keyframes floating-contact-pulse {
         0%   { transform: scale(1);   opacity: .55; }

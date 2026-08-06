@@ -43,7 +43,7 @@
                                 {{-- Thông tin đơn hàng --}}
                                 <div class="uk-panel  uk-margin-bottom" style="background: #f8f9fa;">
                                     <h3 class="uk-panel-title uk-text-bold uk-margin-bottom"
-                                        style="font-size: 20px; padding: 12px 15px; margin: 0; background: #e8f4f0;">
+                                        style="font-size: 20px; padding: 12px 15px; margin: 0; background: #f7f7f8;">
                                         Thông tin đơn hàng</h3>
                                     <div class="uk-grid uk-grid-small" style="background: #fff; padding: 15px;">
                                         <div class="uk-width-medium-1-2">
@@ -109,7 +109,7 @@
                                 {{-- Thông tin người nhận --}}
                                 <div class="uk-panel  uk-margin-bottom" style="background: #f8f9fa;">
                                     <h3 class="uk-panel-title uk-text-bold uk-margin-bottom"
-                                        style="font-size: 20px; padding: 12px 15px; margin: 0; background: #e8f4f0;">
+                                        style="font-size: 20px; padding: 12px 15px; margin: 0; background: #f7f7f8;">
                                         Thông tin người nhận</h3>
                                     <div class="uk-grid uk-grid-small" style="background: #fff; padding: 15px;">
                                         <div class="uk-width-medium-1-2">
@@ -163,7 +163,7 @@
                                 {{-- Phương thức thanh toán --}}
                                 <div class="uk-panel  uk-margin-bottom" style="background: #f8f9fa;">
                                     <h3 class="uk-panel-title uk-text-bold uk-margin-bottom uk-margin-2"
-                                        style="font-size: 20px; padding: 12px 15px; margin: 0; background: #e8f4f0;">
+                                        style="font-size: 20px; padding: 12px 15px; margin: 0; background: #f7f7f8;">
                                         Phương thức thanh toán</h3>
                                     <div class="uk-flex uk-flex-middle" style="background: #fff; padding: 15px;">
                                         @php
@@ -184,7 +184,7 @@
                                 {{-- Danh sách sản phẩm --}}
                                 <div class="uk-panel  uk-margin-bottom" style="background: #f8f9fa;">
                                     <h3 class="uk-panel-title uk-text-bold uk-margin-bottom"
-                                        style="font-size: 20px; padding: 12px 15px; margin: 0; background: #e8f4f0;">
+                                        style="font-size: 20px; padding: 12px 15px; margin: 0; background: #f7f7f8;">
                                         Sản phẩm đã mua</h3>
                                     <div class="uk-overflow-container" style="background: #fff; padding: 15px;">
                                         <table class="uk-table uk-table-striped uk-table-hover">
@@ -310,7 +310,7 @@
                                 @if ($order->point_added || $order->point_used)
                                     <div class="uk-panel  uk-margin-bottom" style="background: #f8f9fa;">
                                         <h3 class="uk-panel-title uk-text-bold uk-margin-bottom"
-                                            style="font-size: 20px; padding: 12px 15px; margin: 0; background: #e8f4f0;">
+                                            style="font-size: 20px; padding: 12px 15px; margin: 0; background: #f7f7f8;">
                                             Điểm tích lũy</h3>
                                         <div class="uk-grid uk-grid-small" style="background: #fff; padding: 15px;">
                                             <div class="uk-width-1-1">

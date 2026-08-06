@@ -88,8 +88,8 @@
             transition: all 0.3s ease;
 
             &:focus {
-                border-color: #f27a24;
-                box-shadow: 0 0 0 2px rgba(242, 122, 36, 0.1);
+                border-color: #d61c00;
+                box-shadow: 0 0 0 2px rgba(214, 28, 0, 0.1);
             }
         }
     }
@@ -156,7 +156,7 @@
             transition: color 0.2s;
 
             &:hover {
-                color: #006D3A !important;
+                color: #1a1a1a !important;
             }
         }
     }
@@ -198,7 +198,7 @@
             left: 0;
             width: 40px;
             height: 3px;
-            background: #f27a24;
+            background: #d61c00;
             border-radius: 2px;
         }
     }
@@ -238,7 +238,7 @@
             left: 0;
             width: 30px;
             height: 2px;
-            background: #f27a24;
+            background: #d61c00;
         }
     }
 
@@ -259,7 +259,7 @@
                 gap: 8px;
 
                 input[type="checkbox"] {
-                    accent-color: #f27a24;
+                    accent-color: #d61c00;
                     cursor: pointer;
                 }
             }
@@ -273,7 +273,7 @@
 }
 
 .consultation-form-box {
-    border: 2px solid #f27a24;
+    border: 2px solid #d61c00;
     border-radius: 12px;
     background: #f4fbfb;
     padding: 30px;
@@ -284,7 +284,7 @@
 
     .consult-slogan {
         font-family: var(--second-font), sans-serif;
-        color: #e67e22;
+        color: #d61c00;
         font-weight: 700;
         font-size: 17px;
         margin: 15px 0 25px 0;
@@ -295,12 +295,12 @@
         display: block;
         font-size: 13px;
         font-weight: 600;
-        color: #075f5e;
+        color: #1a1a1a;
         margin-bottom: 6px;
     }
 
     .form-input {
-        border: 1px solid #f27a24;
+        border: 1px solid #d61c00;
         border-radius: 6px;
         padding: 10px 12px;
         background: #fff;
@@ -311,12 +311,12 @@
         outline: none;
 
         &:focus {
-            box-shadow: 0 0 0 2px rgba(242, 122, 36, 0.15);
+            box-shadow: 0 0 0 2px rgba(214, 28, 0, 0.15);
         }
     }
 
     .btn-submit-consult {
-        background: #f27a24;
+        background: #d61c00;
         color: #fff;
         border: none;
         border-radius: 6px;
@@ -327,7 +327,7 @@
         transition: background 0.3s ease;
 
         &:hover {
-            background: #d35400;
+            background: #a41400;
         }
     }
 }
@@ -363,7 +363,7 @@
             margin-bottom: 8px;
 
             a {
-                color: #f27a24;
+                color: #d61c00;
                 text-decoration: none;
                 font-weight: 600;
 
@@ -388,7 +388,7 @@
         font-size: 16px;
         font-weight: 700;
         color: #333;
-        border-bottom: 2px solid #f27a24;
+        border-bottom: 2px solid #d61c00;
         padding-bottom: 8px;
         margin: 0 0 20px 0;
         position: relative;
@@ -428,7 +428,7 @@
                     a {
                         transition: color 0.3s ease;
                         &:hover {
-                            color: #f27a24;
+                            color: #d61c00;
                         }
                     }
                 }
@@ -522,7 +522,7 @@
                 transition: color 0.3s ease;
 
                 &:hover {
-                    color: #f27a24;
+                    color: #d61c00;
                 }
             }
         }

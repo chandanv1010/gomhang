@@ -394,7 +394,7 @@
 .grid-item-label {
     font-size: 12px;
     font-weight: bold;
-    color: #004b91;
+    color: #1a1a1a;
     line-height: 1.3;
 }
 .grid-item-link:hover .grid-item-label {
@@ -535,7 +535,7 @@
 .product-title {
     font-size: 13px;
     font-weight: 500;
-    color: #00509d;
+    color: #1a1a1a;
     line-height: 1.4;
     margin: 0 0 10px 0;
     height: 38px;
@@ -764,7 +764,7 @@
 .news-title-link {
     font-size: 13px;
     font-weight: bold;
-    color: #004b91;
+    color: #1a1a1a;
     line-height: 1.4;
     margin: 0;
     display: -webkit-box;

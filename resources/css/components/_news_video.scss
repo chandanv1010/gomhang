@@ -71,7 +71,7 @@
             font-family: 'Manrope', sans-serif;
             font-size: 18px;
             font-weight: 700;
-            color: #051e35;
+            color: #1a1a1a;
             line-height: 1.4;
             margin: 0 0 12px 0;
             transition: color 0.3s ease;
@@ -100,7 +100,7 @@
                 transform: scale(1.05);
             }
             .card-title {
-                color: #006D3A; // brand green on hover
+                color: #1a1a1a; // brand black on hover
             }
         }
     }
@@ -165,7 +165,7 @@
                 font-family: 'Manrope', sans-serif;
                 font-size: 14px;
                 font-weight: 700;
-                color: #051e35;
+                color: #1a1a1a;
                 line-height: 1.4;
                 margin: 0 0 10px 0;
                 transition: color 0.3s ease;
@@ -203,12 +203,12 @@
                     font-family: 'Manrope', sans-serif;
                     font-size: 12px;
                     font-weight: 700;
-                    color: #1e4794; // corporate blue
+                    color: #1a1a1a; // brand black
                     transition: color 0.2s;
                     text-transform: capitalize;
 
                     &:hover {
-                        color: #006D3A;
+                        color: #1a1a1a;
                     }
                 }
             }
@@ -219,7 +219,7 @@
                 transform: scale(1.05);
             }
             .item-title {
-                color: #006D3A;
+                color: #1a1a1a;
             }
         }
     }
@@ -274,7 +274,7 @@
             text-decoration: none !important;
 
             .video-icon {
-                color: #006D3A;
+                color: #1a1a1a;
                 font-size: 14px;
                 margin-top: 3px;
                 flex-shrink: 0;
@@ -293,7 +293,7 @@
                 background-color: #eaf6ee;
 
                 .video-title {
-                    color: #006D3A;
+                    color: #1a1a1a;
                     font-weight: 700;
                 }
             }
@@ -302,7 +302,7 @@
                 background-color: #f9f9f9;
 
                 .video-title {
-                    color: #1e4794;
+                    color: #1a1a1a;
                 }
             }
         }

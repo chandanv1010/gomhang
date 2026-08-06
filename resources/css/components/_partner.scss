@@ -23,7 +23,7 @@
             line-height: 1.2;
 
             .highlight-green {
-                color: #006D3A;
+                color: #1a1a1a;
             }
 
             @media (max-width: 959px) {
@@ -102,7 +102,7 @@
             transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 
             &.swiper-pagination-bullet-active {
-                background: #006D3A; // Dark green
+                background: #1a1a1a; // Brand black
                 opacity: 1;
                 width: 24px; // Modern stretched active dot
                 border-radius: 4px;

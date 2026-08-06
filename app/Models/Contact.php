@@ -15,6 +15,9 @@ class Contact extends Model
         'id',
         'name',
         'phone',
+        // Cột email đã có trong bảng contacts nhưng thiếu ở đây, nên email do
+        // form liên hệ gửi lên bị mass assignment bỏ qua âm thầm.
+        'email',
         'address',
         'product_id',
         'post_id',

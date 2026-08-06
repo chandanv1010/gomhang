@@ -56,7 +56,7 @@
             }
 
             .active {
-                color: #f37a20;
+                color: #d61c00;
                 font-weight: 600;
             }
         }
@@ -66,7 +66,7 @@
         display: block;
         font-size: 13.5px;
         font-weight: 600;
-        color: #f37a20;
+        color: #d61c00;
         text-transform: uppercase;
         margin-bottom: 10px;
         letter-spacing: 1.5px;
@@ -75,7 +75,7 @@
     .section-title {
         font-size: 28px;
         font-weight: 800;
-        color: #1e4794;
+        color: #1a1a1a;
         margin-bottom: 25px;
         line-height: 1.25;
         font-family: var(--second-font), sans-serif;
@@ -96,9 +96,9 @@
                     &.p-highlight {
                         font-size: 16px;
                         font-weight: 600;
-                        color: #111827;
+                        color: #1a1a1a;
                         line-height: 1.65;
-                        border-left: 4px solid #f37a20;
+                        border-left: 4px solid #d61c00;
                         padding-left: 18px;
                         margin-bottom: 25px;
                     }
@@ -214,7 +214,7 @@
                 .card-title {
                     font-size: 15px;
                     font-weight: 700;
-                    color: #111827;
+                    color: #1a1a1a;
                     margin-bottom: 8px;
                     line-height: 1.45;
                     height: 44px;
@@ -227,7 +227,7 @@
                 .card-date {
                     display: block;
                     font-size: 12px;
-                    color: #f37a20; // Matches orange accents
+                    color: #d61c00; // Matches brand red accents
                     margin-bottom: 12px;
                     font-weight: 600;
 
@@ -271,7 +271,7 @@
 
             .quote-icon {
                 font-size: 24px;
-                color: rgba(30, 71, 148, 0.2);
+                color: rgba(26, 26, 26, 0.2);
                 margin-bottom: 20px;
             }
 
@@ -307,7 +307,7 @@
                     .author-name {
                         font-size: 14.5px;
                         font-weight: 700;
-                        color: #111827;
+                        color: #1a1a1a;
                         margin: 0 0 3px 0;
                     }
 
@@ -347,15 +347,15 @@
             &:hover {
                 transform: translateY(-8px);
                 box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
-                border-color: rgba(30, 71, 148, 0.15);
+                border-color: rgba(26, 26, 26, 0.15);
             }
 
             .icon-circle {
                 width: 64px;
                 height: 64px;
                 border-radius: 50%;
-                background: rgba(30, 71, 148, 0.07);
-                color: #1e4794;
+                background: rgba(26, 26, 26, 0.07);
+                color: #1a1a1a;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -365,14 +365,14 @@
             }
 
             &:hover .icon-circle {
-                background: #1e4794;
+                background: #1a1a1a;
                 color: #fff;
             }
 
             .support-title {
                 font-size: 18px;
                 font-weight: 700;
-                color: #111827;
+                color: #1a1a1a;
                 margin-bottom: 12px;
                 font-family: var(--second-font), sans-serif;
             }
@@ -471,7 +471,7 @@
                     .btn-register {
                         padding: 0 30px;
                         border: none;
-                        background: #f37a20;
+                        background: #d61c00;
                         color: #fff;
                         font-weight: 600;
                         font-size: 14px;
@@ -480,7 +480,7 @@
                         white-space: nowrap;
 
                         &:hover {
-                            background: #e2660c;
+                            background: #d61c00;
                         }
                     }
                 }
@@ -499,7 +499,7 @@
         &-active {
             width: 24px;
             border-radius: 4px;
-            background: #1e4794;
+            background: #1a1a1a;
             opacity: 1;
         }
     }
@@ -566,7 +566,7 @@
             display: inline-block;
             font-size: 14px;
             font-weight: 700;
-            color: #f27a24;
+            color: #d61c00;
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 15px;
@@ -728,7 +728,7 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: rgba(3, 72, 51, 0.85);
+                background: rgba(26, 26, 26, 0.85);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -744,13 +744,13 @@
                 }
 
                 &:hover {
-                    background: rgba(3, 72, 51, 0.95);
+                    background: rgba(26, 26, 26, 0.95);
                 }
             }
         }
 
         .btn-toggle-warehouse {
-            background-color: #006D3A;
+            background-color: #1a1a1a;
             color: #fff !important;
             border: none;
             padding: 12px 30px;
@@ -761,7 +761,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 109, 58, 0.2);
+            box-shadow: 0 4px 10px rgba(26, 26, 26, 0.2);
             font-family: 'Manrope', sans-serif;
 
             i {
@@ -770,9 +770,9 @@
             }
 
             &:hover {
-                background-color: #00522b;
+                background-color: #1a1a1a;
                 transform: translateY(-2px);
-                box-shadow: 0 6px 15px rgba(0, 109, 58, 0.35);
+                box-shadow: 0 6px 15px rgba(26, 26, 26, 0.35);
             }
         }
     }
@@ -804,8 +804,8 @@
             &:hover {
                 background: #fff;
                 transform: translateY(-6px);
-                box-shadow: 0 15px 35px rgba(0, 109, 58, 0.08);
-                border-color: rgba(0, 109, 58, 0.2);
+                box-shadow: 0 15px 35px rgba(26, 26, 26, 0.08);
+                border-color: rgba(26, 26, 26, 0.2);
             }
 
             .why-icon {
@@ -826,7 +826,7 @@
             .why-card-title {
                 font-size: 17px;
                 font-weight: 700;
-                color: #1e4794;
+                color: #1a1a1a;
                 margin-bottom: 12px;
                 font-family: 'UTM Avo', sans-serif !important;
                 line-height: 1.35;
@@ -844,7 +844,7 @@
 
     /* Section 5: Contact Banner (Green background) */
     .about-contact-banner-section {
-        background-color: #006D3A;
+        background-color: #1a1a1a;
         padding: 70px 0 80px 0;
         color: #fff;
 
@@ -895,8 +895,8 @@
                 width: 54px;
                 height: 54px;
                 border-radius: 50%;
-                background: rgba(0, 109, 58, 0.1);
-                color: #006D3A;
+                background: rgba(26, 26, 26, 0.1);
+                color: #1a1a1a;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -917,7 +917,7 @@
             .card-value {
                 font-size: 22px;
                 font-weight: 700;
-                color: #006D3A;
+                color: #1a1a1a;
                 margin-bottom: 24px;
                 font-family: 'UTM Avo', sans-serif !important;
             }

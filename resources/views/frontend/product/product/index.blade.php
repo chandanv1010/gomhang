@@ -193,7 +193,7 @@
                             {{-- The ids let the flash sale script re-price in place when one
                                  campaign ends and the next takes over. --}}
                             <div class="prd-price-block uk-flex uk-flex-middle" style="gap: 10px; margin-bottom: 18px;">
-                                <span class="price-highlight" id="prd-price-sale" style="color: #e02b1d !important; font-size: 23px; font-weight: 700; margin-left: 0;">
+                                <span class="price-highlight" id="prd-price-sale" style="color: #d61c00 !important; font-size: 23px; font-weight: 700; margin-left: 0;">
                                     {{ convert_price($priceInfo['priceSale'], true) }}đ
                                 </span>
                                 <span class="old-price" id="prd-price-old" style="text-decoration: line-through; color: #9a9a9a; font-size: 13px; @if($priceInfo['percent'] <= 0) display: none; @endif">
@@ -415,7 +415,7 @@
                                             <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#d61c00;"></i> Số 370 Xã Đàn, Đống Đa <b style="color:#d61c00;">0943.22.8888</b></li>
                                         </ul>
                                         <p style="margin-top: 10px; margin-bottom: 0;">
-                                            <a href="/chinh-sach-khach-hang.html" style="color: #00509d; font-weight: bold; text-decoration: none;">Tham khảo 8 chính sách vàng Gomhang.vn &rarr;</a>
+                                            <a href="/chinh-sach-khach-hang.html" style="color: #1a1a1a; font-weight: bold; text-decoration: none;">Tham khảo 8 chính sách vàng Gomhang.vn &rarr;</a>
                                         </p>
                                     </div>
                                     <!-- National content -->
@@ -496,7 +496,7 @@
             <div class="uk-container uk-container-center">
                 <div class="premium-detail-block">
                     <div class="detail-tab-header" style="border-bottom: 2px solid #eeeeee; padding-bottom: 8px; margin-bottom: 20px;">
-                        <h2 class="detail-tab-title" style="font-size: 18px; font-weight: bold; color: #1e4794; margin: 0; position: relative; display: inline-block;">
+                        <h2 class="detail-tab-title" style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 0; position: relative; display: inline-block;">
                             MÔ TẢ CHI TIẾT SẢN PHẨM
                             <span style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: #d61c00;"></span>
                         </h2>
@@ -514,7 +514,7 @@
                 @if (isset($productRelated) && count($productRelated))
                     <section class="categories-panel uk-margin-large-top uk-margin-large-bottom">
                         <div class="related-header-section" style="border-bottom: 2px solid #eeeeee; padding-bottom: 8px; margin-bottom: 25px;">
-                            <h2 class="detail-tab-title" style="font-size: 18px; font-weight: bold; color: #1e4794; margin: 0; position: relative; display: inline-block;">
+                            <h2 class="detail-tab-title" style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 0; position: relative; display: inline-block;">
                                 SẢN PHẨM LIÊN QUAN
                                 <span style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: #d61c00;"></span>
                             </h2>
@@ -680,7 +680,7 @@
 .product-title {
     font-size: 13px;
     font-weight: 500;
-    color: #00509d;
+    color: #1a1a1a;
     line-height: 1.4;
     margin: 0 0 10px 0;
     height: 38px;
@@ -764,7 +764,7 @@
 }
 .flash-sale-title {
     margin: 0;
-    color: #e02b1d;
+    color: #d61c00;
     font-size: 15px;
     font-weight: 700;
     letter-spacing: .4px;
@@ -796,7 +796,7 @@
 }
 .timer-num {
     display: block;
-    color: #e02b1d;
+    color: #d61c00;
     font-size: 26px;
     font-weight: 700;
     line-height: 1.15;
@@ -823,16 +823,16 @@
     justify-content: center;
     gap: 2px;
     padding: 6px 4px;
-    border: 1px solid #e02b1d;
+    border: 1px solid #d61c00;
     border-radius: 6px;
     background: #fff;
-    color: #e02b1d !important;
+    color: #d61c00 !important;
     text-decoration: none !important;
     transition: background .2s, box-shadow .2s;
 }
 .add-to-cart-badge-btn:hover {
     background: #fff6f5;
-    box-shadow: 0 2px 8px rgba(224, 43, 29, .15);
+    box-shadow: 0 2px 8px rgba(214, 28, 0, .15);
 }
 /* The plus sits on the cart glyph, so the two read as one mark. */
 .cart-icon-stack {
@@ -867,7 +867,7 @@
     padding: 10px 12px;
     border-radius: 6px;
     /* The reference button is a horizontal orange gradient, deeper on the left. */
-    background: linear-gradient(90deg, #f4761b 0%, #fb8c3c 55%, #ff9c52 100%);
+    background: linear-gradient(90deg, #d61c00 0%, #d61c00 55%, #d61c00 100%);
     color: #fff !important;
     text-align: center;
     text-decoration: none !important;
@@ -905,10 +905,10 @@
     transition: background .2s, color .2s;
 }
 .shipping-tab:hover {
-    color: #0d6e5a;
+    color: #1a1a1a;
 }
 .shipping-tab.active {
-    background: #0d6e5a;
+    background: #1a1a1a;
     color: #fff;
 }
 .shipping-tabs-content {

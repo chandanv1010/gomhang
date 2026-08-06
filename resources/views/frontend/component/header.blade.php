@@ -18,14 +18,7 @@
 
             <!-- Center: Navigation -->
             <div class="header-center">
-                <!-- Top sub nav -->
-                <div class="sub-nav-top">
-                    <a href="{{ write_url('g-phone') }}" class="sub-nav-link">G Phone</a>
-                    <a href="{{ write_url('g-home') }}" class="sub-nav-link">G Home</a>
-                    <a href="{{ write_url('g-car') }}" class="sub-nav-link">G Car</a>
-                </div>
-                
-                <!-- Bottom main nav -->
+                <!-- Main nav -->
                 <nav class="main-navigation">
                     <ul class="main-menu-list">
                         <li><a href="/" class="menu-item active">TRANG CHỦ</a></li>
@@ -100,9 +93,6 @@
         <nav class="mobile-menu-nav">
             <ul class="uk-nav uk-nav-offcanvas mobile-menu-list">
                 <li><a href="/">TRANG CHỦ</a></li>
-                <li><a href="{{ write_url('g-phone') }}">G Phone</a></li>
-                <li><a href="{{ write_url('g-home') }}">G Home</a></li>
-                <li><a href="{{ write_url('g-car') }}">G Car</a></li>
                 <li class="uk-parent">
                     <a href="{{ write_url('phu-kien-dien-thoai') }}">SẢN PHẨM</a>
                     <ul class="uk-nav-sub">
@@ -196,21 +186,6 @@
     flex-direction: column;
     align-items: center;
     flex: 2;
-}
-.sub-nav-top {
-    display: flex;
-    gap: 40px;
-    margin-bottom: 18px;
-}
-.sub-nav-link {
-    color: #00509d !important;
-    font-weight: bold;
-    font-size: 14px;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-.sub-nav-link:hover {
-    color: #d61c00 !important;
 }
 .main-menu-list {
     display: flex;

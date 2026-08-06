@@ -64,7 +64,7 @@
                     <input 
                         type="color" 
                         name="background" 
-                        value="{{ old('background', ($productCatalogue->background) ?? '#006D3A' ) }}"
+                        value="{{ old('background', ($productCatalogue->background) ?? '#1a1a1a' ) }}"
                         class="form-control"
                         style="height: 40px; padding: 2px;"
                     >

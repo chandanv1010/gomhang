@@ -17,7 +17,7 @@
             letter-spacing: -0.5px;
 
             .highlight-green {
-                color: #006D3A;
+                color: #1a1a1a;
             }
 
             @media (max-width: 959px) {
@@ -121,9 +121,9 @@
         }
 
         &.bg-pine-green {
-            background-color: #006D3A;
+            background-color: #1a1a1a;
             color: #fff;
-            box-shadow: 0 8px 25px rgba(0, 109, 58, 0.15);
+            box-shadow: 0 8px 25px rgba(26, 26, 26, 0.15);
 
             @media (min-width: 960px) {
                 height: 180px; // height 180px
@@ -208,8 +208,8 @@
 
             &:hover {
                 background-color: #fff;
-                border-color: #006D3A;
-                box-shadow: 0 10px 25px rgba(0, 96, 51, 0.05);
+                border-color: #1a1a1a;
+                box-shadow: 0 10px 25px rgba(26, 26, 26, 0.05);
             }
         }
     }

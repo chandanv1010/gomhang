@@ -18,101 +18,130 @@
         </div>
     </div>
 
+    @php
+        $address = trim((string) ($system['contact_address'] ?? $system['contact_office'] ?? ''));
+        $hotlineDisplay = system_phone($system ?? null);
+        $hotlineDigits = system_phone($system ?? null, true);
+        $email = trim((string) ($system['contact_email'] ?? ''));
+
+        $mapUrl = trim((string) ($system['contact_map'] ?? ''));
+        if ($mapUrl !== '' && str_contains($mapUrl, 'embed')) {
+            $embedMap = $mapUrl;
+        } else {
+            $embedMap = 'https://maps.google.com/maps?q=' . urlencode($address !== '' ? $address : 'Hà Nội') . '&output=embed';
+        }
+    @endphp
+
     <section class="contact-page-wrapper">
         <div class="uk-container uk-container-center">
 
-            {{-- Contact info cards row --}}
-            <div class="contact-cards-row uk-grid uk-grid-medium" data-uk-grid-margin>
-                <div class="uk-width-large-1-3 uk-width-medium-1-1 uk-width-1-1">
-                    <div class="contact-card">
-                        <div class="card-icon">
-                            <i class="fa fa-map-marker"></i>
-                        </div>
-                        <h3 class="card-title">Địa chỉ</h3>
-                        <p class="card-value">{{ $system['contact_address'] ?? 'Hà Nội, Việt Nam' }}</p>
-                    </div>
-                </div>
-                <div class="uk-width-large-1-3 uk-width-medium-1-2 uk-width-1-1">
-                    <div class="contact-card">
-                        <div class="card-icon">
-                            <i class="fa fa-phone"></i>
-                        </div>
-                        <h3 class="card-title">Hotline / Zalo</h3>
-                        <p class="card-value">
-                            <a href="tel:{{ $system['contact_hotline'] ?? '' }}">{{ $system['contact_hotline'] ?? '' }}</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="uk-width-large-1-3 uk-width-medium-1-2 uk-width-1-1">
-                    <div class="contact-card">
-                        <div class="card-icon">
-                            <i class="fa fa-envelope"></i>
-                        </div>
-                        <h3 class="card-title">Email</h3>
-                        <p class="card-value">
-                            <a href="mailto:{{ $system['contact_email'] ?? '' }}">{{ $system['contact_email'] ?? '' }}</a>
-                        </p>
-                    </div>
+            {{-- Chỉ có một địa chỉ nên khối này căn giữa, thay vì dàn 3 cột như mẫu --}}
+            <div class="office-row">
+                <div class="office-card">
+                    <h2 class="office-title">Văn phòng:</h2>
+                    <ul class="office-list uk-list">
+                        @if($address !== '')
+                            <li>
+                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                <span><strong>Địa chỉ:</strong> {{ $address }}</span>
+                            </li>
+                        @endif
+                        @if($hotlineDigits !== '')
+                            <li>
+                                <i class="fa fa-phone" aria-hidden="true"></i>
+                                <span><strong>Hotline:</strong>
+                                    <a href="tel:{{ $hotlineDigits }}">{{ $hotlineDisplay }}</a>
+                                </span>
+                            </li>
+                        @endif
+                        @if($email !== '')
+                            <li>
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <span><strong>Email:</strong>
+                                    <a href="mailto:{{ $email }}">{{ $email }}</a>
+                                </span>
+                            </li>
+                        @endif
+                    </ul>
                 </div>
             </div>
 
-            {{-- Main contact section: Map & Info --}}
-            <div class="contact-main uk-grid uk-flex uk-flex-center" data-uk-grid-margin>
-                {{-- Map + Extra Info --}}
-                <div class="uk-width-large-2-3 uk-width-medium-1-1">
-                    <div class="contact-map-box">
-                        @php
-                            $mapUrl = $system['contact_map'] ?? '';
-                            // Convert Google Maps URL to embed URL if needed
-                            $embedMap = '';
-                            if (!empty($mapUrl)) {
-                                if (strpos($mapUrl, 'embed') !== false) {
-                                    $embedMap = $mapUrl;
-                                } else {
-                                    $embedMap = 'https://maps.google.com/maps?q=' . urlencode($system['contact_address'] ?? 'Hà Nội') . '&output=embed';
-                                }
-                            } else {
-                                $embedMap = 'https://maps.google.com/maps?q=' . urlencode($system['contact_address'] ?? '116 Thái Hà, Hà Nội') . '&output=embed';
-                            }
-                        @endphp
-                        <div class="map-embed">
-                            <iframe 
-                                src="{{ $embedMap }}"
-                                width="100%" 
-                                height="380" 
-                                style="border:0; border-radius: 12px;" 
-                                allowfullscreen="" 
-                                loading="lazy"
-                                referrerpolicy="no-referrer-when-downgrade">
-                            </iframe>
+            {{-- Form bên trái, bản đồ bên phải --}}
+            <div class="contact-main uk-grid uk-grid-medium" data-uk-grid-margin>
+                <div class="uk-width-large-1-2 uk-width-medium-1-1">
+                    <h2 class="contact-section-title">Gửi thông tin đến chúng tôi</h2>
+
+                    <form class="contact-form" id="contactForm" method="post" novalidate>
+                        @csrf
+                        <div class="form-alert" id="contactAlert" role="alert" hidden></div>
+
+                        <div class="field-row">
+                            <div class="field">
+                                <input type="text" name="name" class="field-input" placeholder="Họ tên *" required>
+                            </div>
+                            <div class="field">
+                                <input type="tel" name="phone" class="field-input" placeholder="Điện thoại *" required>
+                            </div>
                         </div>
 
-                        <div class="working-hours">
-                            <h3 class="hours-title"><i class="fa fa-clock-o"></i> Giờ làm việc</h3>
-                            <ul class="hours-list uk-list">
-                                <li>
-                                    <span class="day">Thứ 2 – Thứ 6:</span>
-                                    <span class="time">8:00 – 18:00</span>
-                                </li>
-                                <li>
-                                    <span class="day">Thứ 7:</span>
-                                    <span class="time">8:00 – 12:00</span>
-                                </li>
-                                <li>
-                                    <span class="day">Chủ nhật:</span>
-                                    <span class="time closed">Nghỉ</span>
-                                </li>
-                            </ul>
+                        <div class="field-row">
+                            <div class="field">
+                                <input type="email" name="email" class="field-input" placeholder="Email *" required>
+                            </div>
+                            <div class="field">
+                                <input type="text" name="address" class="field-input" placeholder="Địa chỉ">
+                            </div>
                         </div>
 
-                        <div class="contact-social-row">
-                            <a href="{{ $system['contact_facebook'] ?? '#' }}" target="_blank" class="social-contact-btn facebook">
-                                <i class="fa fa-facebook"></i> Facebook
-                            </a>
-                            <a href="tel:{{ $system['contact_hotline'] ?? '' }}" class="social-contact-btn phone">
+                        <div class="field-row">
+                            <div class="field field-full">
+                                <textarea name="message" rows="5" class="field-textarea"
+                                          placeholder="Nhập nội dung bạn muốn liên hệ"></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-send">
+                            <span>Gửi đi</span>
+                            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="uk-width-large-1-2 uk-width-medium-1-1">
+                    <h2 class="contact-section-title">Bản đồ</h2>
+
+                    <div class="map-embed">
+                        <iframe
+                            src="{{ $embedMap }}"
+                            width="100%"
+                            height="360"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            title="Bản đồ đường tới văn phòng"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+
+                    <div class="working-hours">
+                        <h3 class="hours-title"><i class="fa fa-clock-o"></i> Giờ làm việc</h3>
+                        <ul class="hours-list uk-list">
+                            <li><span class="day">Thứ 2 – Thứ 6:</span> <span class="time">8:00 – 18:00</span></li>
+                            <li><span class="day">Thứ 7:</span> <span class="time">8:00 – 12:00</span></li>
+                            <li><span class="day">Chủ nhật:</span> <span class="time closed">Nghỉ</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="contact-social-row">
+                        <a href="{{ $system['contact_facebook'] ?? '#' }}" target="_blank" rel="noopener"
+                           class="social-contact-btn facebook">
+                            <i class="fa fa-facebook"></i> Facebook
+                        </a>
+                        @if($hotlineDigits !== '')
+                            <a href="tel:{{ $hotlineDigits }}" class="social-contact-btn phone">
                                 <i class="fa fa-phone"></i> Gọi ngay
                             </a>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -122,207 +151,221 @@
 
     <style>
         .contact-page-wrapper {
-            padding: 60px 0 80px;
-            background: #f7f8fc;
+            padding: 50px 0 80px;
+            background: #ffffff;
         }
 
-        /* Contact Cards */
-        .contact-cards-row {
-            margin-bottom: 50px;
-        }
-
-        .contact-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 30px 24px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-top: 4px solid #f27a24;
-            height: 100%;
-        }
-
-        .contact-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-        }
-
-        .contact-card .card-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #1e4794, #2557b0);
-            border-radius: 50%;
+        /* ---- Khối địa chỉ (căn giữa vì chỉ có 1 văn phòng) ---- */
+        .office-row {
             display: flex;
-            align-items: center;
             justify-content: center;
-            margin: 0 auto 16px;
+            margin-bottom: 55px;
         }
 
-        .contact-card .card-icon .fa {
-            font-size: 24px;
-            color: #fff;
+        .office-card {
+            width: 100%;
+            max-width: 620px;
+            background: linear-gradient(135deg, #f7f7f8 0%, #eeeff1 100%);
+            border-radius: 6px;
+            padding: 26px 30px;
+            border-left: 4px solid #d61c00;
         }
 
-        .contact-card .card-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1e4794;
-            margin-bottom: 10px;
+        .office-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            margin: 0 0 16px;
         }
 
-        .contact-card .card-value {
+        .office-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .office-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 5px 0;
             font-size: 14px;
-            color: #555;
+            color: #444;
             line-height: 1.6;
         }
 
-        .contact-card .card-value a {
-            color: #f27a24;
+        .office-list .fa {
+            color: #d61c00;
+            font-size: 15px;
+            width: 16px;
+            text-align: center;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .office-list strong {
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        .office-list a {
+            color: #d61c00;
             text-decoration: none;
             font-weight: 600;
         }
 
-        .contact-card .card-value a:hover {
-            color: #1e4794;
+        .office-list a:hover {
+            color: #1a1a1a;
         }
 
-        /* Form box */
-        .contact-form-box {
-            background: #fff;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.08);
-        }
-
-        .form-tag {
-            color: #f27a24;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        .form-title {
-            font-size: 26px;
+        /* ---- Tiêu đề 2 khối dưới ---- */
+        .contact-section-title {
+            font-size: 22px;
             font-weight: 800;
-            color: #1e4794;
-            margin: 8px 0 10px;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            margin: 0 0 22px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ececec;
+            position: relative;
         }
 
-        .form-desc {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 28px;
+        .contact-section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 64px;
+            height: 2px;
+            background: #d61c00;
         }
 
-        .field-group {
-            margin-bottom: 18px;
+        /* ---- Form ---- */
+        .field-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
-        .field-label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #444;
-            margin-bottom: 6px;
-        }
-
-        .field-label .required {
-            color: #f27a24;
+        .field {
+            flex: 1;
+            min-width: 0;
         }
 
         .field-input,
         .field-textarea {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid #e8ecf0;
-            border-radius: 8px;
+            border: 1px solid #dcdfe3;
+            border-radius: 6px;
             font-size: 14px;
             color: #333;
-            transition: border-color 0.3s;
+            font-family: inherit;
+            background: #fff;
             outline: none;
-            background: #fafbfc;
             box-sizing: border-box;
+            transition: border-color 0.2s;
         }
 
         .field-input:focus,
         .field-textarea:focus {
-            border-color: #1e4794;
-            background: #fff;
+            border-color: #d61c00;
+        }
+
+        .field-input.has-error,
+        .field-textarea.has-error {
+            border-color: #d61c00;
+            background: #fff6f5;
         }
 
         .field-textarea {
             resize: vertical;
         }
 
-        .btn-contact-submit {
-            background: linear-gradient(135deg, #f27a24, #e66b15);
+        .btn-send {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, #d61c00 0%, #a41400 100%);
             color: #fff;
             border: none;
-            border-radius: 8px;
-            padding: 14px 36px;
-            font-size: 15px;
+            border-radius: 999px;
+            padding: 13px 16px 13px 30px;
+            font-size: 14px;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            text-transform: uppercase;
             letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: box-shadow 0.25s ease, transform 0.25s ease;
         }
 
-        .btn-contact-submit:hover {
-            background: linear-gradient(135deg, #1e4794, #2557b0);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30,71,148,0.3);
-        }
-
-        .form-error-box {
-            background: #fee;
-            border-left: 4px solid #e74c3c;
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 16px;
-            color: #c0392b;
-            font-size: 13px;
-        }
-
-        .form-success-box {
-            background: #efffef;
-            border-left: 4px solid #27ae60;
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 16px;
-            color: #27ae60;
-            font-size: 13px;
-        }
-
-        /* Map box */
-        .contact-map-box {
+        .btn-send .fa {
             background: #fff;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+            color: #d61c00;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
         }
 
+        .btn-send:hover {
+            box-shadow: 0 8px 20px rgba(214, 28, 0, 0.32);
+            transform: translateY(-2px);
+        }
+
+        .btn-send[disabled] {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .form-alert {
+            padding: 11px 15px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            border-left: 4px solid transparent;
+        }
+
+        .form-alert.is-error {
+            background: #fdecea;
+            border-left-color: #d61c00;
+            color: #a41400;
+        }
+
+        .form-alert.is-success {
+            background: #eef9f1;
+            border-left-color: #27ae60;
+            color: #1e8449;
+        }
+
+        /* ---- Bản đồ ---- */
         .map-embed {
-            margin-bottom: 24px;
-            border-radius: 12px;
+            border-radius: 6px;
             overflow: hidden;
+            border: 1px solid #e6e8eb;
+            line-height: 0;
         }
 
-        /* Working hours */
+        /* ---- Giờ làm việc ---- */
         .working-hours {
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 24px;
         }
 
         .hours-title {
             font-size: 16px;
             font-weight: 700;
-            color: #1e4794;
-            margin-bottom: 14px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
         }
 
         .hours-title .fa {
-            color: #f27a24;
+            color: #d61c00;
             margin-right: 6px;
         }
 
@@ -330,15 +373,15 @@
             display: flex;
             justify-content: space-between;
             padding: 7px 0;
-            border-bottom: 1px dashed #eee;
+            border-bottom: 1px dashed #e8e8e8;
             font-size: 14px;
         }
 
         .hours-list .day { color: #444; font-weight: 500; }
-        .hours-list .time { color: #1e4794; font-weight: 600; }
-        .hours-list .closed { color: #e74c3c; }
+        .hours-list .time { color: #1a1a1a; font-weight: 600; }
+        .hours-list .closed { color: #d61c00; }
 
-        /* Social row */
+        /* ---- Social ---- */
         .contact-social-row {
             display: flex;
             gap: 12px;
@@ -352,11 +395,11 @@
             justify-content: center;
             gap: 8px;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 14px;
             font-weight: 600;
             text-decoration: none !important;
-            transition: all 0.3s ease;
+            transition: background 0.25s ease;
         }
 
         .social-contact-btn.facebook {
@@ -366,44 +409,110 @@
 
         .social-contact-btn.facebook:hover {
             background: #1456b5;
-            color: #fff !important;
         }
 
         .social-contact-btn.phone {
-            background: linear-gradient(135deg, #f27a24, #e66b15);
+            background: linear-gradient(135deg, #d61c00 0%, #a41400 100%);
             color: #fff !important;
         }
 
         .social-contact-btn.phone:hover {
-            background: linear-gradient(135deg, #1e4794, #2557b0);
-            color: #fff !important;
+            background: #1a1a1a;
         }
 
-        /* Responsive */
+        /* ---- Responsive ---- */
         @media (max-width: 960px) {
-            .contact-form-box,
-            .contact-map-box {
-                padding: 24px 20px;
-            }
-
-            .form-title {
-                font-size: 22px;
-            }
+            .contact-section-title { font-size: 19px; }
+            .office-card { padding: 22px 20px; }
         }
 
         @media (max-width: 640px) {
-            .contact-page-wrapper {
-                padding: 40px 0 60px;
-            }
-
-            .contact-card {
-                padding: 20px 16px;
-            }
-
-            .contact-social-row {
-                flex-direction: column;
-            }
+            .contact-page-wrapper { padding: 35px 0 55px; }
+            .field-row { flex-direction: column; gap: 14px; }
+            .contact-social-row { flex-direction: column; }
         }
     </style>
+
+    <script>
+        (function () {
+            var form = document.getElementById('contactForm');
+            if (!form) return;
+
+            var alertBox = document.getElementById('contactAlert');
+            var button = form.querySelector('.btn-send');
+
+            function showAlert(message, kind) {
+                alertBox.textContent = message;
+                alertBox.className = 'form-alert is-' + kind;
+                alertBox.hidden = false;
+            }
+
+            function markErrors(names) {
+                form.querySelectorAll('.has-error').forEach(function (el) {
+                    el.classList.remove('has-error');
+                });
+                names.forEach(function (name) {
+                    var field = form.querySelector('[name="' + name + '"]');
+                    if (field) field.classList.add('has-error');
+                });
+            }
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                var data = new FormData(form);
+                var missing = ['name', 'phone', 'email'].filter(function (name) {
+                    return !String(data.get(name) || '').trim();
+                });
+
+                if (missing.length) {
+                    markErrors(missing);
+                    showAlert('Vui lòng nhập đầy đủ họ tên, điện thoại và email.', 'error');
+                    return;
+                }
+
+                markErrors([]);
+                button.disabled = true;
+
+                fetch('{{ route('ajax.contact.advise') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    body: data
+                })
+                    .then(function (response) { return response.json(); })
+                    .then(function (result) {
+                        // Endpoint trả 422 kèm messages theo từng field khi validate lỗi.
+                        if (result.status === 422) {
+                            var fields = Object.keys(result.messages || {}).filter(function (key) {
+                                return result.messages[key];
+                            });
+                            markErrors(fields);
+                            showAlert(fields.map(function (key) {
+                                return result.messages[key];
+                            }).join(' ') || 'Thông tin chưa hợp lệ.', 'error');
+                            return;
+                        }
+
+                        if (result.code === 10) {
+                            form.reset();
+                            showAlert('Gửi thông tin thành công, chúng tôi sẽ liên hệ lại với bạn sớm nhất.', 'success');
+                            return;
+                        }
+
+                        showAlert('Có lỗi xảy ra, bạn vui lòng thử lại.', 'error');
+                    })
+                    .catch(function () {
+                        showAlert('Không gửi được thông tin, bạn vui lòng thử lại.', 'error');
+                    })
+                    .finally(function () {
+                        button.disabled = false;
+                    });
+            });
+        })();
+    </script>
 
 @endsection

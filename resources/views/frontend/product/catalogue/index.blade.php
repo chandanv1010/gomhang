@@ -601,7 +601,7 @@
 .product-title {
     font-size: 13px;
     font-weight: 500;
-    color: #00509d;
+    color: #1a1a1a;
     line-height: 1.4;
     margin: 0 0 10px 0;
     height: 38px;
@@ -823,8 +823,8 @@
     text-align: right;
 }
 .price-filter__field input:focus {
-    border-color: #e02b1d;
-    box-shadow: 0 0 0 3px rgba(224, 43, 29, .13);
+    border-color: #d61c00;
+    box-shadow: 0 0 0 3px rgba(214, 28, 0, .13);
     outline: none;
 }
 .price-filter__dash {
@@ -852,7 +852,7 @@
     background: #e4e4e4;
 }
 .price-slider__range {
-    background: #e02b1d;
+    background: #d61c00;
 }
 .price-slider__input {
     position: absolute;
@@ -874,7 +874,7 @@
     -webkit-appearance: none;
     width: 16px;
     height: 16px;
-    border: 2px solid #e02b1d;
+    border: 2px solid #d61c00;
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
@@ -884,14 +884,14 @@
     pointer-events: auto;
     width: 16px;
     height: 16px;
-    border: 2px solid #e02b1d;
+    border: 2px solid #d61c00;
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
     cursor: pointer;
 }
 .price-slider__input:focus-visible::-webkit-slider-thumb {
-    box-shadow: 0 0 0 3px rgba(224, 43, 29, .3);
+    box-shadow: 0 0 0 3px rgba(214, 28, 0, .3);
 }
 .price-slider__input::-moz-range-track {
     background: none;
@@ -914,7 +914,7 @@
     padding: 9px 12px;
     border: none;
     border-radius: 4px;
-    background: #e02b1d;
+    background: #d61c00;
     color: #fff;
     font-size: 13px;
     font-weight: 700;

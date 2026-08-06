@@ -177,8 +177,8 @@
     font-size: 14px;
 }
 .search-again-input:focus {
-    border-color: #e02b1d;
-    box-shadow: 0 0 0 3px rgba(224, 43, 29, .15);
+    border-color: #d61c00;
+    box-shadow: 0 0 0 3px rgba(214, 28, 0, .15);
     outline: none;
 }
 .search-again-btn {
@@ -186,7 +186,7 @@
     padding: 11px 22px;
     border: none;
     border-radius: 6px;
-    background: #e02b1d;
+    background: #d61c00;
     color: #fff;
     font-size: 14px;
     font-weight: 700;
@@ -210,9 +210,9 @@
     font-weight: 700;
     text-decoration: none !important;
 }
-.search-tab:hover { color: #e02b1d !important; }
+.search-tab:hover { color: #d61c00 !important; }
 .search-tab.active {
-    background: #e02b1d;
+    background: #d61c00;
     color: #fff !important;
 }
 .search-tab__count {
@@ -285,7 +285,7 @@
     gap: 8px;
 }
 .product-grid-item .product-sale-price {
-    color: #e02b1d;
+    color: #d61c00;
     font-size: 16px;
     font-weight: 700;
 }
@@ -337,7 +337,7 @@
     line-height: 1.35;
 }
 .search-post-item__title a { color: #1a1a1a !important; text-decoration: none !important; }
-.search-post-item__title a:hover { color: #e02b1d !important; }
+.search-post-item__title a:hover { color: #d61c00 !important; }
 .search-post-item__date {
     display: block;
     margin-bottom: 8px;
@@ -351,7 +351,7 @@
     line-height: 1.65;
 }
 .search-post-item__more {
-    color: #e02b1d !important;
+    color: #d61c00 !important;
     font-size: 13.5px;
     font-weight: 700;
     text-decoration: none !important;
@@ -372,7 +372,7 @@
 }
 .search-empty p { margin: 0 0 8px; }
 .search-empty p:last-child { margin-bottom: 0; }
-.search-empty a { color: #e02b1d; font-weight: 700; }
+.search-empty a { color: #d61c00; font-weight: 700; }
 </style>
 
 @endsection

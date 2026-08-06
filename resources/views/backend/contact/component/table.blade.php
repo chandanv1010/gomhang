@@ -7,6 +7,7 @@
             <th>Họ Tên</th>
             <th>Ngày tạo</th>
             <th>Số điện thoại</th>
+            <th>Email</th>
             <th>Địa chỉ</th>
             <th>Lời nhắn</th>
             <th class="text-center">Thao tác</th>
@@ -28,6 +29,9 @@
                     </td>
                     <td>
                         {{ $contact->phone }}
+                    </td>
+                    <td>
+                        {{ $contact->email }}
                     </td>
                     <td>
                         {{ $contact->address }}

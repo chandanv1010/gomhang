@@ -104,8 +104,8 @@
                                         <img src="{{ $image }}" alt="{{ $title }}">
                                     </a>
                                     <div class="info" style="padding: 20px;">
-                                        <div class="date-tag" style="font-size: 12px; color: #f37a20; margin-bottom: 8px;">
-                                            <span class="dot" style="display: inline-block; width: 6px; height: 6px; background: #f37a20; border-radius: 50%; margin-right: 6px; vertical-align: middle;"></span>
+                                        <div class="date-tag" style="font-size: 12px; color: #d61c00; margin-bottom: 8px;">
+                                            <span class="dot" style="display: inline-block; width: 6px; height: 6px; background: #d61c00; border-radius: 50%; margin-right: 6px; vertical-align: middle;"></span>
                                             {{ \Carbon\Carbon::parse($val->created_at)->format('d/m/Y') }}
                                         </div>
                                         <h3 class="title" style="margin: 0 0 10px 0; font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 700; line-height: 1.4;">
@@ -114,7 +114,7 @@
                                         <div class="description" style="font-size: 13.5px; color: #666; line-height: 1.6; margin-bottom: 15px;">
                                             {!! $description !!}
                                         </div>
-                                        <a href="{{ $href }}" class="btn-read-more-news" style="font-size: 13px; font-weight: 700; color: #1e4794; text-decoration: none; text-transform: uppercase;">
+                                        <a href="{{ $href }}" class="btn-read-more-news" style="font-size: 13px; font-weight: 700; color: #1a1a1a; text-decoration: none; text-transform: uppercase;">
                                             Xem chi tiết &rarr;
                                         </a>
                                     </div>

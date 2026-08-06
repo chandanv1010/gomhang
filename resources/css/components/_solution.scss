@@ -66,7 +66,7 @@
                 white-space: nowrap;
 
                 &:hover {
-                    color: #f37a20;
+                    color: #d61c00;
                 }
 
                 &::after {
@@ -77,12 +77,12 @@
                     transform: translateX(-50%);
                     width: 0;
                     height: 2px;
-                    background-color: #f37a20;
+                    background-color: #d61c00;
                     transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
                 }
 
                 &.active {
-                    color: #f37a20;
+                    color: #d61c00;
 
                     &::after {
                         width: 100%;
@@ -183,7 +183,7 @@
                     font-family: 'Manrope', sans-serif;
                     font-size: 24px;
                     font-weight: 700;
-                    color: #e88024;
+                    color: #d61c00;
                     margin: 0 0 20px 0;
                     line-height: 1.4;
 

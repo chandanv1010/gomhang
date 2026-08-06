@@ -138,7 +138,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 40px;
-            border-left: 5px solid #1e4794;
+            border-left: 5px solid #1a1a1a;
         }
 
         .filter-field {
@@ -167,13 +167,13 @@
         }
 
         .filter-select:focus {
-            border-color: #1e4794;
+            border-color: #1a1a1a;
             background-color: #fff;
         }
 
         .btn-filter-submit {
             height: 45px;
-            background: linear-gradient(135deg, #f27a24, #e66b15);
+            background: linear-gradient(135deg, #d61c00, #a41400);
             color: #fff;
             font-size: 15px;
             font-weight: 700;
@@ -189,8 +189,8 @@
         }
 
         .btn-filter-submit:hover {
-            background: linear-gradient(135deg, #1e4794, #2557b0);
-            box-shadow: 0 5px 15px rgba(30,71,148,0.25);
+            background: linear-gradient(135deg, #1a1a1a, #3a3a3a);
+            box-shadow: 0 5px 15px rgba(26,26,26,0.25);
         }
 
         /* Directory layout */
@@ -241,13 +241,13 @@
         .distributor-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            border-color: rgba(30,71,148,0.3);
+            border-color: rgba(26,26,26,0.3);
         }
 
         .distributor-card.active {
-            border-color: #1e4794;
+            border-color: #1a1a1a;
             background: #f8fbff;
-            box-shadow: 0 5px 18px rgba(30,71,148,0.08);
+            box-shadow: 0 5px 18px rgba(26,26,26,0.08);
         }
 
         .distributor-img-box {
@@ -272,14 +272,14 @@
         .distributor-name {
             font-size: 16px;
             font-weight: 700;
-            color: #1e4794;
+            color: #1a1a1a;
             margin-top: 0;
             margin-bottom: 12px;
             line-height: 1.4;
         }
 
         .distributor-card.active .distributor-name {
-            color: #f27a24;
+            color: #d61c00;
         }
 
         .info-item {
@@ -292,7 +292,7 @@
         }
 
         .info-item .icon {
-            color: #f27a24;
+            color: #d61c00;
             flex-shrink: 0;
             width: 15px;
             text-align: center;
@@ -303,7 +303,7 @@
             text-decoration: none;
         }
         .info-item .text a:hover {
-            color: #1e4794;
+            color: #1a1a1a;
         }
 
         .card-footer {
@@ -313,7 +313,7 @@
         .btn-view-map {
             background: #f1f3f5;
             border: none;
-            color: #1e4794;
+            color: #1a1a1a;
             font-size: 12px;
             font-weight: 700;
             padding: 6px 12px;
@@ -325,7 +325,7 @@
 
         .distributor-card.active .btn-view-map,
         .distributor-card:hover .btn-view-map {
-            background: #1e4794;
+            background: #1a1a1a;
             color: #fff;
         }
 

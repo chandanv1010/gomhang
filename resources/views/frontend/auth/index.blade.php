@@ -31,7 +31,7 @@
                 <div class="input-group">
                     <span class="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                            viewBox="0 0 24 24" fill="none" stroke="#e02b1d" stroke-width="1.8"
+                            viewBox="0 0 24 24" fill="none" stroke="#d61c00" stroke-width="1.8"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 
                             2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
@@ -51,7 +51,7 @@
                 <div class="input-group">
                     <span class="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                            viewBox="0 0 24 24" fill="none" stroke="#e02b1d" stroke-width="1.8"
+                            viewBox="0 0 24 24" fill="none" stroke="#d61c00" stroke-width="1.8"
                             stroke-linecap="round" stroke-linejoin="round">
                             <rect x="4" y="10" width="16" height="12" rx="2" ry="2"/>
                             <path d="M8 10V7a4 4 0 0 1 8 0v3" />

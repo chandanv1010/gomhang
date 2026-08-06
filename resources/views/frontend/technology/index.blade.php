@@ -363,7 +363,7 @@
             left: 0;
             width: 60px;
             height: 3px;
-            background: #f37a20;
+            background: #d61c00;
             border-radius: 2px;
         }
 
@@ -384,8 +384,8 @@
         }
 
         .accordion-item.active {
-            border-color: rgba(243, 122, 32, 0.3);
-            box-shadow: 0 5px 15px rgba(243, 122, 32, 0.05);
+            border-color: rgba(214, 28, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(214, 28, 0, 0.05);
         }
 
         .accordion-header {
