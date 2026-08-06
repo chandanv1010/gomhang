@@ -104,8 +104,8 @@
                                         <img src="{{ $image }}" alt="{{ $title }}">
                                     </a>
                                     <div class="info" style="padding: 20px;">
-                                        <div class="date-tag" style="font-size: 12px; color: #d61c00; margin-bottom: 8px;">
-                                            <span class="dot" style="display: inline-block; width: 6px; height: 6px; background: #d61c00; border-radius: 50%; margin-right: 6px; vertical-align: middle;"></span>
+                                        <div class="date-tag" style="font-size: 12px; color: #e01b24; margin-bottom: 8px;">
+                                            <span class="dot" style="display: inline-block; width: 6px; height: 6px; background: #e01b24; border-radius: 50%; margin-right: 6px; vertical-align: middle;"></span>
                                             {{ \Carbon\Carbon::parse($val->created_at)->format('d/m/Y') }}
                                         </div>
                                         <h3 class="title" style="margin: 0 0 10px 0; font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 700; line-height: 1.4;">

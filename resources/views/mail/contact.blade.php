@@ -22,7 +22,7 @@
             .discover-text > *{
                 display: inline-block;
                 padding:10px 25px;
-                background: #d61c00;
+                background: #e01b24;
                 border-radius: 16px;
                 cursor:pointer;
                 color:#fff;
@@ -64,7 +64,7 @@
             }
             .cart-success .table thead>tr th{
                 color:#fff;
-                background: #d61c00;
+                background: #e01b24;
                 font-weight: 500;
                 font-size:14px;
                 vertical-align: middle;

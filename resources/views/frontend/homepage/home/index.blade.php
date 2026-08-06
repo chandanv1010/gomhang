@@ -139,7 +139,7 @@
                         <img src="/userfiles/image/slide/warranty_seal.png" alt="Bảo hành giá" onerror="this.src='/userfiles/image/slide/logo.png'">
                     </div>
                     <div class="warranty-desc-content" style="text-align: left; font-size: 13px; line-height: 1.6; color: #444;">
-                        <p style="margin-top: 0; font-weight: bold; color: #d61c00; text-align: center;">CAM KẾT 4 TỐT:</p>
+                        <p style="margin-top: 0; font-weight: bold; color: #e01b24; text-align: center;">CAM KẾT 4 TỐT:</p>
                         <ul style="padding-left: 15px; margin: 0; list-style-type: disc;">
                             <li style="margin-bottom: 5px;"><b>Sản phẩm Tốt:</b> Nguồn gốc rõ ràng, chất lượng kiểm định kĩ càng.</li>
                             <li style="margin-bottom: 5px;"><b>Dịch vụ Tốt:</b> Giao hàng nhanh chóng, tư vấn tận tâm.</li>
@@ -380,8 +380,8 @@
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 .grid-item-link:hover .grid-item-circle {
-    border-color: #d61c00;
-    box-shadow: 0 3px 8px rgba(214, 28, 0, 0.12);
+    border-color: #e01b24;
+    box-shadow: 0 3px 8px rgba(224, 27, 36, 0.12);
 }
 /* Fill the circle instead of a hard 110px. A fixed width here set the grid
    item's min-content width, and `1fr` means `minmax(auto, 1fr)`, so the columns
@@ -398,7 +398,7 @@
     line-height: 1.3;
 }
 .grid-item-link:hover .grid-item-label {
-    color: #d61c00;
+    color: #e01b24;
 }
 
 /* Pill Tags Cloud styling */
@@ -419,8 +419,8 @@
     transition: all 0.2s;
 }
 .tag-pill-link:hover {
-    border-color: #d61c00;
-    color: #d61c00 !important;
+    border-color: #e01b24;
+    color: #e01b24 !important;
     background-color: #fffaf9;
 }
 
@@ -545,7 +545,7 @@
     -webkit-box-orient: vertical;
 }
 .product-grid-item:hover .product-title {
-    color: #d61c00;
+    color: #e01b24;
 }
 .product-price-row {
     display: flex;
@@ -556,7 +556,7 @@
 .product-sale-price {
     font-size: 15px;
     font-weight: bold;
-    color: #d61c00;
+    color: #e01b24;
 }
 .product-discount-badge {
     border: 1px solid #000;
@@ -660,7 +660,7 @@
 }
 .sidebar-search-submit {
     border: none;
-    background-color: #d61c00;
+    background-color: #e01b24;
     color: #ffffff;
     padding: 8px 12px;
     cursor: pointer;
@@ -773,7 +773,7 @@
     overflow: hidden;
 }
 .news-item-link:hover .news-title-link {
-    color: #d61c00;
+    color: #e01b24;
 }
 
 /* Policy Slide Banners Section */

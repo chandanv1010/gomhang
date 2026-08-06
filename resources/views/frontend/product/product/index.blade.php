@@ -193,7 +193,7 @@
                             {{-- The ids let the flash sale script re-price in place when one
                                  campaign ends and the next takes over. --}}
                             <div class="prd-price-block uk-flex uk-flex-middle" style="gap: 10px; margin-bottom: 18px;">
-                                <span class="price-highlight" id="prd-price-sale" style="color: #d61c00 !important; font-size: 23px; font-weight: 700; margin-left: 0;">
+                                <span class="price-highlight" id="prd-price-sale" style="color: #e01b24 !important; font-size: 23px; font-weight: 700; margin-left: 0;">
                                     {{ convert_price($priceInfo['priceSale'], true) }}đ
                                 </span>
                                 <span class="old-price" id="prd-price-old" style="text-decoration: line-through; color: #9a9a9a; font-size: 13px; @if($priceInfo['percent'] <= 0) display: none; @endif">
@@ -342,7 +342,7 @@
 
                                             if (active) {
                                                 // Open ended campaign: a countdown would be meaningless.
-                                                el.timer.innerHTML = "<div style='color:#d61c00; font-weight:bold;'>Áp dụng đến khi có thông báo mới</div>";
+                                                el.timer.innerHTML = "<div style='color:#e01b24; font-weight:bold;'>Áp dụng đến khi có thông báo mới</div>";
                                                 return;
                                             }
 
@@ -389,11 +389,11 @@
                             <div class="prd-hotlines-box" style="margin-bottom: 25px; font-size: 14px; font-weight: 500; color: #333;">
                                 <div class="hotline-line uk-flex uk-flex-middle" style="margin-bottom: 8px; gap: 8px;">
                                     <span style="display:inline-block; width: 22px; height: 22px; border-radius: 50%; background: #27ae60; color: #fff; text-align: center; line-height: 22px;"><i class="fa fa-phone" style="font-size: 12px;"></i></span>
-                                    <span>Tư vấn, đặt hàng: <b style="color: #d61c00;">08.4224.6006</b> (8h-22h)</span>
+                                    <span>Tư vấn, đặt hàng: <b style="color: #e01b24;">08.4224.6006</b> (8h-22h)</span>
                                 </div>
                                 <div class="hotline-line uk-flex uk-flex-middle" style="gap: 8px;">
                                     <span style="display:inline-block; width: 22px; height: 22px; border-radius: 50%; background: #27ae60; color: #fff; text-align: center; line-height: 22px;"><i class="fa fa-phone" style="font-size: 12px;"></i></span>
-                                    <span>Hướng dẫn, hỗ trợ: <b style="color: #d61c00;">093.443.9055</b> (8h-22h)</span>
+                                    <span>Hướng dẫn, hỗ trợ: <b style="color: #e01b24;">093.443.9055</b> (8h-22h)</span>
                                 </div>
                             </div>
 
@@ -410,9 +410,9 @@
                                             <i class="fa fa-truck"></i> Giao hàng miễn phí (từ 300k).
                                         </p>
                                         <ul style="list-style: none; padding: 0; margin: 0;">
-                                            <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#d61c00;"></i> Số 60 Hàng Đậu, Hoàn Kiếm <b style="color:#d61c00;">0929.460.868</b></li>
-                                            <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#d61c00;"></i> Số 21 Văn Cao, Ba Đình <b style="color:#d61c00;">0898.573.315</b></li>
-                                            <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#d61c00;"></i> Số 370 Xã Đàn, Đống Đa <b style="color:#d61c00;">0943.22.8888</b></li>
+                                            <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#e01b24;"></i> Số 60 Hàng Đậu, Hoàn Kiếm <b style="color:#e01b24;">0929.460.868</b></li>
+                                            <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#e01b24;"></i> Số 21 Văn Cao, Ba Đình <b style="color:#e01b24;">0898.573.315</b></li>
+                                            <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#e01b24;"></i> Số 370 Xã Đàn, Đống Đa <b style="color:#e01b24;">0943.22.8888</b></li>
                                         </ul>
                                         <p style="margin-top: 10px; margin-bottom: 0;">
                                             <a href="/chinh-sach-khach-hang.html" style="color: #1a1a1a; font-weight: bold; text-decoration: none;">Tham khảo 8 chính sách vàng Gomhang.vn &rarr;</a>
@@ -498,7 +498,7 @@
                     <div class="detail-tab-header" style="border-bottom: 2px solid #eeeeee; padding-bottom: 8px; margin-bottom: 20px;">
                         <h2 class="detail-tab-title" style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 0; position: relative; display: inline-block;">
                             MÔ TẢ CHI TIẾT SẢN PHẨM
-                            <span style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: #d61c00;"></span>
+                            <span style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: #e01b24;"></span>
                         </h2>
                     </div>
                     {{-- No inline padding here: an inline style beats the stylesheet, so
@@ -516,7 +516,7 @@
                         <div class="related-header-section" style="border-bottom: 2px solid #eeeeee; padding-bottom: 8px; margin-bottom: 25px;">
                             <h2 class="detail-tab-title" style="font-size: 18px; font-weight: bold; color: #1a1a1a; margin: 0; position: relative; display: inline-block;">
                                 SẢN PHẨM LIÊN QUAN
-                                <span style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: #d61c00;"></span>
+                                <span style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: #e01b24;"></span>
                             </h2>
                         </div>
 
@@ -585,15 +585,15 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.03);
 }
 .vertical-feature-item:hover .feature-icon-circle {
-    border-color: #d61c00;
-    box-shadow: 0 4px 10px rgba(214, 28, 0, 0.08);
+    border-color: #e01b24;
+    box-shadow: 0 4px 10px rgba(224, 27, 36, 0.08);
 }
 .feature-icon-circle i {
     font-size: 20px;
     color: #555;
 }
 .vertical-feature-item:hover .feature-icon-circle i {
-    color: #d61c00;
+    color: #e01b24;
 }
 .feature-label {
     font-size: 11px;
@@ -617,7 +617,7 @@
     text-decoration: none;
 }
 .cat-hero-breadcrumbs a:hover {
-    color: #d61c00;
+    color: #e01b24;
 }
 .cat-hero-breadcrumbs .separator {
     color: #ccc;
@@ -690,7 +690,7 @@
     -webkit-box-orient: vertical;
 }
 .product-grid-item:hover .product-title {
-    color: #d61c00;
+    color: #e01b24;
 }
 .product-price-row {
     display: flex;
@@ -701,7 +701,7 @@
 .product-sale-price {
     font-size: 15px;
     font-weight: bold;
-    color: #d61c00;
+    color: #e01b24;
 }
 .product-discount-badge {
     border: 1px solid #000;
@@ -764,7 +764,7 @@
 }
 .flash-sale-title {
     margin: 0;
-    color: #d61c00;
+    color: #e01b24;
     font-size: 15px;
     font-weight: 700;
     letter-spacing: .4px;
@@ -796,7 +796,7 @@
 }
 .timer-num {
     display: block;
-    color: #d61c00;
+    color: #e01b24;
     font-size: 26px;
     font-weight: 700;
     line-height: 1.15;
@@ -823,16 +823,16 @@
     justify-content: center;
     gap: 2px;
     padding: 6px 4px;
-    border: 1px solid #d61c00;
+    border: 1px solid #e01b24;
     border-radius: 6px;
     background: #fff;
-    color: #d61c00 !important;
+    color: #e01b24 !important;
     text-decoration: none !important;
     transition: background .2s, box-shadow .2s;
 }
 .add-to-cart-badge-btn:hover {
     background: #fff6f5;
-    box-shadow: 0 2px 8px rgba(214, 28, 0, .15);
+    box-shadow: 0 2px 8px rgba(224, 27, 36, .15);
 }
 /* The plus sits on the cart glyph, so the two read as one mark. */
 .cart-icon-stack {
@@ -867,7 +867,7 @@
     padding: 10px 12px;
     border-radius: 6px;
     /* The reference button is a horizontal orange gradient, deeper on the left. */
-    background: linear-gradient(90deg, #d61c00 0%, #d61c00 55%, #d61c00 100%);
+    background: linear-gradient(90deg, #e01b24 0%, #e01b24 55%, #e01b24 100%);
     color: #fff !important;
     text-align: center;
     text-decoration: none !important;
@@ -942,7 +942,7 @@
 .prd-rich-content h4 { font-size: 15px; }
 
 .prd-rich-content p { margin: 0 0 12px; }
-.prd-rich-content a { color: #d61c00; text-decoration: underline; }
+.prd-rich-content a { color: #e01b24; text-decoration: underline; }
 .prd-rich-content strong { color: #222; }
 
 .prd-rich-content ul,
@@ -961,7 +961,7 @@
     margin-bottom: 6px;
     padding-left: 2px;
 }
-.prd-rich-content li::marker { color: #d61c00; }
+.prd-rich-content li::marker { color: #e01b24; }
 
 .prd-rich-content table {
     width: 100%;
@@ -986,7 +986,7 @@
 .prd-rich-content blockquote {
     margin: 0 0 16px;
     padding: 12px 16px;
-    border-left: 3px solid #d61c00;
+    border-left: 3px solid #e01b24;
     background: #fff8f7;
     color: #555;
 }

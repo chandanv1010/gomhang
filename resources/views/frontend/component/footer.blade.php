@@ -166,11 +166,11 @@
     gap: 8px;
 }
 .showroom-list li i {
-    color: #d61c00;
+    color: #e01b24;
     font-size: 14px;
 }
 .contact-phones-list li i {
-    color: #d61c00;
+    color: #e01b24;
     font-size: 12px;
 }
 

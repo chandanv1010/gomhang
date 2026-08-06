@@ -240,7 +240,7 @@
                                 <img src="/userfiles/image/slide/warranty_seal.png" alt="Bảo hành giá" onerror="this.src='/userfiles/image/slide/logo.png'">
                             </div>
                             <div class="warranty-desc-content" style="text-align: left; font-size: 13px; line-height: 1.6; color: #444;">
-                                <p style="margin-top: 0; font-weight: bold; color: #d61c00; text-align: center;">CAM KẾT 4 TỐT:</p>
+                                <p style="margin-top: 0; font-weight: bold; color: #e01b24; text-align: center;">CAM KẾT 4 TỐT:</p>
                                 <ul style="padding-left: 15px; margin: 0; list-style-type: disc;">
                                     <li style="margin-bottom: 5px;"><b>Sản phẩm Tốt:</b> Nguồn gốc rõ ràng, chất lượng kiểm định kĩ càng.</li>
                                     <li style="margin-bottom: 5px;"><b>Dịch vụ Tốt:</b> Giao hàng nhanh chóng, tư vấn tận tâm.</li>
@@ -415,7 +415,7 @@
     text-decoration: none;
 }
 .cat-hero-breadcrumbs a:hover {
-    color: #d61c00;
+    color: #e01b24;
 }
 .cat-hero-breadcrumbs .separator {
     color: #999999;
@@ -469,8 +469,8 @@
     transition: all 0.2s;
 }
 .tag-pill-link:hover {
-    border-color: #d61c00;
-    color: #d61c00;
+    border-color: #e01b24;
+    color: #e01b24;
     background-color: #fff8f7;
 }
 
@@ -510,8 +510,8 @@
 }
 .brand-filter-item:hover,
 .brand-filter-item.active {
-    border-color: #d61c00 !important;
-    color: #d61c00 !important;
+    border-color: #e01b24 !important;
+    color: #e01b24 !important;
     background-color: #fff8f7 !important;
 }
 .brand-count-badge {
@@ -533,7 +533,7 @@
 }
 .results-count .count-num {
     font-weight: bold;
-    color: #d61c00;
+    color: #e01b24;
 }
 .sort-select {
     border: 1px solid #cccccc;
@@ -611,7 +611,7 @@
     -webkit-box-orient: vertical;
 }
 .product-grid-item:hover .product-title {
-    color: #d61c00;
+    color: #e01b24;
 }
 .product-price-row {
     display: flex;
@@ -622,7 +622,7 @@
 .product-sale-price {
     font-size: 15px;
     font-weight: bold;
-    color: #d61c00;
+    color: #e01b24;
 }
 .product-discount-badge {
     border: 1px solid #000;
@@ -695,7 +695,7 @@
 }
 .sidebar-search-submit {
     border: none;
-    background-color: #d61c00;
+    background-color: #e01b24;
     color: #ffffff;
     padding: 8px 12px;
     cursor: pointer;
@@ -823,8 +823,8 @@
     text-align: right;
 }
 .price-filter__field input:focus {
-    border-color: #d61c00;
-    box-shadow: 0 0 0 3px rgba(214, 28, 0, .13);
+    border-color: #e01b24;
+    box-shadow: 0 0 0 3px rgba(224, 27, 36, .13);
     outline: none;
 }
 .price-filter__dash {
@@ -852,7 +852,7 @@
     background: #e4e4e4;
 }
 .price-slider__range {
-    background: #d61c00;
+    background: #e01b24;
 }
 .price-slider__input {
     position: absolute;
@@ -874,7 +874,7 @@
     -webkit-appearance: none;
     width: 16px;
     height: 16px;
-    border: 2px solid #d61c00;
+    border: 2px solid #e01b24;
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
@@ -884,14 +884,14 @@
     pointer-events: auto;
     width: 16px;
     height: 16px;
-    border: 2px solid #d61c00;
+    border: 2px solid #e01b24;
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
     cursor: pointer;
 }
 .price-slider__input:focus-visible::-webkit-slider-thumb {
-    box-shadow: 0 0 0 3px rgba(214, 28, 0, .3);
+    box-shadow: 0 0 0 3px rgba(224, 27, 36, .3);
 }
 .price-slider__input::-moz-range-track {
     background: none;
@@ -914,7 +914,7 @@
     padding: 9px 12px;
     border: none;
     border-radius: 4px;
-    background: #d61c00;
+    background: #e01b24;
     color: #fff;
     font-size: 13px;
     font-weight: 700;
@@ -951,7 +951,7 @@
     transition: all 0.3s ease;
 }
 .brand-logo-card:hover {
-    border-color: #d61c00;
+    border-color: #e01b24;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     transform: translateY(-2px);
 }

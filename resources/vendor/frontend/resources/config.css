@@ -42,8 +42,11 @@ body{
     }
 }
 
+/* Mulish không hề được nhúng ở đâu, nên mọi nút rơi về font mặc định của
+   trình duyệt trong khi cả site dùng Manrope. Cho nút thừa hưởng font của
+   phần tử cha để chữ trong nút khớp với phần còn lại. */
 button{
-    font-family: Mulish;
+    font-family: inherit;
 }
 
 ul{
@@ -666,7 +669,7 @@ ul li{
 .discover-text > *{
     display: inline-block;
     padding:10px 25px;
-    background: #d61c00;
+    background: #e01b24;
     border-radius: 16px;
     cursor:pointer;
     color:#fff;
@@ -708,7 +711,7 @@ ul li{
 }
 .cart-success .table thead>tr th{
     color:#fff;
-    background: #d61c00;
+    background: #e01b24;
     font-weight: 500;
     font-size:14px;
     vertical-align: middle;
@@ -1280,7 +1283,7 @@ ul li{
     padding: 50px 0;
 }
 .add-voucher{
-    background: #d61c00 !important;
+    background: #e01b24 !important;
 }
 .add-voucher .voucher-title,
 .add-voucher .voucher-description > *{

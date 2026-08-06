@@ -243,7 +243,7 @@
 }
 .dropdown-menu-list li a:hover {
     background-color: #f7f7f7;
-    color: #d61c00 !important;
+    color: #e01b24 !important;
 }
 
 /* Right Section: Icons & Search */
@@ -275,14 +275,14 @@
     min-height: 44px;
 }
 .icon-link-item:hover {
-    color: #d61c00 !important;
+    color: #e01b24 !important;
 }
 .cart-badge {
     position: absolute;
     /* Sits on the glyph's top-right corner, not the enlarged tap box's corner. */
     top: 4px;
     right: 4px;
-    background-color: #d61c00;
+    background-color: #e01b24;
     color: #ffffff;
     font-size: 10px;
     font-weight: bold;
@@ -311,7 +311,7 @@
 }
 .search-submit-btn {
     border: none;
-    background-color: #d61c00;
+    background-color: #e01b24;
     color: #ffffff;
     padding: 10px 18px;
     cursor: pointer;
@@ -319,7 +319,7 @@
     transition: background-color 0.2s;
 }
 .search-submit-btn:hover {
-    background-color: #b51700;
+    background-color: #b3151c;
 }
 /* The hamburger is the main navigation control on a phone and was measuring
    17x20 - the smallest tap target on the site. */

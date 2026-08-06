@@ -45,7 +45,7 @@
                 transition: color 0.3s ease;
 
                 &:hover {
-                    color: #d61c00 !important;
+                    color: #e01b24 !important;
                 }
             }
 
@@ -88,8 +88,8 @@
             transition: all 0.3s ease;
 
             &:focus {
-                border-color: #d61c00;
-                box-shadow: 0 0 0 2px rgba(214, 28, 0, 0.1);
+                border-color: #e01b24;
+                box-shadow: 0 0 0 2px rgba(224, 27, 36, 0.1);
             }
         }
     }
@@ -198,7 +198,7 @@
             left: 0;
             width: 40px;
             height: 3px;
-            background: #d61c00;
+            background: #e01b24;
             border-radius: 2px;
         }
     }
@@ -238,7 +238,7 @@
             left: 0;
             width: 30px;
             height: 2px;
-            background: #d61c00;
+            background: #e01b24;
         }
     }
 
@@ -259,7 +259,7 @@
                 gap: 8px;
 
                 input[type="checkbox"] {
-                    accent-color: #d61c00;
+                    accent-color: #e01b24;
                     cursor: pointer;
                 }
             }
@@ -273,7 +273,7 @@
 }
 
 .consultation-form-box {
-    border: 2px solid #d61c00;
+    border: 2px solid #e01b24;
     border-radius: 12px;
     background: #f4fbfb;
     padding: 30px;
@@ -284,7 +284,7 @@
 
     .consult-slogan {
         font-family: var(--second-font), sans-serif;
-        color: #d61c00;
+        color: #e01b24;
         font-weight: 700;
         font-size: 17px;
         margin: 15px 0 25px 0;
@@ -300,7 +300,7 @@
     }
 
     .form-input {
-        border: 1px solid #d61c00;
+        border: 1px solid #e01b24;
         border-radius: 6px;
         padding: 10px 12px;
         background: #fff;
@@ -311,12 +311,12 @@
         outline: none;
 
         &:focus {
-            box-shadow: 0 0 0 2px rgba(214, 28, 0, 0.15);
+            box-shadow: 0 0 0 2px rgba(224, 27, 36, 0.15);
         }
     }
 
     .btn-submit-consult {
-        background: #d61c00;
+        background: #e01b24;
         color: #fff;
         border: none;
         border-radius: 6px;
@@ -327,7 +327,7 @@
         transition: background 0.3s ease;
 
         &:hover {
-            background: #a41400;
+            background: #a4141b;
         }
     }
 }
@@ -363,7 +363,7 @@
             margin-bottom: 8px;
 
             a {
-                color: #d61c00;
+                color: #e01b24;
                 text-decoration: none;
                 font-weight: 600;
 
@@ -388,7 +388,7 @@
         font-size: 16px;
         font-weight: 700;
         color: #333;
-        border-bottom: 2px solid #d61c00;
+        border-bottom: 2px solid #e01b24;
         padding-bottom: 8px;
         margin: 0 0 20px 0;
         position: relative;
@@ -428,7 +428,7 @@
                     a {
                         transition: color 0.3s ease;
                         &:hover {
-                            color: #d61c00;
+                            color: #e01b24;
                         }
                     }
                 }
@@ -522,7 +522,7 @@
                 transition: color 0.3s ease;
 
                 &:hover {
-                    color: #d61c00;
+                    color: #e01b24;
                 }
             }
         }

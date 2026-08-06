@@ -102,7 +102,14 @@
 
                         <button type="submit" class="btn-send">
                             <span>Gửi đi</span>
-                            <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                            <span class="btn-send__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+                                     focusable="false">
+                                    <path d="M4.5 12h14" />
+                                    <path d="M12.5 6l6 6-6 6" />
+                                </svg>
+                            </span>
                         </button>
                     </form>
                 </div>
@@ -168,7 +175,7 @@
             background: linear-gradient(135deg, #f7f7f8 0%, #eeeff1 100%);
             border-radius: 6px;
             padding: 26px 30px;
-            border-left: 4px solid #d61c00;
+            border-left: 4px solid #e01b24;
         }
 
         .office-title {
@@ -196,7 +203,7 @@
         }
 
         .office-list .fa {
-            color: #d61c00;
+            color: #e01b24;
             font-size: 15px;
             width: 16px;
             text-align: center;
@@ -210,7 +217,7 @@
         }
 
         .office-list a {
-            color: #d61c00;
+            color: #e01b24;
             text-decoration: none;
             font-weight: 600;
         }
@@ -238,7 +245,7 @@
             bottom: -2px;
             width: 64px;
             height: 2px;
-            background: #d61c00;
+            background: #e01b24;
         }
 
         /* ---- Form ---- */
@@ -270,12 +277,12 @@
 
         .field-input:focus,
         .field-textarea:focus {
-            border-color: #d61c00;
+            border-color: #e01b24;
         }
 
         .field-input.has-error,
         .field-textarea.has-error {
-            border-color: #d61c00;
+            border-color: #e01b24;
             background: #fff6f5;
         }
 
@@ -287,41 +294,70 @@
             display: inline-flex;
             align-items: center;
             gap: 14px;
-            background: linear-gradient(135deg, #d61c00 0%, #a41400 100%);
+            height: 50px;
+            padding: 0 8px 0 30px;
+            background: #e01b24;
             color: #fff;
             border: none;
             border-radius: 999px;
-            padding: 13px 16px 13px 30px;
+            /* Nút vốn không thừa hưởng font của trang, phải khai báo lại */
+            font-family: inherit;
             font-size: 14px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             cursor: pointer;
-            transition: box-shadow 0.25s ease, transform 0.25s ease;
+            box-shadow: 0 2px 10px rgba(224, 27, 36, 0.26);
+            transition: background-color 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .btn-send .fa {
-            background: #fff;
-            color: #d61c00;
-            border-radius: 50%;
-            width: 26px;
-            height: 26px;
+        .btn-send__icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            transition: transform 0.25s ease, background-color 0.25s ease;
+        }
+
+        /* Mũi tên vẽ bằng SVG thay vì icon font, để không phụ thuộc việc
+           font icon có tải được hay không. */
+        .btn-send__icon svg {
+            display: block;
+            width: 16px;
+            height: 16px;
         }
 
         .btn-send:hover {
-            box-shadow: 0 8px 20px rgba(214, 28, 0, 0.32);
-            transform: translateY(-2px);
+            background: #c2151d;
+            box-shadow: 0 6px 18px rgba(224, 27, 36, 0.34);
+        }
+
+        .btn-send:hover .btn-send__icon {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateX(3px);
+        }
+
+        .btn-send:active {
+            box-shadow: 0 1px 5px rgba(224, 27, 36, 0.3);
+        }
+
+        .btn-send:focus-visible {
+            outline: 2px solid #1a1a1a;
+            outline-offset: 3px;
         }
 
         .btn-send[disabled] {
-            opacity: 0.65;
+            background: #d98a8a;
             cursor: not-allowed;
-            transform: none;
             box-shadow: none;
+        }
+
+        .btn-send[disabled]:hover .btn-send__icon {
+            transform: none;
+            background: rgba(255, 255, 255, 0.18);
         }
 
         .form-alert {
@@ -334,8 +370,8 @@
 
         .form-alert.is-error {
             background: #fdecea;
-            border-left-color: #d61c00;
-            color: #a41400;
+            border-left-color: #e01b24;
+            color: #a4141b;
         }
 
         .form-alert.is-success {
@@ -365,7 +401,7 @@
         }
 
         .hours-title .fa {
-            color: #d61c00;
+            color: #e01b24;
             margin-right: 6px;
         }
 
@@ -379,7 +415,7 @@
 
         .hours-list .day { color: #444; font-weight: 500; }
         .hours-list .time { color: #1a1a1a; font-weight: 600; }
-        .hours-list .closed { color: #d61c00; }
+        .hours-list .closed { color: #e01b24; }
 
         /* ---- Social ---- */
         .contact-social-row {
@@ -412,7 +448,7 @@
         }
 
         .social-contact-btn.phone {
-            background: linear-gradient(135deg, #d61c00 0%, #a41400 100%);
+            background: linear-gradient(135deg, #e01b24 0%, #a4141b 100%);
             color: #fff !important;
         }
 

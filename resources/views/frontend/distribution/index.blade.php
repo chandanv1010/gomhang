@@ -173,7 +173,7 @@
 
         .btn-filter-submit {
             height: 45px;
-            background: linear-gradient(135deg, #d61c00, #a41400);
+            background: linear-gradient(135deg, #e01b24, #a4141b);
             color: #fff;
             font-size: 15px;
             font-weight: 700;
@@ -279,7 +279,7 @@
         }
 
         .distributor-card.active .distributor-name {
-            color: #d61c00;
+            color: #e01b24;
         }
 
         .info-item {
@@ -292,7 +292,7 @@
         }
 
         .info-item .icon {
-            color: #d61c00;
+            color: #e01b24;
             flex-shrink: 0;
             width: 15px;
             text-align: center;

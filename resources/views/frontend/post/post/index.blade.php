@@ -153,7 +153,7 @@
                             {{-- If it is a project, render the project description in a nice info box --}}
                             @if($postCatalogue->canonical === 'du-an-tieu-bieu')
                                 <div class="project-info-card project-info-card-in-content uk-margin-bottom" style="background: #fdfdfd; border: 1px solid #eee; padding: 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
-                                    <h3 class="info-card-title" style="font-family: 'UTM Avo', sans-serif !important; font-weight: bold !important; font-size: 18px; color: #1a1a1a; text-transform: uppercase; border-bottom: 2px solid #d61c00; padding-bottom: 12px; margin-bottom: 20px; text-align: left;">
+                                    <h3 class="info-card-title" style="font-family: 'UTM Avo', sans-serif !important; font-weight: bold !important; font-size: 18px; color: #1a1a1a; text-transform: uppercase; border-bottom: 2px solid #e01b24; padding-bottom: 12px; margin-bottom: 20px; text-align: left;">
                                         Thông tin dự án
                                     </h3>
                                     <div class="project-meta-list" style="font-size: 14px; line-height: 1.8; color: #555; text-align: left;">
