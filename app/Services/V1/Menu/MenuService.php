@@ -53,10 +53,17 @@ class MenuService extends BaseService
             $payload = $request->only('menu', 'menu_catalogue_id');
             if(count($payload['menu']['name'])){
                 foreach($payload['menu']['name'] as $key => $val){
-                    $menuId = $payload['menu']['id'][$key];
+                    // Ô tên để trống thì bỏ qua cả dòng. Middleware
+                    // ConvertEmptyStringsToNull biến '' thành null, mà
+                    // menu_language.name là NOT NULL nên ghi vào là lỗi cả lượt
+                    // lưu. Dòng không có tên thì cũng chẳng có gì để lưu.
+                    if(is_null($val) || trim($val) === ''){
+                        continue;
+                    }
+                    $menuId = $payload['menu']['id'][$key] ?? 0;
                     $menuArray = [
                         'menu_catalogue_id' => $payload['menu_catalogue_id'],
-                        'order' => (int)$payload['menu']['order'][$key],
+                        'order' => (int)($payload['menu']['order'][$key] ?? 0),
                         'user_id' => Auth::id(),
                     ];
                     if($menuId == 0){
@@ -87,8 +94,8 @@ class MenuService extends BaseService
                         $menuSave->languages()->detach([$languageId, $menuSave->id]);
                         $payloadLanguage = [
                             'language_id' => $languageId,
-                            'name' => $val,
-                            'canonical' => $payload['menu']['canonical'][$key]
+                            'name' => trim($val),
+                            'canonical' => $payload['menu']['canonical'][$key] ?? null
                         ];
                         $this->menuRepository->createPivot($menuSave, $payloadLanguage, 'languages');
                     }
@@ -101,8 +108,10 @@ class MenuService extends BaseService
             return true;
         }catch(\Exception $e ){
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            // Trước đây là `echo $e->getMessage();die();` - in thẳng câu SQL thô
+            // ra mặt người dùng và chặn luôn trang. Ghi log rồi trả false để
+            // controller hiện thông báo bình thường.
+            Log::error('Lưu menu thất bại: ' . $e->getMessage());
             return false;
         }
     }
@@ -113,19 +122,26 @@ class MenuService extends BaseService
             $payload = $request->only('menu');
             if(count($payload['menu']['name'])){
                 foreach($payload['menu']['name'] as $key => $val){
-                    $menuId = $payload['menu']['id'][$key];
+                    // Ô tên trống -> bỏ qua dòng. Xem ghi chú ở save().
+                    if(is_null($val) || trim($val) === ''){
+                        continue;
+                    }
+                    $menuId = $payload['menu']['id'][$key] ?? 0;
                     $menuArray = [
                         'menu_catalogue_id' => $menu->menu_catalogue_id,
                         'parent_id' => $menu->id,
-                        'order' => (int)$payload['menu']['order'][$key],
+                        'order' => (int)($payload['menu']['order'][$key] ?? 0),
                         'user_id' => Auth::id(),
                     ];
 
                     if($menuId == 0){
-                        $menuSave = $this->menuRepository->create($menuArray); 
+                        $menuSave = $this->menuRepository->create($menuArray);
                     }else{
-                        $menu = \App\Models\Menu::find($menuId);
-                        if($menu){
+                        // Dùng biến riêng, KHÔNG gán vào $menu: $menu là menu cha
+                        // truyền vào, ghi đè nó thì từ dòng thứ hai trở đi các mục
+                        // con sẽ bị gán sai parent_id và menu_catalogue_id.
+                        $menuHienTai = \App\Models\Menu::find($menuId);
+                        if($menuHienTai){
                             $menuSave = $this->menuRepository->update($menuId, $menuArray);
                         }else{
                             $menuTrashed = \App\Models\Menu::onlyTrashed()->find($menuId);
@@ -141,8 +157,8 @@ class MenuService extends BaseService
                         $menuSave->languages()->detach([$languageId, $menuSave->id]);
                         $payloadLanguage = [
                             'language_id' => $languageId,
-                            'name' => $val,
-                            'canonical' => $payload['menu']['canonical'][$key]
+                            'name' => trim($val),
+                            'canonical' => $payload['menu']['canonical'][$key] ?? null
                         ];
                         $this->menuRepository->createPivot($menuSave, $payloadLanguage, 'languages');
                     }
@@ -154,8 +170,7 @@ class MenuService extends BaseService
             return true;
         }catch(\Exception $e ){
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            Log::error('Lưu menu con thất bại: ' . $e->getMessage());
             return false;
         }
     }
