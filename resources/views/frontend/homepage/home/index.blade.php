@@ -4,13 +4,31 @@
 <div class="uk-container uk-container-center home-content-container">
     
     <!-- Phần 2: Slide Banner nằm dưới header (nằm trong container) -->
+    @php
+        // Đọc từ slide "main-slide" trong admin. Trước đây đường dẫn ảnh ghi cứng
+        // ở đây nên đổi ảnh trong admin không ăn thua gì ngoài trang chủ.
+        $mainSlide = $slides[App\Enums\SlideEnum::MAIN] ?? null;
+        $mainItems = [];
+        if ($mainSlide) {
+            $rawMain = is_array($mainSlide) ? ($mainSlide['item'] ?? '') : ($mainSlide->item ?? '');
+            $mainItems = is_string($rawMain) ? json_decode($rawMain, true) : $rawMain;
+        }
+        $mainItems = array_filter((array) $mainItems, fn ($it) => !empty($it['image']));
+    @endphp
+    @if(!empty($mainItems))
     <div class="main-slide-container mb30">
         <div class="slide-wrapper">
-            <a href="#">
-                <img src="/userfiles/image/slide/slide-1.png" alt="GOMHANG.VN 8 Chính sách đã triển khai" class="slide-banner-img">
-            </a>
+            @foreach($mainItems as $item)
+                <a href="{{ !empty($item['canonical']) ? $item['canonical'] : '#' }}"
+                   target="{{ !empty($item['window']) ? $item['window'] : '_self' }}">
+                    <img src="{{ $item['image'] }}"
+                         alt="{{ $item['alt'] ?? ($item['name'] ?? '') }}"
+                         class="slide-banner-img">
+                </a>
+            @endforeach
         </div>
     </div>
+    @endif
 
     <!-- Phần 3: Danh mục sản phẩm (Accessories Categories from Widget) - Hạn chế tối đa 12 danh mục -->
     @php
