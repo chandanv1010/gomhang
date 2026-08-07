@@ -19,19 +19,46 @@
             <!-- Center: Navigation -->
             <div class="header-center">
                 <!-- Main nav -->
+                {{-- Menu lấy từ Admin -> Menu -> nhóm "Menu chính". Trước đây 4 mục
+                     và 3 mục con ghi cứng ở đây nên sửa menu trong admin không có
+                     tác dụng gì. $menu do MenuComposer nạp sẵn cho mọi trang. --}}
                 <nav class="main-navigation">
                     <ul class="main-menu-list">
-                        <li><a href="/" class="menu-item active">TRANG CHỦ</a></li>
-                        <li class="has-dropdown">
-                            <a href="{{ write_url('phu-kien-dien-thoai') }}" class="menu-item">SẢN PHẨM <i class="fa fa-angle-down"></i></a>
-                            <ul class="dropdown-menu-list">
-                                <li><a href="{{ write_url('phu-kien-theo-chung-loai') }}">Phụ kiện theo chủng loại</a></li>
-                                <li><a href="{{ write_url('phu-kien-iphone') }}">Phụ kiện iPhone</a></li>
-                                <li><a href="{{ write_url('phu-kien-samsung') }}">Phụ kiện Samsung</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="{{ write_url('tin-tuc-gomhang-vn') }}" class="menu-item">KIẾN THỨC</a></li>
-                        <li><a href="{{ route('contact.index') }}" class="menu-item">LIÊN HỆ</a></li>
+                        @foreach($menu['main-menu_array'] ?? [] as $node)
+                            @php
+                                $lang = $node['item']->languages->first();
+                                if (!$lang || !$lang->pivot) { continue; }
+                                $name = $lang->pivot->name;
+                                // canonical rỗng = trang chủ
+                                $link = trim((string) $lang->pivot->canonical) === ''
+                                    ? '/'
+                                    : write_url($lang->pivot->canonical);
+                                $children = $node['children'] ?? [];
+                            @endphp
+                            <li class="{{ count($children) ? 'has-dropdown' : '' }}">
+                                <a href="{{ $link }}"
+                                   class="menu-item {{ $link === '/' && request()->is('/') ? 'active' : '' }}">
+                                    {{ mb_strtoupper($name) }}
+                                    @if(count($children))<i class="fa fa-angle-down"></i>@endif
+                                </a>
+                                @if(count($children))
+                                    <ul class="dropdown-menu-list">
+                                        @foreach($children as $child)
+                                            @php
+                                                $childLang = $child['item']->languages->first();
+                                            @endphp
+                                            @if($childLang && $childLang->pivot)
+                                                <li>
+                                                    <a href="{{ write_url($childLang->pivot->canonical) }}">
+                                                        {{ $childLang->pivot->name }}
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </li>
+                        @endforeach
                     </ul>
                 </nav>
             </div>

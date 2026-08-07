@@ -53,7 +53,11 @@
             <!-- Middle-Right: Điện thoại, liên hệ -->
             <div class="footer-col contact-col">
                 <h2>Điện thoại, liên hệ</h2>
-                <p class="contact-hours">Hoạt động: {{ $system['contact_showroom_hours'] ?? '8h-22h' }}</p>
+                {{-- Không đặt giờ mặc định ghi cứng: xoá giờ trong admin thì phải
+                     mất hẳn dòng này, chứ không rơi về "8h-22h". --}}
+                @if(!empty($system['contact_showroom_hours']))
+                    <p class="contact-hours">Hoạt động: {{ $system['contact_showroom_hours'] }}</p>
+                @endif
                 <ul class="contact-phones-list">
                     <li><i class="fa fa-phone"></i> Gọi mua hàng: <a href="tel:{{ $system['contact_contact_buy'] ?? '0934439055' }}">{{ $system['contact_contact_buy'] ?? '093.443.9055' }}</a></li>
                     <li><i class="fa fa-phone"></i> Gọi tư vấn kỹ thuật: <a href="tel:{{ $system['contact_contact_support'] ?? '0934439055' }}">{{ $system['contact_contact_support'] ?? '093.443.9055' }}</a></li>
