@@ -2,10 +2,9 @@
     <div class="uk-container uk-container-center">
         <!-- Top Columns -->
         <div class="footer-top-row">
-            {{-- Showrooms come from systems (contact_showroom_1..3 and
-                 contact_showroom_hcm_1..3). Hanoi previously rendered only the first
-                 of its three configured addresses, and the HCM block was hardcoded
-                 in this template with no key to edit. --}}
+            {{-- Showroom lấy từ systems (contact_showroom_1..3). Trước đây chỉ hiện
+                 địa chỉ đầu tiên trong ba địa chỉ đã cấu hình. Khối showroom TP.HCM
+                 đã gỡ theo yêu cầu - cửa hàng chỉ có ở Hà Nội. --}}
             <!-- Left: Showroom Hà Nội -->
             @php
                 $showroomsHn = array_values(array_filter([
@@ -22,28 +21,6 @@
                     @endif
                     <ul class="showroom-list">
                         @foreach($showroomsHn as $line)
-                            <li><i class="fa fa-map-marker"></i> {{ $line }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <!-- Middle-Left: Showroom TP. Hồ Chí Minh -->
-            @php
-                $showroomsHcm = array_values(array_filter([
-                    $system['contact_showroom_hcm_1'] ?? null,
-                    $system['contact_showroom_hcm_2'] ?? null,
-                    $system['contact_showroom_hcm_3'] ?? null,
-                ], fn ($line) => trim((string) $line) !== ''));
-            @endphp
-            @if(count($showroomsHcm))
-                <div class="footer-col showroom-col">
-                    <h2>Showroom TP. Hồ Chí Minh</h2>
-                    @if(!empty($system['contact_showroom_hcm_hours']))
-                        <p class="showroom-hours">Mở cửa: {{ $system['contact_showroom_hcm_hours'] }}</p>
-                    @endif
-                    <ul class="showroom-list">
-                        @foreach($showroomsHcm as $line)
                             <li><i class="fa fa-map-marker"></i> {{ $line }}</li>
                         @endforeach
                     </ul>

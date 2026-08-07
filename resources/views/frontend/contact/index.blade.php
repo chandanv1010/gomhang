@@ -130,14 +130,35 @@
                         </iframe>
                     </div>
 
-                    <div class="working-hours">
-                        <h3 class="hours-title"><i class="fa fa-clock-o"></i> Giờ làm việc</h3>
-                        <ul class="hours-list uk-list">
-                            <li><span class="day">Thứ 2 – Thứ 6:</span> <span class="time">8:00 – 18:00</span></li>
-                            <li><span class="day">Thứ 7:</span> <span class="time">8:00 – 12:00</span></li>
-                            <li><span class="day">Chủ nhật:</span> <span class="time closed">Nghỉ</span></li>
-                        </ul>
-                    </div>
+                    {{-- Giờ làm việc lấy từ Admin -> Cấu hình -> "Giờ làm việc
+                         (trang Liên hệ)". Mỗi dòng một mốc, dạng
+                         "Thứ 2 – Thứ 6: 8:00 – 18:00". Để trống thì ẩn cả khối. --}}
+                    @php
+                        $workingHours = [];
+                        foreach (preg_split('#\r\n|\r|\n#', (string) ($system['contact_working_hours'] ?? '')) as $dong) {
+                            $dong = trim($dong);
+                            if ($dong === '') {
+                                continue;
+                            }
+                            // Tách ở dấu hai chấm ĐẦU TIÊN: phần giờ cũng có dấu
+                            // hai chấm ("8:00 – 18:00") nên không tách hết được.
+                            [$ngay, $gio] = array_pad(explode(':', $dong, 2), 2, '');
+                            $workingHours[] = ['ngay' => trim($ngay), 'gio' => trim($gio)];
+                        }
+                    @endphp
+                    @if(count($workingHours))
+                        <div class="working-hours">
+                            <h3 class="hours-title"><i class="fa fa-clock-o"></i> Giờ làm việc</h3>
+                            <ul class="hours-list uk-list">
+                                @foreach($workingHours as $moc)
+                                    <li>
+                                        <span class="day">{{ $moc['ngay'] }}@if($moc['gio'] !== ''):@endif</span>
+                                        <span class="time {{ mb_strtolower($moc['gio']) === 'nghỉ' ? 'closed' : '' }}">{{ $moc['gio'] }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
                     <div class="contact-social-row">
                         <a href="{{ $system['contact_facebook'] ?? '#' }}" target="_blank" rel="noopener"

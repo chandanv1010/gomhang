@@ -80,6 +80,11 @@ class System{
                     ]
                 ],
                 'intro' => ['type' => 'textarea', 'label' => 'Giới thiệu'],
+                'working_hours' => [
+                    'type' => 'textarea',
+                    'label' => 'Giờ làm việc (trang Liên hệ)',
+                    'title' => 'Mỗi dòng một mốc, dạng "Thứ 2 – Thứ 6: 8:00 – 18:00". Để trống thì ẩn khối này.',
+                ],
                 'showroom_hours' => ['type' => 'text', 'label' => 'Giờ mở cửa Showroom'],
                 'showroom_1' => ['type' => 'textarea', 'label' => 'Showroom 1 (Địa chỉ + SĐT)'],
                 'showroom_2' => ['type' => 'textarea', 'label' => 'Showroom 2 (Địa chỉ + SĐT)'],
