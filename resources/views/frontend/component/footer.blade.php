@@ -2,57 +2,90 @@
     <div class="uk-container uk-container-center">
         <!-- Top Columns -->
         <div class="footer-top-row">
-            {{-- Showroom lấy từ systems (contact_showroom_1..3). Trước đây chỉ hiện
-                 địa chỉ đầu tiên trong ba địa chỉ đã cấu hình. Khối showroom TP.HCM
-                 đã gỡ theo yêu cầu - cửa hàng chỉ có ở Hà Nội. --}}
-            <!-- Left: Showroom Hà Nội -->
+            {{-- Cột ngoài cùng bên trái gom TẤT CẢ thông tin liên hệ: địa chỉ,
+                 điện thoại, email, website. Toàn bộ lấy từ Admin -> Cấu hình ->
+                 Thông tin liên hệ, không có giá trị mặc định ghi cứng: xoá trong
+                 admin là mất khỏi footer, chứ không rơi về số cũ. --}}
             @php
-                $showroomsHn = array_values(array_filter([
+                $diaChi = array_values(array_filter([
                     $system['contact_showroom_1'] ?? null,
                     $system['contact_showroom_2'] ?? null,
                     $system['contact_showroom_3'] ?? null,
                 ], fn ($line) => trim((string) $line) !== ''));
+
+                $dienThoai = array_values(array_filter([
+                    ['nhan' => 'Gọi mua hàng', 'so' => $system['contact_contact_buy'] ?? null],
+                    ['nhan' => 'Gọi tư vấn kỹ thuật', 'so' => $system['contact_contact_support'] ?? null],
+                    ['nhan' => 'Gọi bảo hành', 'so' => $system['contact_contact_warranty'] ?? null],
+                    ['nhan' => 'Hợp tác kinh doanh', 'so' => $system['contact_contact_biz'] ?? null],
+                ], fn ($d) => trim((string) $d['so']) !== ''));
+
+                $email = trim((string) ($system['contact_email'] ?? ''));
+                $website = trim((string) ($system['homepage_website'] ?? ''));
             @endphp
-            @if(count($showroomsHn))
-                <div class="footer-col showroom-col">
-                    <h2>Showroom Hà Nội</h2>
-                    @if(!empty($system['contact_showroom_hours']))
-                        <p class="showroom-hours">Mở cửa: {{ $system['contact_showroom_hours'] }}</p>
-                    @endif
-                    <ul class="showroom-list">
-                        @foreach($showroomsHn as $line)
+
+            <div class="footer-col contact-info-col">
+                <h2>Thông tin liên hệ</h2>
+
+                @if(count($diaChi))
+                    <ul class="footer-info-list">
+                        @foreach($diaChi as $line)
                             <li><i class="fa fa-map-marker"></i> {{ $line }}</li>
                         @endforeach
                     </ul>
-                </div>
-            @endif
-
-            <!-- Middle-Right: Điện thoại, liên hệ -->
-            <div class="footer-col contact-col">
-                <h2>Điện thoại, liên hệ</h2>
-                {{-- Không đặt giờ mặc định ghi cứng: xoá giờ trong admin thì phải
-                     mất hẳn dòng này, chứ không rơi về "8h-22h". --}}
-                @if(!empty($system['contact_showroom_hours']))
-                    <p class="contact-hours">Hoạt động: {{ $system['contact_showroom_hours'] }}</p>
                 @endif
-                <ul class="contact-phones-list">
-                    <li><i class="fa fa-phone"></i> Gọi mua hàng: <a href="tel:{{ $system['contact_contact_buy'] ?? '0934439055' }}">{{ $system['contact_contact_buy'] ?? '093.443.9055' }}</a></li>
-                    <li><i class="fa fa-phone"></i> Gọi tư vấn kỹ thuật: <a href="tel:{{ $system['contact_contact_support'] ?? '0934439055' }}">{{ $system['contact_contact_support'] ?? '093.443.9055' }}</a></li>
-                    <li><i class="fa fa-phone"></i> Gọi bảo hành: <a href="tel:{{ $system['contact_contact_warranty'] ?? '0934439055' }}">{{ $system['contact_contact_warranty'] ?? '093.443.9055' }}</a></li>
-                    <li><i class="fa fa-phone"></i> Hợp tác kinh doanh: <a href="tel:{{ $system['contact_contact_biz'] ?? '0934439055' }}">{{ $system['contact_contact_biz'] ?? '093.443.9055' }}</a></li>
-                </ul>
+
+                @if(count($dienThoai))
+                    <ul class="footer-info-list">
+                        @foreach($dienThoai as $d)
+                            <li>
+                                <i class="fa fa-phone"></i> {{ $d['nhan'] }}:
+                                <a href="tel:{{ preg_replace('#[^0-9+]#', '', $d['so']) }}">{{ $d['so'] }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                @if($email !== '' || $website !== '')
+                    <ul class="footer-info-list">
+                        @if($email !== '')
+                            <li><i class="fa fa-envelope-o"></i> <a href="mailto:{{ $email }}">{{ $email }}</a></li>
+                        @endif
+                        @if($website !== '')
+                            <li>
+                                <i class="fa fa-globe"></i>
+                                <a href="{{ $website }}" target="_blank" rel="noopener">{{ system_website_label($system ?? null) }}</a>
+                            </li>
+                        @endif
+                    </ul>
+                @endif
             </div>
 
-            <!-- Right: Hỗ trợ & Chính sách -->
-            <div class="footer-col policies-col">
-                <h2>Chính sách & Hỗ trợ</h2>
-                <ul class="showroom-list">
-                    <li><i class="fa fa-angle-right"></i> <a href="{{ $system['contact_footer_shipping_link'] ?? '#' }}">Chính sách vận chuyển</a></li>
-                    <li><i class="fa fa-angle-right"></i> <a href="{{ $system['contact_footer_privacy_link'] ?? '#' }}">Chính sách bảo mật</a></li>
-                    <li><i class="fa fa-angle-right"></i> <a href="{{ $system['contact_footer_warranty_link'] ?? '#' }}">Chính sách bảo hành</a></li>
-                    <li><i class="fa fa-angle-right"></i> <a href="{{ $system['contact_footer_shop_link'] ?? '#' }}">Địa chỉ shop</a></li>
-                </ul>
-            </div>
+            {{-- Các cột bên phải là menu chân trang trong admin: mỗi mục cấp 1 là
+                 một cột, các mục con là link. Thêm bớt cột ngay trong
+                 Admin -> Menu -> Menu chân trang. --}}
+            @foreach($menu['footer-menu'] ?? [] as $cot)
+                @php
+                    $cotLang = $cot['item']->languages->first();
+                    $cotCon = $cot['children'] ?? [];
+                @endphp
+                @if($cotLang && $cotLang->pivot && count($cotCon))
+                    <div class="footer-col footer-menu-col">
+                        <h2>{{ $cotLang->pivot->name }}</h2>
+                        <ul class="footer-info-list">
+                            @foreach($cotCon as $link)
+                                @php $linkLang = $link['item']->languages->first(); @endphp
+                                @if($linkLang && $linkLang->pivot)
+                                    <li>
+                                        <i class="fa fa-angle-right"></i>
+                                        <a href="{{ write_url($linkLang->pivot->canonical) }}">{{ $linkLang->pivot->name }}</a>
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            @endforeach
         </div>
 
         <!-- Middle Row: BCT Red Logo and Policies link -->
@@ -64,26 +97,46 @@
                     </a>
                 </div>
             @endif
-            <div class="policies-info-box">
-                <div class="policies-top-links">
-                    <span>Hotline: {{ $system['contact_contact_buy'] ?? '' }}</span> – 
-                    <span>Giao hàng toàn quốc, thanh toán sau khi kiểm tra</span> – 
-                    <a href="{{ $system['contact_footer_shipping_link'] ?? '#' }}"><b>Chính sách vận chuyển</b></a> – 
-                    <a href="{{ $system['contact_footer_shop_link'] ?? '#' }}"><b>Địa chỉ shop</b></a>
-                </div>
-                <div class="policies-bottom-links">
-                    <a href="{{ $system['contact_footer_privacy_link'] ?? '#' }}">Chính sách bảo mật</a> | 
-                    <a href="{{ $system['contact_footer_warranty_link'] ?? '#' }}">Chính sách bảo hành</a>
-                    @if(!empty($system['contact_footer_license']))
-                        | <span>{{ $system['contact_footer_license'] }}</span>
+            {{-- Dòng giữa trước đây ghi cứng câu cam kết và cả nhãn của 4 link
+                 chính sách, dù mấy link đó đã có ở cột bên phải. Giờ chỉ còn
+                 hotline, câu cam kết và giấy phép - đều lấy từ admin, thiếu cái
+                 nào thì ẩn cái đó. --}}
+            @php
+                $hotline = trim((string) ($system['contact_hotline'] ?? $system['contact_contact_buy'] ?? ''));
+                $tagline = trim((string) ($system['contact_footer_tagline'] ?? ''));
+                $license = trim((string) ($system['contact_footer_license'] ?? ''));
+            @endphp
+            @if($hotline !== '' || $tagline !== '' || $license !== '')
+                <div class="policies-info-box">
+                    @if($hotline !== '' || $tagline !== '')
+                        <div class="policies-top-links">
+                            @if($hotline !== '')
+                                <span>Hotline:
+                                    <a href="tel:{{ preg_replace('#[^0-9+]#', '', $hotline) }}">{{ $hotline }}</a>
+                                </span>
+                            @endif
+                            @if($hotline !== '' && $tagline !== '') &ndash; @endif
+                            @if($tagline !== '')
+                                <span>{{ $tagline }}</span>
+                            @endif
+                        </div>
+                    @endif
+                    @if($license !== '')
+                        <div class="policies-bottom-links">
+                            <span>{{ $license }}</span>
+                        </div>
                     @endif
                 </div>
-            </div>
+            @endif
         </div>
 
         <!-- Bottom Row: Copyright -->
         <div class="footer-bottom-row uk-text-center">
-            <p class="copyright-text">{{ $system['contact_footer_copyright'] ?? 'Bản quyền thuộc về Gomhang.vn 2012-2024' }}</p>
+            {{-- Không đặt bản quyền mặc định ghi cứng: xoá trong admin thì phải
+                 mất hẳn, chứ không rơi về tên và năm cũ. --}}
+            @if(!empty($system['contact_footer_copyright']))
+                <p class="copyright-text">{{ $system['contact_footer_copyright'] }}</p>
+            @endif
         </div>
     </div>
 </footer>
@@ -127,32 +180,35 @@
     margin: 0 0 10px 0;
     text-transform: none;
 }
-.showroom-hours,
-.contact-hours {
-    font-size: 12px;
-    color: #888888;
-    margin: 0 0 12px 0;
-}
-.showroom-list,
-.contact-phones-list {
+/* Cột thông tin liên hệ gom nhiều nhóm (địa chỉ / điện thoại / email) nên
+   giãn cách giữa các nhóm, còn trong nhóm thì các dòng sát nhau. */
+.footer-info-list {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 0 0 14px 0;
 }
-.showroom-list li,
-.contact-phones-list li {
+.footer-info-list:last-child {
+    margin-bottom: 0;
+}
+.footer-info-list li {
     margin-bottom: 8px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
+    line-height: 1.5;
 }
-.showroom-list li i {
+.footer-info-list li i {
     color: #e01b24;
-    font-size: 14px;
+    font-size: 13px;
+    margin-top: 3px;
+    flex-shrink: 0;
 }
-.contact-phones-list li i {
-    color: #e01b24;
-    font-size: 12px;
+/* Cột thông tin rộng hơn cột menu vì chứa địa chỉ dài. */
+.contact-info-col {
+    flex: 1.6;
+}
+.footer-menu-col {
+    flex: 1;
 }
 
 /* Middle row layout (BCT logo + policies info) */

@@ -98,6 +98,11 @@ class System{
                 'footer_privacy_link' => ['type' => 'text', 'label' => 'Link chính sách bảo mật'],
                 'footer_warranty_link' => ['type' => 'text', 'label' => 'Link chính sách bảo hành'],
                 'footer_policy_link' => ['type' => 'text', 'label' => 'Link trang 8 chính sách khách hàng'],
+                'footer_tagline' => [
+                    'type' => 'text',
+                    'label' => 'Câu cam kết ở chân trang',
+                    'title' => 'Ví dụ: Giao hàng toàn quốc, thanh toán sau khi kiểm tra',
+                ],
                 'footer_license' => ['type' => 'textarea', 'label' => 'Giấy phép kinh doanh (nội dung)'],
                 'footer_bct_logo' => ['type' => 'images', 'label' => 'Logo Bộ Công Thương'],
                 'footer_bct_link' => ['type' => 'text', 'label' => 'Link đăng ký Bộ Công Thương'],
