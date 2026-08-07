@@ -37,11 +37,17 @@ class AboutController extends FrontendController
         $config = $this->config();
         $system = $this->system;
         
+        // SEO trang này trước đây ghi cứng nội dung của VIREX (ống nước inox,
+        // vật tư công trình) - thương hiệu và ngành hàng hoàn toàn khác, sót lại
+        // từ template gốc. Dựng từ tên thương hiệu trong admin.
+        $brand = system_brand($system);
+
         $seo = [
-            'meta_title' => 'Về Chúng Tôi',
-            'meta_description' => 'Tìm hiểu thêm về VIREX - thương hiệu thiết bị, vật tư công trình chất lượng hàng đầu Việt Nam.',
-            'meta_keyword' => 'virex, ong nuoc virex, ong inox virex, thiet bi ve sinh, vat tu cong trinh',
-            'meta_image' => '',
+            'meta_title' => 'Về Chúng Tôi - ' . $brand,
+            'meta_description' => trim((string) ($system['seo_meta_description'] ?? ''))
+                ?: 'Tìm hiểu thêm về ' . $brand . ' - địa chỉ mua sỉ lẻ phụ kiện công nghệ chính hãng.',
+            'meta_keyword' => trim((string) ($system['seo_meta_keyword'] ?? '')),
+            'meta_image' => $system['homepage_logo'] ?? '',
             'canonical' => write_url('gioi-thieu')
         ];
 

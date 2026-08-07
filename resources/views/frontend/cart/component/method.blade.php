@@ -16,7 +16,9 @@
         @endforeach
         <label for="bank" class="uk-flex uk-flex-middle method-item">
             <input type="radio" name="method" value="bank" id="bank">
-            <span class="image"><img src="/userfiles/image/other.png" alt=""></span>
+            {{-- Ảnh /userfiles/image/other.png không tồn tại (404) nên trước đây
+                 chỗ này là icon vỡ. Dùng icon font sẵn có thay cho ảnh. --}}
+            <span class="image"><i class="fa fa-university" style="font-size:22px;color:#e01b24;"></i></span>
             <span class="title">Thanh toán qua ngân hàng</span>
         </label>
         <div class="payment-info" id="bank-info">

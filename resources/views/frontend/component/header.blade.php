@@ -4,9 +4,9 @@
             <!-- Left: Logo -->
             <div class="header-left">
                 <div class="logo">
-                    <a href="/" title="Gomhang">
+                    <a href="/" title="{{ system_brand($system ?? null) }}">
                         @if(!empty($system['homepage_logo']))
-                            <img src="{{ $system['homepage_logo'] }}" alt="Gomhang Logo">
+                            <img src="{{ $system['homepage_logo'] }}" alt="Logo {{ system_brand($system ?? null) }}">
                         @else
                             <div class="logo-fallback">
                                 <span class="logo-g">G</span><span class="logo-text">OMHANG.VN</span>
@@ -85,7 +85,7 @@
         <div class="mobile-menu-header">
             <div class="mobile-menu-logo">
                 <a href="/">
-                    GOMHANG.VN
+                    {{ mb_strtoupper(system_brand($system ?? null)) }}
                 </a>
             </div>
         </div>

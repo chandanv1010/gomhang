@@ -14,6 +14,7 @@ use App\Repositories\Customer\CustomerRepository;
 use App\Repositories\Core\ReviewRepository;
 use App\Repositories\Product\VoucherRepository;
 use App\Repositories\Core\OrderRepository;
+use App\Services\V1\Core\SlideService;
 use App\Services\V1\Core\WidgetService;
 
 
@@ -39,6 +40,8 @@ class ProductController extends FrontendController
     protected $customerRepository;
     protected $orderRepository;
 
+    protected $slideService;
+
     public function __construct(
         ProductCatalogueRepository $productCatalogueRepository,
         ProductCatalogueService $productCatalogueService,
@@ -47,6 +50,7 @@ class ProductController extends FrontendController
         ReviewRepository $reviewRepository,
         VoucherRepository $voucherRepository,
         WidgetService $widgetService,
+        SlideService $slideService,
         VoucherService $voucherService,
         PromotionService $promotionService,
         CustomerRepository $customerRepository,
@@ -59,6 +63,7 @@ class ProductController extends FrontendController
         $this->reviewRepository = $reviewRepository;
         $this->voucherRepository = $voucherRepository;
         $this->widgetService = $widgetService;
+        $this->slideService = $slideService;
         $this->voucherService = $voucherService;
         $this->promotionService = $promotionService;
         $this->customerRepository = $customerRepository;
@@ -154,6 +159,11 @@ class ProductController extends FrontendController
         $customer = Auth::guard('customer')->user();
         $voucher_product = (!is_null($customer)) ? $this->voucherService->getVoucherForProduct($id, $carts, $customer->id) : null;
         $system = $this->system;
+
+        // Khối 4 ảnh cam kết cuối trang. Trước đây 4 đường dẫn ảnh ghi cứng
+        // trong view nên không sửa được từ admin.
+        $slides = $this->slideService->getSlide(['commit-slides'], $this->language);
+
         $seo = seo($product, 1, 'product');
         $schema = $this->schema($product, $productCatalogue, $breadcrumb);
         $template = 'frontend.product.product.index';
@@ -177,6 +187,7 @@ class ProductController extends FrontendController
             'productRelated',
             'children',
             'promotionLeft',
+            'slides',
         ));
     }
 

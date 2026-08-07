@@ -393,7 +393,7 @@
                                 </div>
                                 <div class="hotline-line uk-flex uk-flex-middle" style="gap: 8px;">
                                     <span style="display:inline-block; width: 22px; height: 22px; border-radius: 50%; background: #27ae60; color: #fff; text-align: center; line-height: 22px;"><i class="fa fa-phone" style="font-size: 12px;"></i></span>
-                                    <span>Hướng dẫn, hỗ trợ: <b style="color: #e01b24;">093.443.9055</b> (8h-22h)</span>
+                                    <span>Hướng dẫn, hỗ trợ: <b style="color: #e01b24;">{{ $system['contact_contact_support'] ?? '' }}</b> {{ $system['contact_showroom_hcm_hours'] ?? '' }}</span>
                                 </div>
                             </div>
 
@@ -409,13 +409,35 @@
                                         <p style="margin-top: 0; margin-bottom: 10px; font-weight: 500; color: #27ae60;">
                                             <i class="fa fa-truck"></i> Giao hàng miễn phí (từ 300k).
                                         </p>
+                                        @php
+                                            // Lấy từ admin như footer đang làm. Trước đây 3 showroom
+                                            // ghi cứng ở đây và LỆCH so với admin cả địa chỉ lẫn số
+                                            // điện thoại - khách gọi nhầm số.
+                                            $showroomsHn = array_values(array_filter([
+                                                $system['contact_showroom_1'] ?? null,
+                                                $system['contact_showroom_2'] ?? null,
+                                                $system['contact_showroom_3'] ?? null,
+                                            ], fn ($v) => trim((string) $v) !== ''));
+                                        @endphp
+                                        @if(count($showroomsHn))
                                         <ul style="list-style: none; padding: 0; margin: 0;">
-                                            <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#e01b24;"></i> Số 60 Hàng Đậu, Hoàn Kiếm <b style="color:#e01b24;">0929.460.868</b></li>
-                                            <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#e01b24;"></i> Số 21 Văn Cao, Ba Đình <b style="color:#e01b24;">0898.573.315</b></li>
-                                            <li style="margin-bottom: 6px;"><i class="fa fa-home" style="color:#e01b24;"></i> Số 370 Xã Đàn, Đống Đa <b style="color:#e01b24;">0943.22.8888</b></li>
+                                            @foreach($showroomsHn as $showroom)
+                                                @php
+                                                    // Định dạng đang lưu: "Địa chỉ: số điện thoại"
+                                                    [$diaChi, $dienThoai] = array_pad(explode(':', $showroom, 2), 2, '');
+                                                @endphp
+                                                <li style="margin-bottom: 6px;">
+                                                    <i class="fa fa-home" style="color:#e01b24;"></i>
+                                                    {{ trim($diaChi) }}
+                                                    @if(trim($dienThoai) !== '')
+                                                        <b style="color:#e01b24;">{{ trim($dienThoai) }}</b>
+                                                    @endif
+                                                </li>
+                                            @endforeach
                                         </ul>
+                                        @endif
                                         <p style="margin-top: 10px; margin-bottom: 0;">
-                                            <a href="/chinh-sach-khach-hang.html" style="color: #1a1a1a; font-weight: bold; text-decoration: none;">Tham khảo 8 chính sách vàng Gomhang.vn &rarr;</a>
+                                            <a href="{{ $system['contact_footer_policy_link'] ?? '/chinh-sach-khach-hang.html' }}" style="color: #1a1a1a; font-weight: bold; text-decoration: none;">Tham khảo 8 chính sách vàng {{ system_brand($system ?? null) }} &rarr;</a>
                                         </p>
                                     </div>
                                     <!-- National content -->
@@ -471,25 +493,33 @@
             </div>
         </section>
 
-        <!-- Khối cam kết: 4 cái ảnh liền nhau nằm trong row (work/commit) -->
+        <!-- Khối cam kết: các ảnh cam kết liền nhau (quản lý ở admin) -->
+        @php
+            // Admin -> Slide -> từ khoá "commit-slides". Trước đây 4 đường dẫn
+            // ảnh ghi thẳng vào view nên không đổi được.
+            $commitSlide = $slides['commit-slides'] ?? null;
+            $commitItems = [];
+            if ($commitSlide) {
+                $rawCommit = is_array($commitSlide) ? ($commitSlide['item'] ?? '') : ($commitSlide->item ?? '');
+                $commitItems = is_string($rawCommit) ? json_decode($rawCommit, true) : $rawCommit;
+            }
+            $commitItems = array_filter((array) $commitItems, fn ($it) => !empty($it['image']));
+        @endphp
+        @if(!empty($commitItems))
         <div class="prd-commitments-block uk-container uk-container-center uk-margin-large-top uk-margin-large-bottom">
             <div class="commitments-row-container" style="border-top: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee; padding: 25px 0; background: #ffffff;">
                 <div class="uk-grid uk-grid-width-1-2 uk-grid-width-medium-1-4" data-uk-grid-margin style="text-align: center;">
-                    <div>
-                        <img src="/userfiles/image/commit/giao-hang-toan-quoc-2.jpg" alt="Giao hàng toàn quốc" style="max-height: 80px; display: inline-block;">
-                    </div>
-                    <div>
-                        <img src="/userfiles/image/commit/8-ngay-doi-tra.webp" alt="8 ngày đổi trả" style="max-height: 80px; display: inline-block;">
-                    </div>
-                    <div>
-                        <img src="/userfiles/image/commit/bao-hanh-1-2-nam.jpg" alt="Bảo hành 1-2 năm" style="max-height: 80px; display: inline-block;">
-                    </div>
-                    <div>
-                        <img src="/userfiles/image/commit/support-tron-doi.jpg" alt="Support trọn đời" style="max-height: 80px; display: inline-block;">
-                    </div>
+                    @foreach($commitItems as $item)
+                        <div>
+                            <img src="{{ $item['image'] }}"
+                                 alt="{{ $item['alt'] ?? ($item['name'] ?? '') }}"
+                                 style="max-height: 80px; display: inline-block;">
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- Product Content Details -->
         <div class="block-extend">

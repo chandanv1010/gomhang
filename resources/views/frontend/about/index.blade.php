@@ -5,7 +5,7 @@
     <!-- Section 1: Hero Banner & Thống kê -->
     @php
         $bannerBg = $introduces['block_1_banner_bg'] ?? '/userfiles/image/commit/Vector.png';
-        $bannerTitle = $introduces['block_1_banner_title'] ?? 'VIREX VIỆT NAM';
+        $bannerTitle = $introduces['block_1_banner_title'] ?? mb_strtoupper(system_brand($system ?? null));
         
         $statNum1 = $introduces['block_1_stat_num_1'] ?? '100+';
         $statLbl1 = $introduces['block_1_stat_lbl_1'] ?? 'Chuyên gia';
@@ -72,11 +72,18 @@
         $aboutCat = (isset($aboutWidget->object) && $aboutWidget->object->isNotEmpty()) ? $aboutWidget->object->first() : null;
         $aboutPost = ($aboutCat && $aboutCat->posts->isNotEmpty()) ? $aboutCat->posts->first() : null;
         
+        // Nội dung dự phòng khi chưa có bài trong widget "about-us". Trước đây
+        // chỗ này là giới thiệu của VIREX - ống dẫn nước inox, vật tư công trình,
+        // tức thương hiệu VÀ ngành hàng khác hẳn, sót từ template gốc.
+        // Nên soạn bài giới thiệu thật trong admin: Bài viết -> widget "about-us".
+        $aboutBrand = system_brand($system ?? null);
         $aboutTitle = 'GIỚI THIỆU VỀ CHÚNG TÔI';
-        $aboutHighlight = 'VIREX là đơn vị chuyên cung cấp ống dẫn nước inox không hàn, ống PCCC thép carbon không hàn và phụ kiện công trình hiện đại, chất lượng hàng đầu. Chúng tôi mang đến giải pháp tối ưu cho mọi công trình của bạn.';
-        $aboutContent = '<p>Với triết lý đặt chất lượng sản phẩm và sự an toàn của công trình lên hàng đầu, VIREX luôn nghiên cứu và tuyển chọn kỹ lưỡng các dòng sản phẩm có chất liệu bền bỉ, khả năng chịu lực cao và đạt chuẩn kiểm định nghiêm ngặt.</p><p>Sứ mệnh của chúng tôi là kiến tạo nên những công trình an toàn, bền bỉ và chất lượng cho mọi gia đình Việt, song hành cùng dịch vụ bảo hành và chăm sóc khách hàng chuyên nghiệp, tận tâm nhất.</p>';
-        $aboutMainImage = '/vendor/frontend/img/project/tazen/project_1.png';
-        $aboutSubImage = '/vendor/frontend/img/project/tazen/project_2.png';
+        $aboutHighlight = $aboutBrand . ' là địa chỉ mua sỉ và lẻ phụ kiện công nghệ chính hãng,'
+            . ' cam kết nguồn gốc rõ ràng và giá cạnh tranh.';
+        $aboutContent = '<p>Chúng tôi đặt chất lượng sản phẩm và quyền lợi khách hàng lên hàng đầu:'
+            . ' hàng nhập có nguồn gốc rõ ràng, kiểm tra trước khi giao, đổi trả và bảo hành minh bạch.</p>';
+        $aboutMainImage = $system['homepage_intro_image'] ?? '';
+        $aboutSubImage = '';
 
         if ($aboutPost) {
             $postLang = $aboutPost->languages->first();
@@ -178,9 +185,9 @@
     </div>
 
 
-    <!-- Section 4: Tại sao nên lựa chọn VIREX -->
+    <!-- Section 4: Tại sao nên lựa chọn (tiêu đề lấy từ admin) -->
     @php
-        $whyTitle = $introduces['block_3_why_title'] ?? 'TẠI SAO NÊN LỰA CHỌN VIREX';
+        $whyTitle = $introduces['block_3_why_title'] ?? ('TẠI SAO NÊN LỰA CHỌN ' . mb_strtoupper(system_brand($system ?? null)));
     @endphp
 
     <div class="about-why-section">

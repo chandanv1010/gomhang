@@ -230,26 +230,7 @@
                 <div class="uk-width-large-1-4 right-sidebar-column">
                     
                     <!-- Box 1: Bảo hành giá -->
-                    <div class="sidebar-box warranty-box-container mb20">
-                        <div class="warranty-box-header">
-                            <img src="/userfiles/image/slide/logo.png" alt="" class="warranty-header-icon" onerror="this.style.display='none'">
-                            <h3>BẢO HÀNH GIÁ</h3>
-                        </div>
-                        <div class="warranty-box-body">
-                            <div class="warranty-seal-img-box">
-                                <img src="/userfiles/image/slide/warranty_seal.png" alt="Bảo hành giá" onerror="this.src='/userfiles/image/slide/logo.png'">
-                            </div>
-                            <div class="warranty-desc-content" style="text-align: left; font-size: 13px; line-height: 1.6; color: #444;">
-                                <p style="margin-top: 0; font-weight: bold; color: #e01b24; text-align: center;">CAM KẾT 4 TỐT:</p>
-                                <ul style="padding-left: 15px; margin: 0; list-style-type: disc;">
-                                    <li style="margin-bottom: 5px;"><b>Sản phẩm Tốt:</b> Nguồn gốc rõ ràng, chất lượng kiểm định kĩ càng.</li>
-                                    <li style="margin-bottom: 5px;"><b>Dịch vụ Tốt:</b> Giao hàng nhanh chóng, tư vấn tận tâm.</li>
-                                    <li style="margin-bottom: 5px;"><b>Bảo hành Tốt:</b> Lỗi 1 đổi 1 nhanh chóng, uy tín.</li>
-                                    <li style="margin-bottom: 5px;"><b>Giá thành Tốt:</b> Cam kết mức giá cạnh tranh nhất.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    @include('frontend.component.warrantyBox')
 
                     <!-- Box 2: Search Box inside this catalogue -->
                     <div class="sidebar-box search-box-container mb20">
@@ -349,7 +330,7 @@
                     <!-- Box 4: Giới thiệu Gom -->
                     <div class="sidebar-box intro-box-container">
                         <div class="intro-box-header">
-                            <img src="/userfiles/image/slide/logo.png" alt="" class="intro-header-icon" onerror="this.style.display='none'">
+                            <img src="{{ $system['homepage_logo'] ?? '' }}" alt="" class="intro-header-icon" onerror="this.style.display='none'">
                             <h3>Giới thiệu {{ system_brand($system ?? null) }}</h3>
                         </div>
                         <div class="intro-box-body">
@@ -359,7 +340,7 @@
                                     <span>YOUTUBE</span>
                                 </a>
                                 <a href="{{ $system['homepage_intro_tiktok'] ?? '#' }}" target="_blank" class="social-btn tiktok-btn">
-                                    <img src="/userfiles/image/slide/logo.png" alt="TikTok" style="width: 14px; height: 14px; margin-right: 4px; display: inline-block; vertical-align: middle; filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+                                    <img src="{{ $system['homepage_logo'] ?? '' }}" alt="TikTok" style="width: 14px; height: 14px; margin-right: 4px; display: inline-block; vertical-align: middle; filter: brightness(0) invert(1);" onerror="this.style.display='none'">
                                     <span>{{ system_website_label($system ?? null) }}</span>
                                 </a>
                             </div>
