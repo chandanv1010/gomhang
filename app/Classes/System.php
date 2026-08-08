@@ -142,6 +142,18 @@ class System{
 
         
         
+        $data['product'] = [
+            'label' => 'Cấu hình trang sản phẩm',
+            'description' => 'Nội dung hiển thị trên trang chi tiết sản phẩm.',
+            'value' => [
+                'note' => [
+                    'type' => 'editor',
+                    'label' => 'Ghi chú dưới phần thông tin sản phẩm',
+                    'title' => 'Hiện ngay dưới khối ảnh và thông tin sản phẩm. Để trống thì ẩn hẳn.',
+                ],
+            ]
+        ];
+
         $data['script'] = [
             'label' => 'Cấu hình script',
             'description' => '',

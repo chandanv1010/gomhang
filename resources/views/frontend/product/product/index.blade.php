@@ -493,6 +493,19 @@
             </div>
         </section>
 
+        {{-- Ghi chú giá, nằm ngay dưới khối ảnh + thông tin sản phẩm vì nó nói về
+             mức giá ở ngay trên. Soạn trong Admin -> Cấu hình -> "Cấu hình trang
+             sản phẩm", ô có trình soạn thảo nên tự đổi được chữ, in đậm, chèn
+             link. Để trống thì ẩn hẳn khối. --}}
+        @if(!empty(trim(strip_tags((string) ($system['product_note'] ?? ''), '<img><br>'))))
+            <div class="uk-container uk-container-center">
+                <div class="prd-note-box">
+                    <i class="fa fa-info-circle prd-note-icon"></i>
+                    <div class="prd-note-content">{!! $system['product_note'] !!}</div>
+                </div>
+            </div>
+        @endif
+
         <!-- Khối cam kết: các ảnh cam kết liền nhau (quản lý ở admin) -->
         @php
             // Admin -> Slide -> từ khoá "commit-slides". Trước đây 4 đường dẫn
@@ -594,6 +607,42 @@
     </div>
 
 <style>
+/* Ghi chú giá dưới khối ảnh + thông tin sản phẩm */
+.prd-note-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff8e6;
+    border: 1px solid #f3d78a;
+    border-left: 4px solid #e01b24;
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-bottom: 30px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #4a3b1a;
+}
+.prd-note-icon {
+    color: #e01b24;
+    font-size: 17px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+/* Nội dung do người dùng soạn trong CKEditor nên phải khử margin thừa của
+   thẻ <p> đầu/cuối, không thì khối bị lệch. */
+.prd-note-content > *:first-child { margin-top: 0; }
+.prd-note-content > *:last-child { margin-bottom: 0; }
+.prd-note-content a {
+    color: #e01b24;
+    font-weight: bold;
+}
+@media (max-width: 767px) {
+    .prd-note-box {
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+}
+
 /* CSS specific to Gallery & Icons (Mockup 3) */
 .vertical-feature-item {
     display: flex;

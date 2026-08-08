@@ -130,6 +130,29 @@
             @endif
         </div>
 
+        {{-- Mạng xã hội: link lấy từ Admin -> Cấu hình -> Mạng xã hội.
+             Kênh nào để trống thì không hiện icon, khỏi dẫn khách tới trang chết. --}}
+        @php
+            $socials = array_values(array_filter([
+                ['ten' => 'Shopee', 'key' => 'social_shopee', 'icon' => 'fa-shopping-bag'],
+                ['ten' => 'TikTok', 'key' => 'social_tiktok', 'icon' => 'fa-music'],
+                ['ten' => 'Facebook', 'key' => 'social_facebook', 'icon' => 'fa-facebook'],
+            ], fn ($s) => trim((string) ($system[$s['key']] ?? '')) !== ''));
+        @endphp
+        @if(count($socials))
+            <div class="footer-social-row">
+                <span class="footer-social-label">Theo dõi chúng tôi:</span>
+                @foreach($socials as $s)
+                    <a href="{{ $system[$s['key']] }}" target="_blank" rel="noopener"
+                       class="footer-social-btn social-{{ mb_strtolower($s['ten']) }}"
+                       title="{{ $s['ten'] }}" aria-label="{{ $s['ten'] }}">
+                        <i class="fa {{ $s['icon'] }}"></i>
+                        <span>{{ $s['ten'] }}</span>
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
         <!-- Bottom Row: Copyright -->
         <div class="footer-bottom-row uk-text-center">
             {{-- Không đặt bản quyền mặc định ghi cứng: xoá trong admin thì phải
@@ -246,6 +269,47 @@
     font-size: 12px;
     color: #888888;
 }
+
+/* Mạng xã hội */
+.footer-social-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 0 4px 0;
+    border-top: 1px solid #2d2d2d;
+    margin-top: 6px;
+}
+.footer-social-label {
+    font-size: 12px;
+    color: #888888;
+    margin-right: 4px;
+}
+.footer-social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border-radius: 4px;
+    background: #2a2a2a;
+    color: #dddddd !important;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .18s ease, color .18s ease;
+}
+.footer-social-btn i {
+    font-size: 14px;
+}
+.footer-social-btn:hover {
+    color: #ffffff !important;
+    text-decoration: none;
+}
+/* Màu thương hiệu của từng kênh, chỉ đổi khi rê chuột cho đỡ rối mắt */
+.footer-social-btn.social-shopee:hover   { background: #ee4d2d; }
+.footer-social-btn.social-tiktok:hover   { background: #010101; }
+.footer-social-btn.social-facebook:hover { background: #1877f2; }
 
 /* Bottom copyright row */
 .copyright-text {
