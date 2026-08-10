@@ -1,6 +1,25 @@
 (function($) {
 	"use strict";
 	var HT = {}; 
+
+    /**
+     * Đọc JSON từ ô input, không ném lỗi.
+     *
+     * Các handler ở đây gắn cấp document nên chạy cả trên trang khác (widget,
+     * ...) - lúc đó $('.input_object') không tồn tại, .val() ra undefined và
+     * JSON.parse(undefined) ném SyntaxError, làm đứt cả chuỗi document.ready.
+     * Lưu ý: `JSON.parse(x) || {}` KHÔNG cứu được vì parse ném trước khi tới ||.
+     */
+    HT.parseJson = (raw, fallback = null) => {
+        if(typeof raw !== 'string' || raw.trim() === ''){
+            return fallback
+        }
+        try {
+            return JSON.parse(raw)
+        } catch (e) {
+            return fallback
+        }
+    }
     var typingTimer;
     var doneTyingInterval = 500; // 1s
 
@@ -71,7 +90,7 @@
     
     HT.renderApplyCondition = () => {
 
-        let applyConditionData = JSON.parse($('.applyStatusList').val())
+        let applyConditionData = HT.parseJson($('.applyStatusList').val())
         let wrapper = $('<div>').addClass('apply-wrapper')
         let wrapperContionItem = $('<div>').addClass('wrapper-condition')
         if(applyConditionData.length){
@@ -116,8 +135,11 @@
 
     HT.checkConditionItemSet = () => {
         let checkedValue = $('.conditionItemSelected').val()
-        if(checkedValue.length && $('.conditionItem').length){
-            checkedValue = JSON.parse(checkedValue)
+        // Hàm này chạy ngay trong document.ready, kể cả trên trang không có
+        // .conditionItemSelected - lúc đó .val() ra undefined, đọc .length là
+        // ném TypeError và đứt phần khởi tạo còn lại.
+        if(typeof checkedValue === 'string' && checkedValue.length && $('.conditionItem').length){
+            checkedValue = HT.parseJson(checkedValue)
             $('.conditionItem').val(checkedValue).trigger('change')
         }
     }
@@ -137,7 +159,7 @@
                     let conditionHiddenInput = $('.condition_input_' + value)
                     let conditionHiddenInputValue = []
                     if(conditionHiddenInput.length){
-                        conditionHiddenInputValue = JSON.parse(conditionHiddenInput.val())
+                        conditionHiddenInputValue = HT.parseJson(conditionHiddenInput.val())
                     }
                     
                     let select = $('<select>')
@@ -246,7 +268,7 @@
 
     HT.renderVoucherTotalOrder = () => {
         let $tr = ''
-        let voucher_total_order = JSON.parse($('.input_voucher_total_order').val()) || {
+        let voucher_total_order = HT.parseJson($('.input_voucher_total_order').val()) || {
             min_order_value: ['0'],
             max_order_value: ['0'],
             max_discount_amount: ['0'],
@@ -331,7 +353,7 @@
     HT.renderVoucherTotalShip = () => {
         let $tr = ''
 
-        let ship_voucher = JSON.parse($('.input_voucher_ship').val()) || {
+        let ship_voucher = HT.parseJson($('.input_voucher_ship').val()) || {
             min_shipping_value: ['0'],
             max_shipping_value: ['0'],
             max_discount_amount: ['0'],
@@ -415,7 +437,7 @@
 
     HT.renderProductAndQuantity = () => {
 
-        let selectData = JSON.parse($('.input-product-and-quantity').val())
+        let selectData = HT.parseJson($('.input-product-and-quantity').val())
 
         let selectHtml = ''
 
@@ -427,7 +449,7 @@
             selectHtml += '<option '+ ((typeof moduleType !== 'undefined' && moduleType.length && moduleType == key) ? 'selected' : '') +'  value="'+key+'" data-model="Product"> '+selectData[key]+' </option>'
         }
 
-        let preloadData = JSON.parse($('.input_product_and_quantity').val()) || {
+        let preloadData = HT.parseJson($('.input_product_and_quantity').val()) || {
             max_discount_amount : ['0'],
             discount_value : ['0'],
             discount_type : ['FIXED'],
@@ -700,7 +722,7 @@
 
     HT.confirmProductPromotion = () => {
 
-        let preloadObject =  JSON.parse($('.input_object').val()) || {
+        let preloadObject =  HT.parseJson($('.input_object').val()) || {
             id: [],
             name: [],
         }

@@ -1,6 +1,25 @@
 (function($) {
 	"use strict";
 	var HT = {}; 
+
+    /**
+     * Đọc JSON từ ô input, không ném lỗi.
+     *
+     * Các handler ở đây gắn cấp document nên chạy cả trên trang khác (widget,
+     * ...) - lúc đó $('.input_object') không tồn tại, .val() ra undefined và
+     * JSON.parse(undefined) ném SyntaxError, làm đứt cả chuỗi document.ready.
+     * Lưu ý: `JSON.parse(x) || {}` KHÔNG cứu được vì parse ném trước khi tới ||.
+     */
+    HT.parseJson = (raw, fallback = null) => {
+        if(typeof raw !== 'string' || raw.trim() === ''){
+            return fallback
+        }
+        try {
+            return JSON.parse(raw)
+        } catch (e) {
+            return fallback
+        }
+    }
     var typingTimer;
     var doneTyingInterval = 300; // 1s
 
@@ -83,7 +102,7 @@
     
     HT.renderApplyCondition = () => {
 
-        let applyConditionData = JSON.parse($('.applyStatusList').val())
+        let applyConditionData = HT.parseJson($('.applyStatusList').val())
         let wrapper = $('<div>').addClass('apply-wrapper')
         let wrapperContionItem = $('<div>').addClass('wrapper-condition')
         if(applyConditionData.length){
@@ -128,8 +147,11 @@
 
     HT.checkConditionItemSet = () => {
         let checkedValue = $('.conditionItemSelected').val()
-        if(checkedValue.length && $('.conditionItem').length){
-            checkedValue = JSON.parse(checkedValue)
+        // Hàm này chạy ngay trong document.ready, kể cả trên trang không có
+        // .conditionItemSelected - lúc đó .val() ra undefined, đọc .length là
+        // ném TypeError và đứt phần khởi tạo còn lại.
+        if(typeof checkedValue === 'string' && checkedValue.length && $('.conditionItem').length){
+            checkedValue = HT.parseJson(checkedValue)
             $('.conditionItem').val(checkedValue).trigger('change')
         }
     }
@@ -149,7 +171,7 @@
                     let conditionHiddenInput = $('.condition_input_' + value)
                     let conditionHiddenInputValue = []
                     if(conditionHiddenInput.length){
-                        conditionHiddenInputValue = JSON.parse(conditionHiddenInput.val())
+                        conditionHiddenInputValue = HT.parseJson(conditionHiddenInput.val())
                     }
                     
                     let select = $('<select>')
@@ -344,7 +366,7 @@
     }
 
     HT.renderBuyCombo = () => {
-        let preloadData = JSON.parse($('.input_product_combo').val()) || ''
+        let preloadData = HT.parseJson($('.input_product_combo').val()) || ''
         let searchData = ''
         if(preloadData.price != null){
             searchData += HT.oldChooseData(preloadData);
@@ -564,14 +586,14 @@
     }
 
     HT.renderBuyProductTakeGift = () => {
-        let selectData = JSON.parse($('.input-buy-product-take-gift').val())
+        let selectData = HT.parseJson($('.input-buy-product-take-gift').val())
         let selectHtml = ''
         let moduleType = $('.preload_select-buy-product-take-gift').val()
         for(let key in selectData){
             selectHtml += '<option '+ ((typeof moduleType !== 'undefined' && moduleType.length && moduleType == key) ? 'selected' : '') +'  value="'+key+'"> '+selectData[key]+' </option>'
         }
-        let preloadDataProducts = JSON.parse($('.input_products').val()) || ''
-        let preloadDataProductGifts = JSON.parse($('.input_product_gifts').val()) || ''
+        let preloadDataProducts = HT.parseJson($('.input_products').val()) || ''
+        let preloadDataProductGifts = HT.parseJson($('.input_product_gifts').val()) || ''
         let searchProduct = ''
         let searchProductGift = ''
         if (!preloadDataProducts && !preloadDataProductGifts) {
@@ -993,7 +1015,7 @@
 
     HT.renderOrderAmountRange = () => {
         let $tr = ''
-        let order_amount_range = JSON.parse($('.input_order_amount_range').val()) || {
+        let order_amount_range = HT.parseJson($('.input_order_amount_range').val()) || {
             amountFrom: ['0'],
             amountTo: ['0'],
             amountValue: ['0'],
@@ -1066,7 +1088,7 @@
     }
 
     HT.renderProductAndQuantity = () => {
-        let selectData = JSON.parse($('.input-product-and-quantity').val())
+        let selectData = HT.parseJson($('.input-product-and-quantity').val())
         let selectHtml = ''
         let moduleType = $('.preload_select-product-and-quantity').val()
         
@@ -1074,7 +1096,7 @@
             selectHtml += '<option '+ ((typeof moduleType !== 'undefined' && moduleType.length && moduleType == key) ? 'selected' : '') +'  value="'+key+'"> '+selectData[key]+' </option>'
         }
 
-        let preloadData = JSON.parse($('.input_product_and_quantity').val()) || {
+        let preloadData = HT.parseJson($('.input_product_and_quantity').val()) || {
             quantity: ['1'],
             maxDiscountValue: ['0'],
             discountValue: ['0'],
@@ -1411,7 +1433,7 @@
 
     HT.confirmProductPromotion = () => {
 
-        let preloadObject =  JSON.parse($('.input_object').val()) || {
+        let preloadObject =  HT.parseJson($('.input_object').val()) || {
             id: [],
             product_variant_id: [],
             name: [],
