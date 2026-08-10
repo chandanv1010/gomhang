@@ -30,44 +30,54 @@
     </div>
     @endif
 
-    <!-- Phần 3: Danh mục sản phẩm (Accessories Categories from Widget) - Hạn chế tối đa 12 danh mục -->
+    {{-- Phần 3: Danh mục sản phẩm - hiện ĐÚNG những danh mục được tick trong
+         Admin -> Widget -> "Sản phẩm" (từ khoá solution-product).
+
+         Bản cũ không làm vậy: nó lấy danh mục #4 theo ID ghi cứng rồi đổ ra các
+         danh mục CON của nó, lại lọc tiếp `id >= 7 && id <= 18`. Hậu quả là tick
+         3 danh mục mà ngoài site hiện 9-12 cái khác hẳn, và danh mục tạo mới thì
+         không bao giờ hiện vì ID luôn lớn hơn 18. --}}
     @php
         $productWidget = $widgets['solution-product'] ?? null;
-        $catalogues = (isset($productWidget->object) && $productWidget->object->isNotEmpty()) ? $productWidget->object : collect();
-        // Separate the parent categories by ID
-        $phuKienChungLoai = $catalogues->firstWhere('id', 4); // "Phụ kiện theo chủng loại"
-        $phuKienIphone = $catalogues->firstWhere('id', 5); // "Phụ kiện iPhone"
-        $phuKienSamsung = $catalogues->firstWhere('id', 6); // "Phụ kiện Samsung"
+        $catalogues = (isset($productWidget->object) && $productWidget->object->isNotEmpty())
+            ? $productWidget->object
+            : collect();
+
+        // Truy vấn trả về không theo thứ tự nào cả, nên sắp lại theo đúng thứ tự
+        // đã tick trong widget (model_id). Danh mục nào không có trong danh sách
+        // thì đẩy xuống cuối thay vì rơi mất.
+        $thuTu = collect($productWidget->model_id ?? [])->map(fn ($id) => (int) $id)->values();
+        if ($thuTu->isNotEmpty()) {
+            $catalogues = $catalogues->sortBy(function ($c) use ($thuTu) {
+                $id = is_array($c) ? ($c['id'] ?? 0) : ($c->id ?? 0);
+                $vt = $thuTu->search((int) $id);
+                return $vt === false ? PHP_INT_MAX : $vt;
+            })->values();
+        }
     @endphp
 
-    <!-- Display "Phụ kiện theo chủng loại" as grid of circular icons (Hạn chế tối đa 12 danh mục) -->
-    @if($phuKienChungLoai && !empty($phuKienChungLoai->childrens))
+    @if($catalogues->isNotEmpty())
     <div class="panel-accessories-grid mb30">
         <div class="grid-container">
-            @php
-                // Lấy chính xác 12 danh mục có ID từ 7 đến 18 (theo thứ tự ảnh mẫu)
-                $limitedChildrens = collect($phuKienChungLoai->childrens)
-                    ->filter(function($c) {
-                        $cid = is_array($c) ? ($c['id'] ?? 0) : ($c->id ?? 0);
-                        return $cid >= 7 && $cid <= 18;
-                    })
-                    ->sortBy(function($c) {
-                        $cid = is_array($c) ? ($c['id'] ?? 0) : ($c->id ?? 0);
-                        return $cid;
-                    });
-            @endphp
-            @foreach($limitedChildrens as $child)
+            @foreach($catalogues as $catalogue)
                 @php
-                    $childName = is_array($child) ? ($child['languages']['name'] ?? '') : ($child->languages->name ?? '');
-                    $childImage = is_array($child) ? ($child['image'] ?? '') : ($child->image ?? '');
-                    $childCanonical = is_array($child) ? ($child['languages']['canonical'] ?? '') : ($child->languages->canonical ?? '');
+                    $catName = is_array($catalogue)
+                        ? ($catalogue['languages']['name'] ?? '')
+                        : ($catalogue->languages->name ?? '');
+                    $catImage = is_array($catalogue) ? ($catalogue['image'] ?? '') : ($catalogue->image ?? '');
+                    $catCanonical = is_array($catalogue)
+                        ? ($catalogue['languages']['canonical'] ?? '')
+                        : ($catalogue->languages->canonical ?? '');
                 @endphp
-                <a href="{{ write_url($childCanonical) }}" class="grid-item-link">
-                    <div class="grid-item-circle">
-                        <img src="{{ !empty($childImage) ? $childImage : ($system['homepage_logo'] ?? '') }}" alt="{{ $childName }}">
-                    </div>
-                    <span class="grid-item-label">{{ $childName }}</span>
-                </a>
+                @if($catName !== '')
+                    <a href="{{ write_url($catCanonical) }}" class="grid-item-link">
+                        <div class="grid-item-circle">
+                            <img src="{{ !empty($catImage) ? $catImage : ($system['homepage_logo'] ?? '') }}"
+                                 alt="{{ $catName }}" loading="lazy">
+                        </div>
+                        <span class="grid-item-label">{{ $catName }}</span>
+                    </a>
+                @endif
             @endforeach
         </div>
     </div>

@@ -45,8 +45,9 @@ class HomeController extends FrontendController
             ['keyword' => 'about-us'],
             ['keyword' => 'solution'],
             [
+                // Không cần 'children': khối danh mục ngoài trang chủ hiện đúng
+                // những danh mục được tick trong widget, không đổ ra danh mục con.
                 'keyword' => 'solution-product',
-                'children' => true
             ],
             [
                 'keyword' => 'si-le-cong-nghe',
