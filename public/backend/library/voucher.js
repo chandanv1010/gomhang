@@ -234,7 +234,7 @@
         })
 
         let method = $('.preload_promotionMethod').val()
-        if(method.length && typeof method !== 'undefined'){
+        if(typeof method !== 'undefined' && method.length){
             $('.promotionMethod').val(method).trigger('change')
         }
     }
@@ -424,7 +424,7 @@
         let className = `${moduleType == 'ALL_PRODUCTS' ? 'readonly' : 'product-quantity'}`;
 
         for(let key in selectData){
-            selectHtml += '<option '+ ((moduleType.length && typeof moduleType !== 'undefined' && moduleType == key) ? 'selected' : '') +'  value="'+key+'" data-model="Product"> '+selectData[key]+' </option>'
+            selectHtml += '<option '+ ((typeof moduleType !== 'undefined' && moduleType.length && moduleType == key) ? 'selected' : '') +'  value="'+key+'" data-model="Product"> '+selectData[key]+' </option>'
         }
 
         let preloadData = JSON.parse($('.input_product_and_quantity').val()) || {
@@ -685,7 +685,7 @@
             }))
         }
         
-        if(objectArray.length && typeof objectArray !== 'undefined'){
+        if(typeof objectArray !== 'undefined' && objectArray.length){
             let preloadHtml = HT.renderBoxWrapper(objectArray)
             HT.checkFixGrid(preloadHtml)
         }

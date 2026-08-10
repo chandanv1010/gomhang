@@ -338,7 +338,7 @@
         })
 
         let method = $('.preload_promotionMethod').val()
-        if(method.length && typeof method !== 'undefined'){
+        if(typeof method !== 'undefined' && method.length){
             $('.promotionMethod').val(method).trigger('change')
         }
     }
@@ -568,7 +568,7 @@
         let selectHtml = ''
         let moduleType = $('.preload_select-buy-product-take-gift').val()
         for(let key in selectData){
-            selectHtml += '<option '+ ((moduleType.length && typeof moduleType !== 'undefined' && moduleType == key) ? 'selected' : '') +'  value="'+key+'"> '+selectData[key]+' </option>'
+            selectHtml += '<option '+ ((typeof moduleType !== 'undefined' && moduleType.length && moduleType == key) ? 'selected' : '') +'  value="'+key+'"> '+selectData[key]+' </option>'
         }
         let preloadDataProducts = JSON.parse($('.input_products').val()) || ''
         let preloadDataProductGifts = JSON.parse($('.input_product_gifts').val()) || ''
@@ -1071,7 +1071,7 @@
         let moduleType = $('.preload_select-product-and-quantity').val()
         
         for(let key in selectData){
-            selectHtml += '<option '+ ((moduleType.length && typeof moduleType !== 'undefined' && moduleType == key) ? 'selected' : '') +'  value="'+key+'"> '+selectData[key]+' </option>'
+            selectHtml += '<option '+ ((typeof moduleType !== 'undefined' && moduleType.length && moduleType == key) ? 'selected' : '') +'  value="'+key+'"> '+selectData[key]+' </option>'
         }
 
         let preloadData = JSON.parse($('.input_product_and_quantity').val()) || {
@@ -1400,7 +1400,7 @@
             }))
         }
         
-        if(objectArray.length && typeof objectArray !== 'undefined'){
+        if(typeof objectArray !== 'undefined' && objectArray.length){
             let preloadHtml = HT.renderBoxWrapper(objectArray)
             HT.checkFixGrid(preloadHtml)
         }
