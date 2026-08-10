@@ -359,9 +359,20 @@ if(!function_exists('convertDateTime')){
 if(!function_exists('renderDiscountInformation')){
     function renderDiscountInformation($promotion = null){
         if($promotion->method === 'product_and_quantity'){
-            $discountValue = $promotion->discountInformation['info']['discountValue'];
-            $discountType = ($promotion->discountInformation['info']['discountType'] == 'percent') ? '%' : 'đ';
-            return '<span class="label label-success">'.$discountValue.$discountType.' </span>';
+            // discountInformation là cột json và có thể NULL: khuyến mãi tạo ra mà
+            // chưa nhập mức giảm thì cột này trống. Đọc thẳng ['info']['discountValue']
+            // trên null làm sập cả trang danh sách khuyến mãi.
+            $info = is_array($promotion->discountInformation)
+                ? ($promotion->discountInformation['info'] ?? null)
+                : null;
+
+            if(is_array($info) && isset($info['discountValue']) && $info['discountValue'] !== ''){
+                $discountType = (($info['discountType'] ?? '') == 'percent') ? '%' : 'đ';
+                return '<span class="label label-success">'.$info['discountValue'].$discountType.' </span>';
+            }
+
+            // Chưa có mức giảm thì nói rõ, đừng để ô trống khiến tưởng lỗi.
+            return '<span class="label label-default">Chưa thiết lập</span>';
         }
         return  '<div><a href="'.route('promotion.edit', $promotion->id).'">Xem chi tiết</a></div>';
     }

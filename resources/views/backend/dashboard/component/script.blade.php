@@ -17,12 +17,22 @@
 <script src="{{ asset_v('vendor/backend/library/location.js') }}"></script>
 <script src="{{ asset_v('vendor/backend/library/menu.js') }}"></script>
 <script src="{{ asset_v('vendor/backend/library/order.js') }}"></script>
-<script src="{{ asset_v('vendor/backend/library/promotion.js') }}"></script>
+{{-- promotion.js và voucher.js chỉ dùng cho màn hình khuyến mãi và voucher, nhưng
+     trước đây nạp ở MỌI trang admin. Chúng gắn hàng chục handler ở cấp document
+     với những class trùng tên trang khác (.ajax-search-item, .search-model,
+     .page-link, .deleted...) nên đã làm hỏng chức năng chọn sản phẩm trong widget:
+     handler của promotion chạy trước, đảo data-flag, widget.js đọc phải flag sai.
+
+     Chỉ nạp trên đúng route của chúng. Toàn bộ selector của hai file này chỉ xuất
+     hiện trong view promotion/* và voucher/*, không nơi nào khác. --}}
+@if(request()->routeIs('promotion.*') || request()->routeIs('voucher.*'))
+    <script src="{{ asset_v('vendor/backend/library/promotion.js') }}"></script>
+    <script src="{{ asset_v('vendor/backend/library/voucher.js') }}"></script>
+@endif
 <script src="{{ asset_v('vendor/backend/library/report.js') }}"></script>
 <script src="{{ asset_v('vendor/backend/library/seo.js') }}"></script>
 <script src="{{ asset_v('vendor/backend/library/slide.js') }}"></script>
 <script src="{{ asset_v('vendor/backend/library/variant.js') }}"></script>
-<script src="{{ asset_v('vendor/backend/library/voucher.js') }}"></script>
 <script src="{{ asset_v('vendor/backend/library/widget.js') }}"></script>
 <script src="{{ asset_v('vendor/backend/library/library.js') }}"></script>
 
