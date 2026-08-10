@@ -500,7 +500,7 @@
         @if(!empty(trim(strip_tags((string) ($system['product_note'] ?? ''), '<img><br>'))))
             <div class="uk-container uk-container-center">
                 <div class="prd-note-box">
-                    <i class="fa fa-info-circle prd-note-icon"></i>
+                    <span class="prd-note-badge"><i class="fa fa-info"></i></span>
                     <div class="prd-note-content">{!! $system['product_note'] !!}</div>
                 </div>
             </div>
@@ -609,32 +609,69 @@
 <style>
 /* Ghi chú giá dưới khối ảnh + thông tin sản phẩm */
 .prd-note-box {
+    position: relative;
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    background: #fff8e6;
-    border: 1px solid #f3d78a;
-    border-left: 4px solid #e01b24;
-    border-radius: 4px;
-    padding: 14px 18px;
+    gap: 14px;
+    background: linear-gradient(135deg, #fffaf0 0%, #fff4e0 100%);
+    border: 1px solid #f0d9a8;
+    border-radius: 8px;
+    padding: 18px 22px 18px 20px;
     margin-bottom: 30px;
-    font-size: 14px;
-    line-height: 1.65;
+    font-size: 14.5px;
+    line-height: 1.7;
     color: #4a3b1a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    overflow: hidden;
 }
-.prd-note-icon {
-    color: #e01b24;
-    font-size: 17px;
-    margin-top: 2px;
+/* Vạch đỏ bên trái vẽ bằng ::before thay vì border-left, để bo góc không bị gãy */
+.prd-note-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+    background: #e01b24;
+}
+.prd-note-badge {
     flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #e01b24;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    margin-top: 1px;
 }
 /* Nội dung do người dùng soạn trong CKEditor nên phải khử margin thừa của
    thẻ <p> đầu/cuối, không thì khối bị lệch. */
 .prd-note-content > *:first-child { margin-top: 0; }
 .prd-note-content > *:last-child { margin-bottom: 0; }
+.prd-note-content strong {
+    color: #3a2d10;
+}
+/* Số hotline: cho ra dáng nút bấm gọi, đây là hành động chính của ghi chú này */
 .prd-note-content a {
-    color: #e01b24;
+    display: inline-block;
+    color: #ffffff !important;
+    background: #e01b24;
     font-weight: bold;
+    padding: 1px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .18s ease;
+}
+.prd-note-content a:hover {
+    background: #b3151c;
+    text-decoration: none;
+}
+.prd-note-content a strong {
+    color: #ffffff;
 }
 @media (max-width: 767px) {
     .prd-note-box {
