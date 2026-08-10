@@ -494,17 +494,30 @@
         </section>
 
         {{-- Ghi chú giá, nằm ngay dưới khối ảnh + thông tin sản phẩm vì nó nói về
-             mức giá ở ngay trên. Soạn trong Admin -> Cấu hình -> "Cấu hình trang
-             sản phẩm", ô có trình soạn thảo nên tự đổi được chữ, in đậm, chèn
-             link. Để trống thì ẩn hẳn khối. --}}
-        @if(!empty(trim(strip_tags((string) ($system['product_note'] ?? ''), '<img><br>'))))
-            <div class="uk-container uk-container-center">
-                <div class="prd-note-box">
-                    <span class="prd-note-badge"><i class="fa fa-info"></i></span>
-                    <div class="prd-note-content">{!! $system['product_note'] !!}</div>
-                </div>
+             mức giá ở ngay trên.
+
+             Nội dung mặc định để thẳng ở đây nên `git pull` là hiện ngay, không
+             phải chạy seeder hay nhập gì trong admin. Ai muốn đổi thì vào
+             Admin -> Cấu hình -> "Cấu hình trang sản phẩm" (ô có trình soạn
+             thảo); nhập gì thì phần đó thay cho mặc định này. --}}
+        @php
+            $ghiChuMacDinh = '<p><strong>Lưu ý:</strong> Mức giá trên chỉ mang tính tham khảo, '
+                . 'áp dụng cho khách hàng mua lẻ. Khách sỉ, đại lý và cửa hàng vui lòng liên hệ Hotline '
+                . '<a href="tel:0862542394"><strong>0862 542 394</strong></a> '
+                . 'để được tư vấn, báo giá sỉ và hỗ trợ nhanh nhất.</p>';
+
+            $ghiChu = (string) ($system['product_note'] ?? '');
+            // CKEditor lưu "<p>&nbsp;</p>" khi xoá hết chữ, phải tính là rỗng.
+            if (trim(strip_tags($ghiChu, '<img>')) === '' && stripos($ghiChu, '<img') === false) {
+                $ghiChu = $ghiChuMacDinh;
+            }
+        @endphp
+        <div class="uk-container uk-container-center">
+            <div class="prd-note-box">
+                <span class="prd-note-badge"><i class="fa fa-info"></i></span>
+                <div class="prd-note-content">{!! $ghiChu !!}</div>
             </div>
-        @endif
+        </div>
 
         <!-- Khối cam kết: các ảnh cam kết liền nhau (quản lý ở admin) -->
         @php

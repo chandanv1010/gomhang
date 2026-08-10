@@ -96,7 +96,12 @@ class WidgetController extends Controller
     public function edit($id){
         $this->authorize('modules', 'widget.update');
         $widget = $this->widgetRepository->findById($id);
-        $widget->description = $widget->description[$this->language];
+        // description là cột json, widget nào chưa từng nhập mô tả thì cột này
+        // NULL. Truy cập thẳng [$this->language] trên null làm sập màn hình sửa
+        // widget - đúng lỗi gặp với "si-le-cong-nghe" và "homepage-news".
+        $widget->description = is_array($widget->description)
+            ? ($widget->description[$this->language] ?? null)
+            : null;
         $modelClass = loadClass($widget->model);
 
         $widgetItem = [];
@@ -150,11 +155,11 @@ class WidgetController extends Controller
     public function translate($languageId, $widgetId){
         $this->authorize('modules', 'widget.translate');
         $widget = $this->widgetRepository->findById($widgetId);
-        $widget->jsonDescription = $widget->description;
-        $widget->description = $widget->description[$this->language];
+        $widget->jsonDescription = is_array($widget->description) ? $widget->description : [];
+        $widget->description = $widget->jsonDescription[$this->language] ?? null;
 
         $widgetTranslate = new \stdClass;
-        $widgetTranslate->description = ($widget->jsonDescription[$languageId]) ?? '';
+        $widgetTranslate->description = $widget->jsonDescription[$languageId] ?? '';
 
 
         $translate = $this->languageRepository->findById($languageId);

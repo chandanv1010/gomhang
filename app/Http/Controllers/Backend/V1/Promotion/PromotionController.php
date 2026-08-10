@@ -133,8 +133,9 @@ class PromotionController extends Controller
     public function translate($languageId, $promotionId){
         $this->authorize('modules', 'promotion.translate');
         $promotion = $this->promotionRepository->findById($promotionId);
-        $promotion->jsonDescription = $promotion->description;
-        $promotion->description = $promotion->description[$this->language];
+        // description là cột json, chưa nhập thì NULL - xem ghi chú ở WidgetController.
+        $promotion->jsonDescription = is_array($promotion->description) ? $promotion->description : [];
+        $promotion->description = $promotion->jsonDescription[$this->language] ?? null;
 
         $promotionTranslate = new \stdClass;
         $promotionTranslate->description = ($promotion->jsonDescription[$languageId]) ?? '';

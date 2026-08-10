@@ -131,19 +131,32 @@
         </div>
 
         {{-- Mạng xã hội: link lấy từ Admin -> Cấu hình -> Mạng xã hội.
-             Kênh nào để trống thì không hiện icon, khỏi dẫn khách tới trang chết. --}}
+             Kênh nào để trống thì không hiện icon, khỏi dẫn khách tới trang chết.
+
+             TikTok có TỚI HAI ô trong admin: "Tiktok" (nhóm Mạng xã hội) và
+             "Link Tiktok giới thiệu" (nhóm Thông tin chung). Điền ô nào cũng
+             chạy, ưu tiên ô ở nhóm Mạng xã hội. --}}
         @php
-            $socials = array_values(array_filter([
-                ['ten' => 'Shopee', 'key' => 'social_shopee', 'icon' => 'fa-shopping-bag'],
-                ['ten' => 'TikTok', 'key' => 'social_tiktok', 'icon' => 'fa-music'],
-                ['ten' => 'Facebook', 'key' => 'social_facebook', 'icon' => 'fa-facebook'],
-            ], fn ($s) => trim((string) ($system[$s['key']] ?? '')) !== ''));
+            $socials = [];
+            foreach ([
+                ['ten' => 'Shopee', 'keys' => ['social_shopee'], 'icon' => 'fa-shopping-bag'],
+                ['ten' => 'TikTok', 'keys' => ['social_tiktok', 'homepage_intro_tiktok'], 'icon' => 'fa-music'],
+                ['ten' => 'Facebook', 'keys' => ['social_facebook'], 'icon' => 'fa-facebook'],
+            ] as $kenh) {
+                foreach ($kenh['keys'] as $key) {
+                    $link = trim((string) ($system[$key] ?? ''));
+                    if ($link !== '') {
+                        $socials[] = ['ten' => $kenh['ten'], 'link' => $link, 'icon' => $kenh['icon']];
+                        break;
+                    }
+                }
+            }
         @endphp
         @if(count($socials))
             <div class="footer-social-row">
                 <span class="footer-social-label">Theo dõi chúng tôi:</span>
                 @foreach($socials as $s)
-                    <a href="{{ $system[$s['key']] }}" target="_blank" rel="noopener"
+                    <a href="{{ $s['link'] }}" target="_blank" rel="noopener"
                        class="footer-social-btn social-{{ mb_strtolower($s['ten']) }}"
                        title="{{ $s['ten'] }}" aria-label="{{ $s['ten'] }}">
                         <i class="fa {{ $s['icon'] }}"></i>

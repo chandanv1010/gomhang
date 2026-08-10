@@ -73,7 +73,11 @@ class SlideController extends Controller
     public function edit($id){
         $this->authorize('modules', 'slide.edit');
         $slide = $this->slideRepository->findById($id);
-        $slideItem = $this->slideService->converSlideArray($slide->item[$this->language]);
+        // item là cột json; slide chưa có ảnh nào thì cột này NULL, truy cập
+        // thẳng [$this->language] trên null làm sập màn hình sửa slide.
+        $slideItem = $this->slideService->converSlideArray(
+            is_array($slide->item) ? ($slide->item[$this->language] ?? []) : []
+        );
 
 
         $config = $this->config();
