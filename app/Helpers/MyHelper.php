@@ -1086,3 +1086,26 @@ if (!function_exists('getProductPriceInfo')) {
         ];
     }
 }
+
+if(!function_exists('asset_v')){
+    /**
+     * asset() kèm số phiên bản theo thời điểm sửa file.
+     *
+     * asset() trơn sinh URL không đổi, nên sau khi sửa file JS/CSS thì trình
+     * duyệt vẫn chạy bản cũ trong cache - đã mất một lượt tưởng là chưa sửa
+     * được lỗi. Gắn ?v=<mtime> thì file đổi là URL đổi, tự làm mới cho mọi
+     * người, không phải nhờ ai Ctrl+F5.
+     *
+     * Không tìm thấy file thì trả về asset() thường chứ không chặn trang.
+     */
+    function asset_v(string $path): string
+    {
+        $full = public_path($path);
+
+        if(!is_file($full)){
+            return asset($path);
+        }
+
+        return asset($path) . '?v=' . filemtime($full);
+    }
+}
