@@ -807,6 +807,15 @@ var HT = {};
 
     HT.addProduct = () => {
         $(document).on('click', '.ajax-search-item', function(e){
+            // Trang widget dùng ĐÚNG class .ajax-search-item này. Handler gắn ở
+            // cấp document nên nó cũng chạy trên trang widget: phần append thì vô
+            // hại (không có .search-pd-result) nhưng nó vẫn ĐẢO data-flag, mà
+            // widget.js đọc chính flag đó ngay sau đó -> bấm chọn lại thành bỏ
+            // chọn, bấm bỏ chọn lại thành thêm trùng. Không phải trang của mình
+            // thì thoát ngay, đừng đụng vào flag.
+            if(!$('.search-pd-result').length){
+                return
+            }
             e.preventDefault()
             let _this = $(this)
             let data = _this.data()
