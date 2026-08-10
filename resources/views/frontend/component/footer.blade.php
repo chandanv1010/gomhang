@@ -137,11 +137,16 @@
              "Link Tiktok giới thiệu" (nhóm Thông tin chung). Điền ô nào cũng
              chạy, ưu tiên ô ở nhóm Mạng xã hội. --}}
         @php
+            // Dùng Bootstrap Icons (đã nạp sẵn ở head cho mọi trang) chứ không
+            // dùng Font Awesome: bản ở đây là 4.7.0, chưa có logo TikTok nên
+            // trước đó phải mượn tạm fa-music - ra cái nốt nhạc.
+            // Shopee thì cả hai bộ đều không có logo riêng, dùng icon túi mua
+            // hàng cho sát nghĩa nhất.
             $socials = [];
             foreach ([
-                ['ten' => 'Shopee', 'keys' => ['social_shopee'], 'icon' => 'fa-shopping-bag'],
-                ['ten' => 'TikTok', 'keys' => ['social_tiktok', 'homepage_intro_tiktok'], 'icon' => 'fa-music'],
-                ['ten' => 'Facebook', 'keys' => ['social_facebook'], 'icon' => 'fa-facebook'],
+                ['ten' => 'Shopee', 'keys' => ['social_shopee'], 'icon' => 'bi-bag-fill'],
+                ['ten' => 'TikTok', 'keys' => ['social_tiktok', 'homepage_intro_tiktok'], 'icon' => 'bi-tiktok'],
+                ['ten' => 'Facebook', 'keys' => ['social_facebook'], 'icon' => 'bi-facebook'],
             ] as $kenh) {
                 foreach ($kenh['keys'] as $key) {
                     $link = trim((string) ($system[$key] ?? ''));
@@ -159,7 +164,7 @@
                     <a href="{{ $s['link'] }}" target="_blank" rel="noopener"
                        class="footer-social-btn social-{{ mb_strtolower($s['ten']) }}"
                        title="{{ $s['ten'] }}" aria-label="{{ $s['ten'] }}">
-                        <i class="fa {{ $s['icon'] }}"></i>
+                        <i class="bi {{ $s['icon'] }}"></i>
                         <span>{{ $s['ten'] }}</span>
                     </a>
                 @endforeach
