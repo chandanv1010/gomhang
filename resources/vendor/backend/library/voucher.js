@@ -502,6 +502,10 @@ var HT = {};
     }
 
     HT.loadProduct = (option) => {
+        // Thiếu model thì đừng gọi: server đọc thẳng $get['model'] nên sẽ lỗi.
+        if(typeof option === 'undefined' || !option.model){
+            return
+        }
         $.ajax({
             url: 'ajax/product/loadProductVoucher', 
             type: 'GET', 
@@ -515,6 +519,14 @@ var HT = {};
 
     HT.getPaginationMenu = () => {
         $(document).on('click', '.page-link', function(e){
+            // Handler gắn ở cấp document nên nó chạy trên MỌI trang admin có
+            // các class này - trang widget cũng dùng .search-model và .page-link.
+            // Không có ô chọn model của trang này thì không phải trang của mình:
+            // thoát ngay, nếu không sẽ gửi request thiếu tham số model và server
+            // báo lỗi "Undefined array key model".
+            if(!$('.select-product-and-quantity').length){
+                return
+            }
             e.preventDefault()
             let _this = $(this)
             let option = {
@@ -528,6 +540,14 @@ var HT = {};
 
     HT.productQuantityListProduct = () => {
         $(document).on('click', '.product-quantity', function(e){
+            // Handler gắn ở cấp document nên nó chạy trên MỌI trang admin có
+            // các class này - trang widget cũng dùng .search-model và .page-link.
+            // Không có ô chọn model của trang này thì không phải trang của mình:
+            // thoát ngay, nếu không sẽ gửi request thiếu tham số model và server
+            // báo lỗi "Undefined array key model".
+            if(!$('.select-product-and-quantity').length){
+                return
+            }
             let option = {
                 model: $('.select-product-and-quantity option:selected').data('model'),
             }
@@ -633,6 +653,14 @@ var HT = {};
 
     HT.searchObject = () => {
         $(document).on('keyup', '.search-model', function(e){
+            // Handler gắn ở cấp document nên nó chạy trên MỌI trang admin có
+            // các class này - trang widget cũng dùng .search-model và .page-link.
+            // Không có ô chọn model của trang này thì không phải trang của mình:
+            // thoát ngay, nếu không sẽ gửi request thiếu tham số model và server
+            // báo lỗi "Undefined array key model".
+            if(!$('.select-product-and-quantity').length){
+                return
+            }
             let _this = $(this)
             let keyword = _this.val()
             let option = {

@@ -56,12 +56,21 @@ class ProductController extends Controller
 
     public function loadProductPromotion(Request $request)
     {
-
         $get = $request->input();
 
-        $loadClass = loadClass($get['model']);
+        // 'model' bắt buộc phải có. Trước đây đọc thẳng $get['model'] nên
+        // request thiếu tham số là đổ lỗi 500 - đúng lỗi "Undefined array key
+        // model" gặp khi chọn sản phẩm trong widget. Trả JSON rỗng thay vì sập,
+        // để lỗi phía JS không kéo cả màn hình xuống theo.
+        $model = $get['model'] ?? null;
 
-        if ($get['model'] == 'Product') {
+        if (!in_array($model, ['Product', 'ProductCatalogue'], true)) {
+            return response()->json(['model' => null, 'objects' => []]);
+        }
+
+        $loadClass = loadClass($model);
+
+        if ($model === 'Product') {
             $condition = [
                 ['tb2.language_id', '=', $this->language]
             ];
@@ -70,7 +79,7 @@ class ProductController extends Controller
                 array_push($condition, $keywordCondition);
             }
             $objects = $loadClass->findProductForPromotion($condition);
-        } else if ($get['model'] == 'ProductCatalogue') {
+        } else if ($model === 'ProductCatalogue') {
 
             $conditionArray['keyword'] = ($get['keyword']) ?? null;
             $conditionArray['where'] = [
@@ -94,17 +103,26 @@ class ProductController extends Controller
         }
 
         return response()->json([
-            'model' => ($get['model']) ?? 'Product',
+            'model' => $model,
             'objects' => $objects,
         ]);
     }
 
     public function loadProductVoucher(Request $request)
     {
-
         $get = $request->input();
 
-        $loadClass = loadClass($get['model']);
+        // 'model' bắt buộc phải có. Trước đây đọc thẳng $get['model'] nên
+        // request thiếu tham số là đổ lỗi 500 - đúng lỗi "Undefined array key
+        // model" gặp khi chọn sản phẩm trong widget. Trả JSON rỗng thay vì sập,
+        // để lỗi phía JS không kéo cả màn hình xuống theo.
+        $model = $get['model'] ?? null;
+
+        if (!in_array($model, ['Product', 'ProductCatalogue'], true)) {
+            return response()->json(['model' => null, 'objects' => []]);
+        }
+
+        $loadClass = loadClass($model);
 
         $condition = [
             ['tb2.language_id', '=', $this->language]
@@ -118,7 +136,7 @@ class ProductController extends Controller
         $objects = $loadClass->findProductForVoucher($condition);
 
         return response()->json([
-            'model' => ($get['model']) ?? 'Product',
+            'model' => $model,
             'objects' => $objects,
         ]);
     }
