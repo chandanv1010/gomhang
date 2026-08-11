@@ -387,14 +387,31 @@
 
                             <!-- Advisory Hotline numbers -->
                             <div class="prd-hotlines-box" style="margin-bottom: 25px; font-size: 14px; font-weight: 500; color: #333;">
-                                <div class="hotline-line uk-flex uk-flex-middle" style="margin-bottom: 8px; gap: 8px;">
+                                @php
+                                    // Số điện thoại lấy từ Admin -> Cấu hình -> Thông tin liên hệ.
+                                    // Trước đây số "Tư vấn, đặt hàng" ghi cứng 08.4224.6006 ngay trong
+                                    // view - số đó không có trong admin nên sửa ở admin không ăn thua.
+                                    // Giờ làm việc cũng lấy từ admin; để trống thì không hiện.
+                                    $gioLamViec = trim((string) ($system['contact_showroom_hours'] ?? ''));
+
+                                    $duongDayNong = array_values(array_filter([
+                                        ['nhan' => 'Tư vấn, đặt hàng', 'so' => $system['contact_contact_buy'] ?? null],
+                                        ['nhan' => 'Hướng dẫn, hỗ trợ', 'so' => $system['contact_contact_support'] ?? null],
+                                    ], fn ($d) => trim((string) $d['so']) !== ''));
+                                @endphp
+                                @foreach($duongDayNong as $i => $d)
+                                    <div class="hotline-line uk-flex uk-flex-middle"
+                                         style="{{ $i < count($duongDayNong) - 1 ? 'margin-bottom: 8px;' : '' }} gap: 8px;">
                                     <span style="display:inline-block; width: 22px; height: 22px; border-radius: 50%; background: #27ae60; color: #fff; text-align: center; line-height: 22px;"><i class="fa fa-phone" style="font-size: 12px;"></i></span>
-                                    <span>Tư vấn, đặt hàng: <b style="color: #e01b24;">08.4224.6006</b> (8h-22h)</span>
-                                </div>
-                                <div class="hotline-line uk-flex uk-flex-middle" style="gap: 8px;">
-                                    <span style="display:inline-block; width: 22px; height: 22px; border-radius: 50%; background: #27ae60; color: #fff; text-align: center; line-height: 22px;"><i class="fa fa-phone" style="font-size: 12px;"></i></span>
-                                    <span>Hướng dẫn, hỗ trợ: <b style="color: #e01b24;">{{ $system['contact_contact_support'] ?? '' }}</b> {{ $system['contact_showroom_hcm_hours'] ?? '' }}</span>
-                                </div>
+                                        <span>{{ $d['nhan'] }}:
+                                            <b style="color: #e01b24;">
+                                                <a href="tel:{{ preg_replace('#[^0-9+]#', '', $d['so']) }}"
+                                                   style="color: inherit;">{{ $d['so'] }}</a>
+                                            </b>
+                                            @if($gioLamViec !== '') ({{ $gioLamViec }}) @endif
+                                        </span>
+                                    </div>
+                                @endforeach
                             </div>
 
                             <!-- Shipping / Showrooms tabs box -->
