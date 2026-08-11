@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Trang nội bộ cho nhân viên, không cho máy tìm kiếm thu thập -->
+<meta name="robots" content="noindex, nofollow">
+<title>Hướng dẫn quản trị website</title>
+<style>
+  :root{
+    --do:#e01b24; --do-dam:#b3151c; --den:#1a1a1a;
+    --xam:#5b6470; --xam-nhat:#eef0f3; --vien:#e2e5ea;
+    --vang-nen:#fffaf0; --vang-vien:#f0d9a8;
+    --xanh-nen:#eef7f0; --xanh-vien:#bfe0c8; --xanh:#1f7a3d;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:#f6f7f9; color:var(--den);
+    font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+    font-size:16px; line-height:1.7;
+  }
+  .boc{max-width:1180px; margin:0 auto; padding:0 20px; display:flex; gap:34px; align-items:flex-start}
+
+  /* Đầu trang */
+  header{background:linear-gradient(135deg,#1a1a1a 0%,#33383f 100%); color:#fff; padding:34px 0 30px}
+  header .boc{display:block}
+  header h1{margin:0 0 6px; font-size:27px; letter-spacing:-.3px}
+  header p{margin:0; color:#b9bfc7; font-size:15px}
+
+  /* Mục lục */
+  nav.mucluc{
+    position:sticky; top:24px; flex:0 0 250px; background:#fff; border:1px solid var(--vien);
+    border-radius:10px; padding:18px 16px; margin-top:26px;
+  }
+  nav.mucluc h2{margin:0 0 12px; font-size:12px; letter-spacing:.10em; text-transform:uppercase; color:var(--xam)}
+  nav.mucluc a{display:block; padding:7px 10px; border-radius:6px; color:var(--den);
+    text-decoration:none; font-size:14.5px; border-left:3px solid transparent}
+  nav.mucluc a:hover{background:var(--xam-nhat); border-left-color:var(--do)}
+  nav.mucluc .con{padding-left:22px; font-size:13.5px; color:var(--xam)}
+
+  main{flex:1 1 auto; min-width:0; margin:26px 0 60px}
+  section.bai{background:#fff; border:1px solid var(--vien); border-radius:10px; padding:30px 34px; margin-bottom:26px}
+  section.bai > h2{
+    margin:0 0 4px; font-size:22px; padding-bottom:12px; border-bottom:3px solid var(--do);
+    display:inline-block;
+  }
+  .dan{color:var(--xam); margin:14px 0 26px}
+  h3{margin:32px 0 10px; font-size:17.5px; color:var(--den)}
+  h3 .so{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:27px; height:27px; border-radius:50%; background:var(--do); color:#fff;
+    font-size:14px; font-weight:700; margin-right:9px; vertical-align:2px;
+  }
+  p{margin:0 0 13px}
+  ul,ol{margin:0 0 15px; padding-left:22px}
+  li{margin-bottom:7px}
+  code{
+    background:var(--xam-nhat); padding:2px 7px; border-radius:4px;
+    font-family:'SF Mono',Menlo,Consolas,monospace; font-size:14px; color:var(--do-dam);
+    /* break-word chỉ ngắt khi mã dài không vừa dòng. Dùng break-all như trước
+       thì nó xé cả từ ngắn thành "ht tp s://" trên điện thoại. */
+    overflow-wrap:break-word;
+  }
+  table{width:100%; border-collapse:collapse; margin:0 0 18px; font-size:15px}
+  th,td{border:1px solid var(--vien); padding:9px 13px; text-align:left; vertical-align:top}
+  th{background:var(--xam-nhat); font-weight:600}
+  .canh-bao,.meo{border-radius:8px; padding:14px 18px; margin:0 0 18px; font-size:15px}
+  .canh-bao{background:var(--vang-nen); border:1px solid var(--vang-vien); border-left:4px solid var(--do)}
+  .meo{background:var(--xanh-nen); border:1px solid var(--xanh-vien); border-left:4px solid var(--xanh)}
+  .canh-bao b,.meo b{display:block; margin-bottom:4px}
+  .meo b{color:var(--xanh)}
+  .duong-dan{
+    display:inline-block; background:var(--den); color:#fff; padding:3px 11px;
+    border-radius:5px; font-size:14px; font-weight:600;
+  }
+  .duong-dan i{font-style:normal; opacity:.55; margin:0 5px}
+  footer{border-top:1px solid var(--vien); padding:22px 0 40px; color:var(--xam); font-size:13.5px}
+
+  @media (max-width:900px){
+    .boc{flex-direction:column; gap:0}
+    nav.mucluc{position:static; flex:1 1 auto; width:100%; margin-top:22px}
+    /* Ở chế độ cột, phần tử flex tự giãn theo nội dung rộng nhất (cái bảng),
+       kéo cả trang tràn ngang. Phải kẹp lại. */
+    main,section.bai{max-width:100%; min-width:0}
+    section.bai{padding:24px 18px}
+    /* Bảng nhiều cột trên điện thoại: cho trượt ngang trong khung riêng,
+       thay vì bóp cột lại khiến chữ vỡ vụn thành từng ký tự. */
+    table{display:block; max-width:100%; overflow-x:auto; white-space:nowrap}
+    table th,table td{white-space:normal; min-width:118px}
+    table td:last-child,table th:last-child{min-width:150px}
+  }
+  @media print{
+    body{background:#fff} nav.mucluc{display:none}
+    section.bai{border:none; padding:0; page-break-after:always}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="boc">
+    <h1>Hướng dẫn quản trị website</h1>
+    <p>Dành cho nhân viên vận hành &mdash; không cần biết kỹ thuật</p>
+  </div>
+</header>
+
+<div class="boc">
+
+  <nav class="mucluc">
+    <h2>Nội dung</h2>
+    <a href="#bai1">1. Đổi danh mục ở trang chủ</a>
+    <a href="#bai2">2. Sửa menu</a>
+    <a href="#link404" class="con">Sửa mục bị lỗi 404</a>
+  </nav>
+
+  <main>
+
+    <!-- ============ BÀI 1 ============ -->
+    <section class="bai" id="bai1">
+      <h2>1. Đổi khối danh mục ở trang chủ</h2>
+      <p class="dan">
+        Khối các ô tròn nằm ngay dưới ảnh slide. Nó hiện ra <b>đúng những danh mục
+        được chọn</b> &mdash; chọn 3 thì hiện 3, chọn 10 thì hiện 10.
+      </p>
+
+      <h3><span class="so">1</span>Mở danh sách widget</h3>
+      <p>
+        Menu bên trái:
+        <span class="duong-dan">QL Marketing <i>›</i> Widget</span>
+      </p>
+      <p>
+        Trong bảng, tìm dòng có <b>Từ khóa</b> là <code>solution-product</code>
+        (tên hiển thị <b>&ldquo;Sản phẩm&rdquo;</b>). Bấm nút bút chì xanh ở cột
+        <b>Thao tác</b>.
+      </p>
+      <div class="canh-bao">
+        <b>Dễ nhầm</b>
+        Đừng sửa widget <code>si-le-cong-nghe</code>. Đó là khối
+        &ldquo;Sỉ lẻ hàng công nghệ&rdquo; liệt kê từng sản phẩm, không phải khối danh mục.
+      </div>
+
+      <h3><span class="so">2</span>Kiểm tra ô &ldquo;Chọn Module&rdquo;</h3>
+      <p>Có 4 lựa chọn, phải giữ nguyên <b>Nhóm Sản Phẩm</b>:</p>
+      <table>
+        <tr><th style="width:190px">Lựa chọn</th><th>Nghĩa</th></tr>
+        <tr><td>Nhóm Bài Viết</td><td>danh mục bài viết</td></tr>
+        <tr><td>Bài Viết</td><td>từng bài viết</td></tr>
+        <tr><td><b>Nhóm Sản Phẩm</b></td><td><b>danh mục sản phẩm &mdash; đang dùng cái này</b></td></tr>
+        <tr><td>Sản Phẩm</td><td>từng sản phẩm</td></tr>
+      </table>
+      <div class="canh-bao">
+        <b>Cẩn thận</b>
+        Đổi sang loại khác là <b>danh sách đã chọn bên dưới bị xoá sạch</b>, phải chọn lại từ đầu.
+      </div>
+
+      <h3><span class="so">3</span>Thêm hoặc bớt danh mục</h3>
+      <ul>
+        <li><b>Thêm:</b> gõ tên danh mục vào ô có kính lúp, danh sách gợi ý hiện ra, bấm vào tên muốn thêm.</li>
+        <li><b>Bớt:</b> bấm dấu <b>✕</b> bên phải dòng đó.</li>
+      </ul>
+      <div class="canh-bao">
+        <b>Về thứ tự hiển thị</b>
+        Màn hình này <b>không kéo thả được</b>. Thứ tự ngoài trang chủ đi theo thứ tự
+        đã chọn. Muốn xếp lại thì bấm ✕ bỏ hết rồi chọn lại theo đúng thứ tự mong muốn.
+      </div>
+
+      <h3><span class="so">4</span>Lưu và kiểm tra</h3>
+      <p>
+        Bấm <b>Lưu</b> ở cuối trang, rồi ra trang chủ nhấn <code>Ctrl + F5</code> để xem kết quả.
+      </p>
+
+      <h3>Ô tròn bị trắng, không có ảnh</h3>
+      <p>
+        Ảnh lấy từ <b>ảnh đại diện của chính danh mục đó</b>, không đặt trong widget.
+        Danh mục chưa có ảnh thì hiện logo website thay thế.
+      </p>
+      <p>
+        Để đặt ảnh:
+        <span class="duong-dan">QL Sản Phẩm <i>›</i> Nhóm sản phẩm <i>›</i> sửa danh mục <i>›</i> Ảnh đại diện</span>
+      </p>
+    </section>
+
+    <!-- ============ BÀI 2 ============ -->
+    <section class="bai" id="bai2">
+      <h2>2. Sửa menu</h2>
+      <p class="dan">Website có 2 nhóm menu:</p>
+      <table>
+        <tr><th style="width:190px">Nhóm</th><th style="width:170px">Từ khoá</th><th>Hiện ở đâu</th></tr>
+        <tr><td>Menu chính</td><td><code>main-menu</code></td><td>thanh menu trên đầu trang</td></tr>
+        <tr><td>Menu chân trang</td><td><code>footer-menu</code></td><td>các cột bên phải ở chân trang</td></tr>
+      </table>
+
+      <h3><span class="so">1</span>Mở nhóm menu</h3>
+      <p>
+        <span class="duong-dan">QL Menu <i>›</i> Cài đặt Menu</span>
+        rồi bấm nút sửa ở nhóm muốn đổi. Màn hình hiện ra dạng cây: mục cấp 1 nằm
+        ngoài, mục con thụt vào trong.
+      </p>
+
+      <h3><span class="so">2</span>Sửa mục cấp 1</h3>
+      <p>Bấm <b>&ldquo;Cập nhật Menu cấp 1&rdquo;</b> ở góc phải khung. Mỗi dòng có 3 ô:</p>
+      <table>
+        <tr><th style="width:110px">Ô</th><th>Nghĩa</th><th style="width:210px">Ví dụ</th></tr>
+        <tr><td>Tên</td><td>chữ hiện ra ngoài website</td><td><code>Sản phẩm</code></td></tr>
+        <tr><td>Đường dẫn</td>
+            <td>phần địa chỉ, <b>không có</b> <code>https://</code> và <b>không có</b> <code>.html</code></td>
+            <td><code>phu-kien-dien-thoai</code></td></tr>
+        <tr><td>Thứ tự</td><td>số càng <b>lớn</b> thì đứng càng <b>trước</b></td><td><code>4</code></td></tr>
+      </table>
+      <div class="canh-bao">
+        <b>Chỗ hay làm sai nhất</b>
+        Hệ thống sắp xếp <b>giảm dần</b>. Muốn &ldquo;Trang chủ&rdquo; đứng đầu thì nó phải mang
+        số <b>lớn nhất</b>. Đánh số xuôi 1&ndash;2&ndash;3&ndash;4 sẽ ra menu <b>ngược</b>.
+      </div>
+      <div class="meo">
+        <b>Cách dễ hơn</b>
+        Ở màn hình cây có thể <b>kéo thả</b> trực tiếp các dòng để đổi vị trí, khỏi phải
+        tính số. Kéo xong hệ thống tự lưu, không cần bấm Lưu.
+      </div>
+      <ul>
+        <li>Thêm dòng: bấm <b>&ldquo;Thêm đường dẫn&rdquo;</b></li>
+        <li>Xoá dòng: bấm dấu <b>✕</b> cuối dòng</li>
+        <li>Để trống ô Tên: dòng đó bị bỏ qua khi lưu, không gây lỗi</li>
+      </ul>
+
+      <h3><span class="so">3</span>Sửa mục con</h3>
+      <p>
+        Ở màn hình cây, bấm <b>&ldquo;Quản lý menu con&rdquo;</b> trên dòng mục cha.
+        Cách điền giống hệt bước 2.
+      </p>
+      <div class="meo">
+        <b>Riêng Menu chân trang</b>
+        Mỗi mục cấp 1 là <b>một cột</b> ở chân trang, các mục con là các link trong cột đó.
+        Thêm mục cấp 1 nghĩa là thêm một cột mới.
+      </div>
+    </section>
+
+    <!-- ============ 404 ============ -->
+    <section class="bai" id="link404">
+      <h2>Sửa các mục menu bị lỗi 404</h2>
+      <p class="dan">4 link ở chân trang đang bấm vào là báo &ldquo;không tìm thấy trang&rdquo;:</p>
+      <table>
+        <tr><th style="width:270px">Tên trong menu</th><th>Đường dẫn</th></tr>
+        <tr><td>Chính sách vận chuyển</td><td><code>chinh-sach-van-chuyen</code></td></tr>
+        <tr><td>Chính sách bảo mật</td><td><code>chinh-sach-bao-mat</code></td></tr>
+        <tr><td>Chính sách bảo hành</td><td><code>chinh-sach-bao-hanh</code></td></tr>
+        <tr><td>Địa chỉ shop</td><td><code>dia-chi-shop</code></td></tr>
+      </table>
+
+      <h3>Vì sao lỗi</h3>
+      <p>
+        <b>Không phải do thiếu danh mục bài viết.</b> Trong hệ thống này, địa chỉ trang
+        được sinh ra từ 4 nguồn:
+      </p>
+      <table>
+        <tr><th style="width:270px">Nguồn</th><th>Số trang đang có</th></tr>
+        <tr><td>Sản phẩm</td><td>65</td></tr>
+        <tr><td>Danh mục sản phẩm</td><td>64</td></tr>
+        <tr><td><b>Bài viết</b></td><td><b>4</b></td></tr>
+        <tr><td>Danh mục bài viết</td><td>1</td></tr>
+      </table>
+      <p>
+        Bốn đường dẫn trên <b>chưa có bài viết nào mang đường dẫn đó</b>, nên bấm vào là 404.
+        Menu trỏ đúng, chỉ là trang đích chưa tồn tại.
+      </p>
+
+      <h3><span class="so">1</span>Cách sửa &mdash; tạo bài viết cho từng trang</h3>
+      <p><span class="duong-dan">QL Bài viết <i>›</i> Thêm mới bài viết</span></p>
+      <ol>
+        <li><b>Tiêu đề:</b> <code>Chính sách vận chuyển</code></li>
+        <li><b>Nội dung:</b> soạn nội dung chính sách</li>
+        <li>Kéo xuống mục SEO, tìm ô <b>&ldquo;Đường dẫn (không bao gồm đuôi .html)&rdquo;</b></li>
+        <li>
+          Điền <b>chính xác</b>: <code>chinh-sach-van-chuyen</code><br>
+          <span style="color:var(--xam);font-size:14.5px">
+            không dấu &mdash; không khoảng trắng &mdash; không <code>.html</code> &mdash; không dấu <code>/</code> ở đầu
+          </span>
+        </li>
+        <li>Chọn <b>Nhóm bài viết</b> bất kỳ</li>
+        <li>Bật <b>Tình trạng</b> sang <i>Hiển thị</i></li>
+        <li>Bấm <b>Lưu</b></li>
+      </ol>
+      <p>Làm tương tự cho 3 trang còn lại, theo đúng đường dẫn ở bảng trên.</p>
+      <div class="canh-bao">
+        <b>Quan trọng</b>
+        Đường dẫn trong bài viết phải <b>khớp từng ký tự</b> với đường dẫn trong menu.
+        Sai một dấu gạch ngang là vẫn 404.
+      </div>
+
+      <h3><span class="so">2</span>Nếu chưa muốn viết nội dung</h3>
+      <p>
+        Có thể tạm bỏ 4 mục đó khỏi menu chân trang (bấm ✕ như hướng dẫn ở mục 2),
+        để chân trang không còn link chết.
+      </p>
+
+      <h3>Kiểm tra lại</h3>
+      <p>
+        Bấm thử từng link ở chân trang. Ra trang thật là đạt. Còn báo
+        &ldquo;404 Not Found&rdquo; nghĩa là đường dẫn trong bài viết chưa khớp với menu.
+      </p>
+    </section>
+
+    <footer>
+      Tài liệu nội bộ &mdash; cập nhật 11/08/2026.
+      Có chỗ nào làm theo không được, chụp màn hình gửi bộ phận kỹ thuật.
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>
