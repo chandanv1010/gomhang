@@ -67,14 +67,94 @@
   .canh-bao,.meo{border-radius:8px; padding:14px 18px; margin:0 0 18px; font-size:15px}
   .canh-bao{background:var(--vang-nen); border:1px solid var(--vang-vien); border-left:4px solid var(--do)}
   .meo{background:var(--xanh-nen); border:1px solid var(--xanh-vien); border-left:4px solid var(--xanh)}
-  .canh-bao b,.meo b{display:block; margin-bottom:4px}
-  .meo b{color:var(--xanh)}
+  /* Chỉ dòng tiêu đề mới xuống dòng riêng. Nhắm cả `b` thì mọi chữ in đậm
+     giữa câu cũng thành khối, làm câu bị ngắt vụn. */
+  .canh-bao > b:first-child,.meo > b:first-child{display:block; margin-bottom:4px}
+  .meo > b:first-child{color:var(--xanh)}
   .duong-dan{
     display:inline-block; background:var(--den); color:#fff; padding:3px 11px;
     border-radius:5px; font-size:14px; font-weight:600;
   }
   .duong-dan i{font-style:normal; opacity:.55; margin:0 5px}
   footer{border-top:1px solid var(--vien); padding:22px 0 40px; color:var(--xam); font-size:13.5px}
+
+
+  /* ---- Hình minh hoạ: vẽ lại màn hình admin bằng HTML/CSS ----
+     Dùng HTML thay vì ảnh chụp: nét trên mọi cỡ màn hình, đọc được
+     trên điện thoại, và không kéo theo file ảnh nặng. */
+  .anh{
+    border:1px solid var(--vien); border-radius:8px; overflow:hidden;
+    margin:0 0 8px; background:#fff; font-size:14px;
+  }
+  .anh-dau{
+    background:#f3f5f7; border-bottom:1px solid var(--vien);
+    padding:8px 14px; font-size:12.5px; color:var(--xam); font-weight:600;
+  }
+  .anh-than{padding:16px 18px}
+  .anh-chu{font-size:13.5px; color:var(--xam); margin:0 0 22px; font-style:italic}
+
+  /* bảng giả lập trong ảnh minh hoạ */
+  .gt{width:100%; border-collapse:collapse; font-size:13.5px; white-space:normal}
+  .gt th{background:#f3f5f7; font-weight:600; font-size:12.5px}
+  .gt th,.gt td{border:1px solid var(--vien); padding:7px 10px; min-width:0}
+  .gt tr.chon{background:#fff4e0; outline:2px solid var(--do)}
+  .nut-sua{
+    display:inline-block; background:#1ab394; color:#fff; border-radius:3px;
+    padding:2px 8px; font-size:12px; font-weight:600;
+  }
+  .cong-tac{
+    display:inline-block; width:34px; height:17px; border-radius:9px;
+    background:#1ab394; position:relative; vertical-align:-3px;
+  }
+  .cong-tac::after{content:''; position:absolute; right:2px; top:2px; width:13px; height:13px;
+    border-radius:50%; background:#fff}
+
+  /* radio giả lập */
+  .radio{display:flex; align-items:center; gap:9px; margin-bottom:9px}
+  .radio i{
+    width:15px; height:15px; border-radius:50%; border:2px solid #b8bfc8;
+    display:inline-block; flex-shrink:0; position:relative;
+  }
+  .radio.tick i{border-color:#1a73e8}
+  .radio.tick i::after{content:''; position:absolute; inset:3px; border-radius:50%; background:#1a73e8}
+  .radio.tick span{font-weight:700}
+
+  /* ô nhập giả lập */
+  .o-nhap{
+    border:1px solid #d4d9df; border-radius:4px; padding:8px 11px; color:#333;
+    background:#fff; margin-bottom:10px;
+  }
+  .o-nhap.mo{color:#9aa2ab}
+  .nhan-o{font-size:12.5px; color:var(--xam); font-weight:600; margin:0 0 4px}
+  .o-tim::before{content:'🔍'; margin-right:8px; opacity:.5}
+
+  /* dòng đã chọn có dấu X */
+  .dong-chon{
+    display:flex; align-items:center; justify-content:space-between;
+    border:1px solid var(--vien); border-radius:4px; padding:8px 11px; margin-bottom:7px;
+  }
+  .dong-chon b{font-weight:600; color:#1a73e8}
+  .dong-chon .xoa{color:#98a0a9; font-weight:700}
+
+  /* cây menu giả lập */
+  .cay-dong{
+    display:flex; align-items:center; justify-content:space-between;
+    background:#f7f8fa; border:1px solid var(--vien); border-radius:4px;
+    padding:9px 12px; margin-bottom:6px;
+  }
+  .cay-dong.con{margin-left:26px; background:#fff}
+  .cay-dong a{color:#1a73e8; font-size:13px; text-decoration:none}
+  .chip{
+    display:inline-block; background:#1ab394; color:#fff; width:19px; height:19px;
+    border-radius:3px; text-align:center; line-height:19px; font-size:13px;
+    margin-right:9px; flex-shrink:0;
+  }
+  .to-do{outline:2px solid var(--do); outline-offset:1px}
+  @media (max-width:900px){
+    .gt{display:table}
+    .gt th,.gt td{white-space:normal}
+    .cay-dong{flex-wrap:wrap; gap:4px}
+  }
 
   @media (max-width:900px){
     .boc{flex-direction:column; gap:0}
@@ -126,13 +206,27 @@
       <h3><span class="so">1</span>Mở danh sách widget</h3>
       <p>
         Menu bên trái:
-        <span class="duong-dan">QL Marketing <i>›</i> Widget</span>
+        <span class="duong-dan">Cấu hình chung <i>›</i> Quản lý Widget</span>
       </p>
       <p>
         Trong bảng, tìm dòng có <b>Từ khóa</b> là <code>solution-product</code>
         (tên hiển thị <b>&ldquo;Sản phẩm&rdquo;</b>). Bấm nút bút chì xanh ở cột
         <b>Thao tác</b>.
       </p>
+
+      <div class="anh">
+        <div class="anh-dau">Cấu hình chung › Quản lý Widget</div>
+        <div class="anh-than">
+          <table class="gt">
+            <tr><th>Tên Widget</th><th>Từ khóa</th><th>Tình Trạng</th><th>Thao tác</th></tr>
+            <tr><td>Tin tức nổi bật</td><td>homepage-news</td><td><span class="cong-tac"></span></td><td><span class="nut-sua">✎</span></td></tr>
+            <tr><td>Sỉ lẻ hàng công nghệ</td><td>si-le-cong-nghe</td><td><span class="cong-tac"></span></td><td><span class="nut-sua">✎</span></td></tr>
+            <tr class="chon"><td><b>Sản phẩm</b></td><td><b>solution-product</b></td><td><span class="cong-tac"></span></td><td><span class="nut-sua">✎</span></td></tr>
+            <tr><td>Giải pháp</td><td>solution</td><td><span class="cong-tac"></span></td><td><span class="nut-sua">✎</span></td></tr>
+          </table>
+        </div>
+      </div>
+      <p class="anh-chu">Bấm nút ✎ ở dòng được khoanh đỏ &mdash; dòng có từ khóa <code>solution-product</code>.</p>
       <div class="canh-bao">
         <b>Dễ nhầm</b>
         Đừng sửa widget <code>si-le-cong-nghe</code>. Đó là khối
@@ -153,6 +247,22 @@
         Đổi sang loại khác là <b>danh sách đã chọn bên dưới bị xoá sạch</b>, phải chọn lại từ đầu.
       </div>
 
+
+      <div class="anh">
+        <div class="anh-dau">Cấu hình nội dung widget</div>
+        <div class="anh-than">
+          <p class="nhan-o">CHỌN MODULE</p>
+          <div class="radio"><i></i><span>Nhóm Bài Viết</span></div>
+          <div class="radio"><i></i><span>Bài Viết</span></div>
+          <div class="radio tick to-do"><i></i><span>Nhóm Sản Phẩm</span></div>
+          <div class="radio"><i></i><span>Sản Phẩm</span></div>
+          <div class="o-nhap o-tim mo" style="margin-top:16px">Gõ tên danh mục để tìm…</div>
+          <div class="dong-chon"><span><b>Phụ kiện theo chủng loại</b></span><span class="xoa">✕</span></div>
+          <div class="dong-chon"><span><b>Phụ kiện iPhone</b></span><span class="xoa">✕</span></div>
+          <div class="dong-chon"><span><b>Phụ kiện Samsung</b></span><span class="xoa">✕</span></div>
+        </div>
+      </div>
+      <p class="anh-chu">Ô tròn xanh phải nằm ở <b>Nhóm Sản Phẩm</b>. Ba dòng dưới là các danh mục đang hiện ngoài trang chủ; bấm ✕ để bỏ.</p>
       <h3><span class="so">3</span>Thêm hoặc bớt danh mục</h3>
       <ul>
         <li><b>Thêm:</b> gõ tên danh mục vào ô có kính lúp, danh sách gợi ý hiện ra, bấm vào tên muốn thêm.</li>
@@ -176,7 +286,8 @@
       </p>
       <p>
         Để đặt ảnh:
-        <span class="duong-dan">QL Sản Phẩm <i>›</i> Nhóm sản phẩm <i>›</i> sửa danh mục <i>›</i> Ảnh đại diện</span>
+        <span class="duong-dan">QL Sản Phẩm <i>›</i> QL Nhóm Sản Phẩm</span>
+        rồi sửa danh mục đó, tìm mục <b>Ảnh đại diện</b>.
       </p>
     </section>
 
@@ -197,6 +308,18 @@
         ngoài, mục con thụt vào trong.
       </p>
 
+
+      <div class="anh">
+        <div class="anh-dau">MENU CHÂN TRANG <span style="float:right;color:#1a73e8">Cập nhật Menu cấp 1</span></div>
+        <div class="anh-than">
+          <div class="cay-dong to-do"><span><span class="chip">+</span>Chính sách &amp; Hỗ trợ</span><a>Quản lý menu con</a></div>
+          <div class="cay-dong con"><span><span class="chip">+</span>Chính sách vận chuyển</span><a>Quản lý menu con</a></div>
+          <div class="cay-dong con"><span><span class="chip">+</span>Chính sách bảo mật</span><a>Quản lý menu con</a></div>
+          <div class="cay-dong"><span><span class="chip">+</span>Danh mục</span><a>Quản lý menu con</a></div>
+          <div class="cay-dong con"><span><span class="chip">+</span>Phụ kiện iPhone</span><a>Quản lý menu con</a></div>
+        </div>
+      </div>
+      <p class="anh-chu">Dòng khoanh đỏ là mục cấp 1 (một cột ở chân trang), dòng thụt vào là mục con. Kéo thả các dòng này để đổi vị trí.</p>
       <h3><span class="so">2</span>Sửa mục cấp 1</h3>
       <p>Bấm <b>&ldquo;Cập nhật Menu cấp 1&rdquo;</b> ở góc phải khung. Mỗi dòng có 3 ô:</p>
       <table>
@@ -207,6 +330,21 @@
             <td><code>phu-kien-dien-thoai</code></td></tr>
         <tr><td>Thứ tự</td><td>số càng <b>lớn</b> thì đứng càng <b>trước</b></td><td><code>4</code></td></tr>
       </table>
+
+      <div class="anh">
+        <div class="anh-dau">Cập nhật Menu cấp 1</div>
+        <div class="anh-than">
+          <table class="gt" style="margin-bottom:12px">
+            <tr><th>Tên</th><th>Đường dẫn</th><th style="width:74px">Thứ tự</th><th style="width:40px"></th></tr>
+            <tr><td>Trang chủ</td><td><i style="color:#98a0a9">(để trống)</i></td><td><b>4</b></td><td class="xoa">✕</td></tr>
+            <tr><td>Sản phẩm</td><td>phu-kien-dien-thoai</td><td><b>3</b></td><td class="xoa">✕</td></tr>
+            <tr><td>Kiến Thức</td><td>tin-tuc-gomhang-vn</td><td><b>2</b></td><td class="xoa">✕</td></tr>
+            <tr><td>Liên Hệ</td><td>lien-he</td><td><b>1</b></td><td class="xoa">✕</td></tr>
+          </table>
+          <span class="nut-sua">+ Thêm đường dẫn</span>
+        </div>
+      </div>
+      <p class="anh-chu">Để ý cột <b>Thứ tự</b>: Trang chủ mang số <b>lớn nhất</b> nên nó đứng đầu menu.</p>
       <div class="canh-bao">
         <b>Chỗ hay làm sai nhất</b>
         Hệ thống sắp xếp <b>giảm dần</b>. Muốn &ldquo;Trang chủ&rdquo; đứng đầu thì nó phải mang
@@ -265,7 +403,10 @@
       </p>
 
       <h3><span class="so">1</span>Cách sửa &mdash; tạo bài viết cho từng trang</h3>
-      <p><span class="duong-dan">QL Bài viết <i>›</i> Thêm mới bài viết</span></p>
+      <p>
+        <span class="duong-dan">QL Bài viết <i>›</i> QL Bài Viết</span>
+        rồi bấm nút <b>&ldquo;Thêm mới bài viết&rdquo;</b> ở góc phải bảng.
+      </p>
       <ol>
         <li><b>Tiêu đề:</b> <code>Chính sách vận chuyển</code></li>
         <li><b>Nội dung:</b> soạn nội dung chính sách</li>
@@ -280,6 +421,20 @@
         <li>Bật <b>Tình trạng</b> sang <i>Hiển thị</i></li>
         <li>Bấm <b>Lưu</b></li>
       </ol>
+
+      <div class="anh">
+        <div class="anh-dau">Thêm mới bài viết › phần SEO ở cuối trang</div>
+        <div class="anh-than">
+          <p class="nhan-o">TIÊU ĐỀ SEO</p>
+          <div class="o-nhap mo">(có thể để trống)</div>
+          <p class="nhan-o">ĐƯỜNG DẪN (KHÔNG BAO GỒM ĐUÔI .HTML) <span style="color:var(--do)">*</span></p>
+          <div class="o-nhap to-do" style="display:flex;gap:0;padding:0">
+            <span style="background:#f3f5f7;padding:8px 11px;color:#98a0a9;border-right:1px solid #d4d9df">https://gomhang.vn/</span>
+            <span style="padding:8px 11px;color:#1a73e8;font-weight:600">chinh-sach-van-chuyen</span>
+          </div>
+        </div>
+      </div>
+      <p class="anh-chu">Chỉ điền phần chữ xanh. Phần xám bên trái là tên miền, hệ thống tự thêm.</p>
       <p>Làm tương tự cho 3 trang còn lại, theo đúng đường dẫn ở bảng trên.</p>
       <div class="canh-bao">
         <b>Quan trọng</b>
