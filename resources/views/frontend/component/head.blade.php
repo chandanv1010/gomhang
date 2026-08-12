@@ -18,6 +18,21 @@
 
     // 'product' on a product page, 'article' on a post, otherwise 'website'.
     $ogType       = trim((string) ($seo['og_type'] ?? '')) ?: 'website';
+
+    // Mã xác minh chủ sở hữu (Google Search Console / Bing). Lấy từ Cấu hình SEO
+    // trong admin nên đổi được mà không phải sửa code. Google chấp nhận cả thẻ
+    // meta lẫn tệp HTML ở gốc site; tệp nằm ở public/, thẻ này là cách thứ hai.
+    // Nếu người dùng dán nguyên cả thẻ <meta ...> thì bóc lấy phần content.
+    $xacMinhGoogle = trim((string) ($system['seo_google_verification'] ?? ''));
+    $xacMinhBing   = trim((string) ($system['seo_bing_verification'] ?? ''));
+    $bocMaXacMinh = function (string $gt): string {
+        if (stripos($gt, '<meta') !== false && preg_match('/content=["\']([^"\']+)["\']/i', $gt, $khop)) {
+            return trim($khop[1]);
+        }
+        return $gt;
+    };
+    $xacMinhGoogle = $bocMaXacMinh($xacMinhGoogle);
+    $xacMinhBing   = $bocMaXacMinh($xacMinhBing);
 @endphp
 <base href="{{ $siteUrl }}/" />
 <meta charset="utf-8" />
@@ -28,6 +43,13 @@
 {{-- Removed: <meta http-equiv="refresh" content="1800">. It reloaded every page
      every 30 minutes, discarding anything a visitor had typed or scrolled to, and
      fails WCAG 2.2.1. --}}
+
+@if($xacMinhGoogle !== '')
+    <meta name="google-site-verification" content="{{ $xacMinhGoogle }}" />
+@endif
+@if($xacMinhBing !== '')
+    <meta name="msvalidate.01" content="{{ $xacMinhBing }}" />
+@endif
 
 <meta name="robots" content="{{ $robots }}" />
 <meta name="author" content="{{ $brandName }}" />

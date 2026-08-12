@@ -119,6 +119,17 @@ class System{
                 'meta_keyword' => ['type' => 'text', 'label' => 'Từ khóa SEO'],
                 'meta_description' => ['type' => 'textarea', 'label' => 'Mô tả SEO'],
                 'meta_images' => ['type' => 'images', 'label' => 'Ảnh SEO'],
+                'google_verification' => [
+                    'type' => 'text',
+                    'label' => 'Mã xác minh Google Search Console',
+                    'title' => 'Dán phần content của thẻ meta, ví dụ: 54GJA3kPjeE9Ph4OSgx5-sQrVAXYDayJlH-R6RpnlJc'
+                        . ' (chỉ mã, không cần dán cả thẻ). Để trống thì không xuất thẻ nào.',
+                ],
+                'bing_verification' => [
+                    'type' => 'text',
+                    'label' => 'Mã xác minh Bing Webmaster',
+                    'title' => 'Tương tự Google, chỉ dán phần content của thẻ msvalidate.01.',
+                ],
             ]
         ];
 

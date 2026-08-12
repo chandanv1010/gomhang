@@ -3,7 +3,13 @@
      translation prompts and search engines. --}}
 <html lang="vi">
     <head>
-        {{-- {{ $system['script_1'] }} --}}
+        {{-- Ô "Script Head" trong Cấu hình -> Cấu hình script. Dùng cho mã theo dõi
+             (Google Analytics, Tag Manager, Pixel) hoặc thẻ xác minh phát sinh sau.
+             Phải là {!! !!} chứ không phải {{ }}: escape thì thẻ <script> in ra
+             thành chữ chứ không chạy. --}}
+        @if(trim((string) ($system['script_1'] ?? '')) !== '')
+            {!! $system['script_1'] !!}
+        @endif
         @include('frontend.component.head')
         @vite('resources/css/app.scss')
     </head>
@@ -20,6 +26,8 @@
         @include('frontend.component.floating-contact')
         @include('frontend.component.script')
         @vite('resources/js/app.js')
-        {{-- {{ $system['script_2'] }} --}}
+        @if(trim((string) ($system['script_2'] ?? '')) !== '')
+            {!! $system['script_2'] !!}
+        @endif
     </body>
 </html>
