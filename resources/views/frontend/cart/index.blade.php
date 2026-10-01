@@ -44,32 +44,45 @@
                             </div>
                             @include('frontend.cart.component.item')
                             @include('frontend.cart.component.voucher')
-                             <div class="cart-point-box">
-                                <div class="cart-point-head">
-                                    <span class="label">Điểm tích luỹ hiện có:</span>
-                                    <span class="value">{{ number_format($buyer->point) }} điểm</span>
-                                </div>
+                            {{-- Điểm tích luỹ gắn với tài khoản, nên khối này chỉ hiện
+                                 khi đã đăng nhập. Khách vãng lai vẫn đặt hàng được;
+                                 trước đây cả trang giỏ hàng bị chặn sau màn đăng nhập
+                                 nên $buyer luôn khác null. --}}
+                            @if(!is_null($buyer))
+                                <div class="cart-point-box">
+                                    <div class="cart-point-head">
+                                        <span class="label">Điểm tích luỹ hiện có:</span>
+                                        <span class="value">{{ number_format($buyer->point) }} điểm</span>
+                                    </div>
 
-                                <div class="cart-point-body">
-                                    <label for="point_redeem">Nhập số điểm muốn sử dụng:</label>
-                                    <input
-                                        type="number"
-                                        id="point_redeem"
-                                        name="point_redeem"
-                                        class="input-text"
-                                        min="0"
-                                        max="{{ $buyer->point }}"
-                                        value="{{ old('point_redeem', 0) }}"
-                                        placeholder="Nhập số điểm muốn đổi"
-                                    >
-                                    @error('point_redeem')
-                                        <div class="field-error">{{ $message }}</div>
-                                    @enderror
+                                    <div class="cart-point-body">
+                                        <label for="point_redeem">Nhập số điểm muốn sử dụng:</label>
+                                        <input
+                                            type="number"
+                                            id="point_redeem"
+                                            name="point_redeem"
+                                            class="input-text"
+                                            min="0"
+                                            max="{{ $buyer->point }}"
+                                            value="{{ old('point_redeem', 0) }}"
+                                            placeholder="Nhập số điểm muốn đổi"
+                                        >
+                                        @error('point_redeem')
+                                            <div class="field-error">{{ $message }}</div>
+                                        @enderror
+                                        <p class="note">
+                                            * Mỗi điểm tương ứng <strong>{{ number_format($pointRatio ?? 1) }}đ</strong>.
+                                        </p>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="cart-point-box">
                                     <p class="note">
-                                        * Mỗi điểm tương ứng <strong>{{ number_format($pointRatio ?? 1) }}đ</strong>.
+                                        <a href="{{ route('customer.login') }}">Đăng nhập</a>
+                                        để dùng điểm tích luỹ cho đơn hàng này.
                                     </p>
                                 </div>
-                            </div>
+                            @endif
                             @include('frontend.cart.component.summary')
                             @if(count($carts) && !is_null($carts) )
                                 <button type="submit" class="cart-checkout" value="create" name="create">Thanh toán đơn hàng</button>

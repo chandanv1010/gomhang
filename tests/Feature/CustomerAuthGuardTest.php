@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 /**
- * The cart and the customer account area are behind the `customer_auth`
- * middleware. These tests pin the guard itself plus the two things that made it
- * unhelpful in practice: it dumped people on the homepage after login instead of
- * where they were going, and the reason it gave for the redirect was never shown.
+ * The customer account area is behind the `customer_auth` middleware. These
+ * tests pin the guard itself plus the two things that made it unhelpful in
+ * practice: it dumped people on the homepage after login instead of where they
+ * were going, and the reason it gave for the redirect was never shown.
+ *
+ * The cart is deliberately NOT behind the guard - see CartGuestCheckoutTest.
  */
 class CustomerAuthGuardTest extends TestCase
 {
@@ -48,9 +50,6 @@ class CustomerAuthGuardTest extends TestCase
     public static function protectedUrls(): array
     {
         return [
-            'cart' => ['/gio-hang.html'],
-            // /thanh-toan.html needs a product in the 'pay' cart instance, so it is
-            // covered separately below rather than as a plain 200.
             'account' => ['/tai-khoan.html'],
             'change password' => ['/tai-khoan/thay-doi-mat-khau.html'],
             'order history' => ['/tai-khoan/lich-su-don-hang.html'],
@@ -71,12 +70,12 @@ class CustomerAuthGuardTest extends TestCase
 
     public function test_the_guard_explains_why_it_redirected(): void
     {
-        $this->get('/gio-hang.html')->assertSessionHas(\App\Http\Middleware\CustomerAuth::NOTICE_KEY);
+        $this->get('/tai-khoan.html')->assertSessionHas(\App\Http\Middleware\CustomerAuth::NOTICE_KEY);
     }
 
     public function test_the_login_page_shows_that_explanation(): void
     {
-        $this->get('/gio-hang.html');
+        $this->get('/tai-khoan.html');
 
         $this->get(route('customer.login'))
             ->assertOk()
@@ -85,12 +84,12 @@ class CustomerAuthGuardTest extends TestCase
 
     public function test_login_returns_the_customer_to_the_page_they_wanted(): void
     {
-        $this->get('/gio-hang.html')->assertRedirect(route('customer.login'));
+        $this->get('/tai-khoan.html')->assertRedirect(route('customer.login'));
 
         $this->post(route('customer.dologin'), [
             'email' => self::EMAIL,
             'password' => self::PASSWORD,
-        ])->assertRedirect(url('/gio-hang.html'));
+        ])->assertRedirect(url('/tai-khoan.html'));
     }
 
     public function test_login_without_an_intended_page_lands_on_the_homepage(): void
@@ -103,7 +102,7 @@ class CustomerAuthGuardTest extends TestCase
 
     public function test_an_ajax_call_gets_401_json_rather_than_a_login_page(): void
     {
-        $this->getJson('/gio-hang.html')
+        $this->getJson('/tai-khoan.html')
             ->assertStatus(401)
             ->assertJsonPath('code', 401);
     }
@@ -117,11 +116,6 @@ class CustomerAuthGuardTest extends TestCase
         $this->actingAs($this->customer(), 'customer')
             ->get('/thanh-toan.html')
             ->assertRedirect(route('cart.checkout'));
-    }
-
-    public function test_a_guest_cannot_reach_checkout(): void
-    {
-        $this->get('/thanh-toan.html')->assertRedirect(route('customer.login'));
     }
 
     private function customer()

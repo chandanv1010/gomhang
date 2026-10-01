@@ -59,13 +59,19 @@ class PostCatalogueController extends FrontendController
         );
         
         $breadcrumb = $this->postCatalogueRepository->breadcrumb($postCatalogue, $this->language);
+        // Bai moi nhat len dau. Truoc day chi sap theo `posts.recommend` nen
+        // nhung bai khong duoc danh dau noi bat - tuc gan het - ra theo thu tu
+        // MySQL tra ve, khong on dinh va khong lien quan den ngay dang. Ngay
+        // hien tren the bai viet la `created_at`, nen sap dung cot do; them
+        // `posts.id` lam cot phu de hai bai cung thoi diem khong doi cho nhau
+        // giua cac trang phan trang.
         $posts = $this->postService->paginate(
             $request,
             $this->language,
             $postCatalogue,
             $page,
             ['path' => $postCatalogue->canonical],
-            ['posts.recommend', 'desc']
+            [['posts.created_at', 'DESC'], ['posts.id', 'DESC']]
         );
 
         // dd($posts->toArray());

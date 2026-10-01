@@ -84,9 +84,26 @@ trait QueryScopes
         return $query;
     }
 
+    /**
+     * Nhan MOT cap ['cot', 'chieu'] nhu truoc, hoac MOT DANH SACH cap de sap
+     * xep theo nhieu cot:
+     *
+     *     ['posts.id', 'DESC']
+     *     [['posts.created_at', 'DESC'], ['posts.id', 'DESC']]
+     *
+     * Chi mot cot thi cac ban ghi trung gia tri se ra theo thu tu MySQL tra
+     * ve - khong on dinh, trang 2 co the lap lai bai da thay o trang 1.
+     */
     public function scopeCustomOrderBy($query, $orderBy){
-        if(isset($orderBy) && !empty($orderBy)){
-            $query->orderBy($orderBy[0], $orderBy[1]);
+        if(!isset($orderBy) || empty($orderBy)){
+            return $query;
+        }
+        $pairs = is_array($orderBy[0]) ? $orderBy : [$orderBy];
+        foreach($pairs as $pair){
+            if(!is_array($pair) || count($pair) < 2){
+                continue;
+            }
+            $query->orderBy($pair[0], $pair[1]);
         }
         return $query;
     }

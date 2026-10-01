@@ -46,13 +46,18 @@ Route::group(['middleware' => ['locale']], function () {
 
     /** CART */
 
-    Route::group(['middleware' => ['customer_auth']], function () {
-        Route::get('gio-hang' . config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
-        Route::get('thanh-toan' . config('apps.general.suffix'), [CartController::class, 'pay'])->name('cart.pay');
-        Route::post('cart/create', [CartController::class, 'store'])->name('cart.store');
-        Route::post('cart/createPay', [CartController::class, 'storePay'])->name('cart.storePay');
-        Route::get('cart/success' . config('apps.general.suffix'), [CartController::class, 'success'])->name('cart.success');
-    });
+    // KHONG dat 'customer_auth' o day. Gio hang va thanh toan mo cho ca khach
+    // chua dang nhap: bat dang nhap ngay o buoc nay lam mat don hang cua nguoi
+    // mua lan dau. Don cua khach vang lai luu voi customer_id = NULL (cot nay
+    // nullable), thong tin giao hang lay tu form.
+    //
+    // Phan rieng cua tai khoan - doi diem tich luy (ajax/cart/checkPoint) va
+    // trang ho so - van nam trong nhom 'customer_auth' o custom.route.php.
+    Route::get('gio-hang' . config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
+    Route::get('thanh-toan' . config('apps.general.suffix'), [CartController::class, 'pay'])->name('cart.pay');
+    Route::post('cart/create', [CartController::class, 'store'])->name('cart.store');
+    Route::post('cart/createPay', [CartController::class, 'storePay'])->name('cart.storePay');
+    Route::get('cart/success' . config('apps.general.suffix'), [CartController::class, 'success'])->name('cart.success');
 
 
     /* PORT PAYMENT */
