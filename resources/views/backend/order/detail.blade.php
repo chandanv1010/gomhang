@@ -46,6 +46,10 @@
                                 </td>
                                 <td>
                                     <div class="order-item-price">{{ $price }} đ</div>
+                                    @if($val->pivot->priceOriginal > $val->pivot->price)
+                                        {{-- Giam theo chuong trinh khuyen mai san pham: gia da tru san tren tung dong. --}}
+                                        <div style="text-decoration:line-through;color:#999;font-size:12px;">{{ $priceOriginal }} đ</div>
+                                    @endif
                                 </td>
                                 <td>
                                     <div class="order-item-times">x</div>
@@ -65,7 +69,7 @@
                                 <td class="text-right">{{ convert_price($order->cart['cartTotal'], true) }} đ</td>
                             </tr>
                             <tr>
-                                <td colspan="5" class="text-right">Giảm giá khuyến mại</td>
+                                <td colspan="5" class="text-right">Giảm giá khuyến mại theo đơn</td>
                                 <td class="text-right">- {{ convert_price($order->promotion['discount'], true) }} đ</td>
                             </tr>
                             @php

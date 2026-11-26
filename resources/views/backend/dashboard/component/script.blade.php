@@ -24,9 +24,17 @@
      handler của promotion chạy trước, đảo data-flag, widget.js đọc phải flag sai.
 
      Chỉ nạp trên đúng route của chúng. Toàn bộ selector của hai file này chỉ xuất
-     hiện trong view promotion/* và voucher/*, không nơi nào khác. --}}
-@if(request()->routeIs('promotion.*') || request()->routeIs('voucher.*'))
+     hiện trong view promotion/* và voucher/*, không nơi nào khác.
+
+     Hai file cũng trùng nhau 12 handler (.promotionMethod, .search-object-item,
+     .confirm-product-promotion...), nên mỗi trang chỉ nạp file của chính nó:
+     nạp cả hai thì voucher.js bắt sự kiện đổi "hình thức" trên trang khuyến mại,
+     không nhận ra giá trị product_and_quantity và xoá trắng bảng chọn sản phẩm;
+     còn trên trang voucher thì bấm chọn sản phẩm bị xử lý hai lần. --}}
+@if(request()->routeIs('promotion.*'))
     <script src="{{ asset_v('vendor/backend/library/promotion.js') }}"></script>
+@endif
+@if(request()->routeIs('voucher.*'))
     <script src="{{ asset_v('vendor/backend/library/voucher.js') }}"></script>
 @endif
 <script src="{{ asset_v('vendor/backend/library/report.js') }}"></script>

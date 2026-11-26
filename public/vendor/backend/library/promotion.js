@@ -1123,7 +1123,7 @@
                     <tr>
                         <th class="text-right" style="width:400px;max-width:400px;">Sản phẩm mua</th>
                         <th class="text-right" style="width:80px">Tối thiểu</th>
-                        <th class="text-right">Giới hạn KM</th>
+                        <th class="text-right" title="Số tiền giảm tối đa cho mỗi sản phẩm, tính bằng đồng. Để 0 nếu không giới hạn.">Giảm tối đa (đ)</th>
                         <th class="text-right">Chiết khấu</th>
                     </tr>
                 </thead>
@@ -1158,7 +1158,7 @@
                                 type="text"
                                 name="product_and_quantity[maxDiscountValue]"
                                 class="form-control int"
-                                placeholder="0"
+                                placeholder="0 = không giới hạn"
                                 value="${preloadData.maxDiscountValue}"
                             >
                         </td>

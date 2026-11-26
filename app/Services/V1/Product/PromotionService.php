@@ -83,6 +83,9 @@ class PromotionService extends BaseService
         DB::beginTransaction();
         try{
             $payload = $this->request($request);
+            // Form khong co o trang thai; truoc day tao xong mac dinh la tat
+            // (publish = 1) nen khach tuong khuyen mai khong chay.
+            $payload['publish'] = 2;
             $promotion = $this->promotionRepository->create($payload);
             if($promotion->id > 0){
                 $this->handleRelation($request, $promotion);

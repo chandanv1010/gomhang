@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Promotion;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use App\Rules\Promotion\OrderAmountRangeRule;
 use App\Rules\Promotion\ProductAndQuantityRule;
 use App\Rules\Promotion\BuyProductTakeGiftRule;
@@ -27,7 +28,8 @@ class StorePromotionRequest extends FormRequest
     {
         $rules = [
             'name' => 'required',
-            'code' => 'required|unique:promotions',
+            // Ma cua khuyen mai da xoa (xoa mem) duoc dung lai.
+            'code' => ['required', Rule::unique('promotions', 'code')->whereNull('deleted_at')],
             'startDate' => 'required|custom_date_format',
         ];
         $date = $this->only('startDate', 'endDate');
@@ -62,7 +64,7 @@ class StorePromotionRequest extends FormRequest
         $messages = [
             'name.required' => 'Bạn chưa nhập tên của khuyến mại',
             'code.required' => 'Bạn chưa nhập từ khóa của khuyến mại',
-            // 'code.unique' => 'Mã khuyến mại đã tồn tại, hãy chọn từ khóa khác',
+            'code.unique' => 'Mã khuyến mại đã tồn tại, hãy chọn mã khác',
             'startDate.required' => 'Bạn chưa nhập vào ngày bắt đầu khuyến mại',
             'startDate.custom_date_format' => 'Ngày bắt đầu khuyến mãi không đúng định dạng',
             'endDate.required' => 'Bạn chưa nhập vào ngày bắt đầu khuyến mại',
