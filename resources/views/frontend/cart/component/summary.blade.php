@@ -7,23 +7,29 @@
             </div>
         </div>
         @php
-            $voucherTotal = (!is_null($voucher) && $voucher['product_scope'] == 'TOTAL_ORDERS') ? $voucher['discount'] : 0;
-            $voucherShip = (!is_null($voucher) && $voucher['product_scope'] == 'SHIPPING_ORDERS') ? $voucher['discount'] : 0;
+            // $voucherDiscount tinh boi CartVoucherService (CartService::checkoutData).
+            $voucherDiscount = $voucherDiscount ?? 0;
+            $shipCost = $shipping['totalShippingCost'] ?? 0;
         @endphp
-        {{-- <div class="cart-summary-item">
+        <div class="cart-summary-item">
             <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                <span class="summay-title">Giảm giá voucher</span>
-                <div class="summary-value voucher-value">
-                    -{{ convert_price($totalVoucherProduct + $voucherTotal + $voucherShip ?? 0, true) }}đ
+                <span class="summay-title">
+                    Giảm giá voucher
+                    @if(!empty($appliedVoucher))
+                        ({{ $appliedVoucher['voucher']->code }})
+                    @endif
+                </span>
+                <div class="summary-value voucher-value">-{{ convert_price($voucherDiscount, true) }}đ</div>
+            </div>
+        </div>
+        @if($shipCost > 0)
+            <div class="cart-summary-item">
+                <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <span class="summay-title">Phí giao hàng</span>
+                    <div class="summary-value ship-value">{{ convert_price($shipCost, true) }}đ</div>
                 </div>
             </div>
-        </div> --}}
-        {{-- <div class="cart-summary-item">
-            <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                <span class="summay-title">Phí giao hàng</span>
-                <div class="summary-value ship-value">{{ convert_price(($shipping['totalShippingCost'] ?? 0) - $voucherShip ?? 0, true) }}đ</div>
-            </div>
-        </div> --}}
+        @endif
 
         <div class="cart-summary-item">
             <div class="uk-flex uk-flex-middle uk-flex-space-between">
@@ -39,7 +45,7 @@
             <div class="uk-flex uk-flex-middle uk-flex-space-between">
                 <span class="summay-title bold">Tổng tiền</span>
                 <div class="summary-value cart-total">
-                    {{ (count($carts) && !is_null($carts) ) ? convert_price($cartCaculate['cartTotal'] - $cartPromotion['discount'] - $totalVoucherProduct - ($voucherTotal  ?? 0 ) + (($shipping['totalShippingCost'] ?? 0) - $voucherShip), true)  : 0   }}đ
+                    {{ (count($carts) && !is_null($carts) ) ? convert_price(max(0, $cartCaculate['cartTotal'] - $cartPromotion['discount'] - $voucherDiscount + $shipCost), true)  : 0   }}đ
                 </div>
             </div>
         </div>

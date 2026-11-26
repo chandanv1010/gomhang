@@ -1,22 +1,41 @@
+(function($){
 var HT = {}; 
-
-    /**
-     * Đọc JSON từ ô input, không ném lỗi.
-     *
-     * Các handler ở đây gắn cấp document nên chạy cả trên trang khác (widget,
-     * ...) - lúc đó $('.input_object') không tồn tại, .val() ra undefined và
-     * JSON.parse(undefined) ném SyntaxError, làm đứt cả chuỗi document.ready.
-     * Lưu ý: `JSON.parse(x) || {}` KHÔNG cứu được vì parse ném trước khi tới ||.
-     */
-    HT.parseJson = (raw, fallback = null) => {
-        if(typeof raw !== 'string' || raw.trim() === ''){
-            return fallback
-        }
-        try {
-            return JSON.parse(raw)
-        } catch (e) {
-            return fallback
-        }
+
+
+    /**
+
+     * Đọc JSON từ ô input, không ném lỗi.
+
+     *
+
+     * Các handler ở đây gắn cấp document nên chạy cả trên trang khác (widget,
+
+     * ...) - lúc đó $('.input_object') không tồn tại, .val() ra undefined và
+
+     * JSON.parse(undefined) ném SyntaxError, làm đứt cả chuỗi document.ready.
+
+     * Lưu ý: `JSON.parse(x) || {}` KHÔNG cứu được vì parse ném trước khi tới ||.
+
+     */
+
+    HT.parseJson = (raw, fallback = null) => {
+
+        if(typeof raw !== 'string' || raw.trim() === ''){
+
+            return fallback
+
+        }
+
+        try {
+
+            return JSON.parse(raw)
+
+        } catch (e) {
+
+            return fallback
+
+        }
+
     }
     var typingTimer;
     var doneTyingInterval = 500; // 1s
@@ -808,20 +827,18 @@ var HT = {};
     }
 
     HT.removeModal = () => {
-        $(document).on('ready', function () {
-            $('.readonly').removeAttr('data-toggle data-target');
-        });
+        $('.readonly').removeAttr('data-toggle data-target');
     };
     
     HT.checked = () => {
-        $(document).on('ready', function () {
-            $('input[name="combine_promotion"]').on('change', function () {
-                $(this).val($(this).is(':checked') ? 1 : 0);
-            });
+        $('input[name="combine_promotion"]').on('change', function () {
+            $(this).val($(this).is(':checked') ? 1 : 0);
         });
     }
    
-	$(document).on('ready', function(){
+	// jQuery 3 khong con su kien 'ready' qua .on(): handler cu khong bao gio chay,
+	// nen form tao voucher khong hien o nhap theo loai voucher.
+	$(function(){
         HT.checked()
         HT.removeModal()
         HT.disableSelect()
@@ -840,3 +857,5 @@ var HT = {};
         HT.changePromotionMethod()
         HT.checkConditionItemSet()
 	});
+
+})(jQuery);

@@ -315,6 +315,7 @@
                     HT.changeMinyQuantityItem(_this, option)
                     HT.changeCartItemSubTotal(_this, res)
                     HT.changeCartTotal(res)
+                    HT.refreshVoucherBlocks()
                     toastr.success(res.messages, 'Thông báo từ hệ thống!')
                 } else {
                     toastr.error('Có vấn đề xảy ra! Hãy thử lại', 'Thông báo từ hệ thống!')
@@ -389,6 +390,7 @@
                         HT.unActiveVoucher(res)
                         HT.changeCartTotal(res)
                         HT.removeCartItemRow(_this)
+                        HT.refreshVoucherBlocks()
                         toastr.success(res.messages, 'Thông báo từ hệ thống!')
                     } else {
                         toastr.error('Có vấn đề xảy ra! Hãy thử lại', 'Thông báo từ hệ thống!')
@@ -430,141 +432,90 @@
         }
     }
 
+    // ---------------- Voucher (xem CartVoucherService o server) ----------------
+    // Server tra ve HTML moi cua khoi voucher va khoi tong tien; thay vao trang
+    // thay vi tu tinh o JS, de so hien thi luon khop voi so luu vao don.
+    HT.renderVoucherBlocks = (res) => {
+        if (res.voucherHtml) {
+            $('#cart-voucher-box').replaceWith(res.voucherHtml)
+        }
+        if (res.summaryHtml) {
+            $('.panel-foot.pay').replaceWith(res.summaryHtml)
+            let points = parseInt($('#point_redeem').val()) || 0
+            if (points > 0 && typeof HT.sendPointAjax === 'function') {
+                HT.sendPointAjax(points)
+            }
+        }
+    }
+
+    HT.voucherRequest = (url, data) => {
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: data,
+            dataType: 'json',
+            success: function (res) {
+                toastr.clear()
+                HT.renderVoucherBlocks(res)
+                if (res.code == 10) {
+                    if (res.message) toastr.success(res.message, 'Thông báo từ hệ thống!')
+                } else {
+                    toastr.error(res.message || 'Không áp dụng được mã giảm giá', 'Thông báo từ hệ thống!')
+                }
+            },
+            error: function () {
+                toastr.error('Có vấn đề xảy ra! Hãy thử lại', 'Thông báo từ hệ thống!')
+            },
+        });
+    }
+
+    HT.refreshVoucherBlocks = () => {
+        if (!$('#cart-voucher-box').length) return
+        $.ajax({
+            url: 'ajax/cart/voucherBlocks',
+            type: 'GET',
+            dataType: 'json',
+            success: function (res) {
+                HT.renderVoucherBlocks(res)
+            },
+        });
+    }
+
     HT.applyVoucher = () => {
-        $(document).on('click', '.voucher-item', function () {
+        // Bam vao voucher trong danh sach
+        $(document).on('click', '#cart-voucher-box .voucher-item', function () {
             let _this = $(this)
             if (_this.hasClass('use')) {
-                return;
+                HT.voucherRequest('ajax/cart/unUseVoucher', {})
+                return
             }
-            const voucher_id = _this.data('id')
-            $.ajax({
-                url: 'ajax/cart/applyCartVoucher',
-                type: 'GET',
-                data: {
-                    voucher_id: voucher_id
-                },
-                dataType: 'json',
-                beforeSend: function () {
+            if (_this.hasClass('voucher-disabled')) {
+                toastr.error(_this.attr('title') || 'Đơn hàng chưa đủ điều kiện dùng mã này', 'Thông báo từ hệ thống!')
+                return
+            }
+            HT.voucherRequest('ajax/cart/applyCartVoucher', { voucher_id: _this.data('id') })
+        })
 
-                },
-                success: function (res) {
-                    if (res.code == 10) {
-                        if (res.response.combine_voucher == false) {
-                            toastr.error('Voucher không được áp dụng do đã được áp dụng chương trình khuyến mại')
-                            return;
-                        }
-                        if (res.response.valid == false) {
-                            toastr.error(`Đơn hàng của bạn không đủ điều kiện để áp dụng voucher này`)
-                            return;
-                        }
-                        if (res.carts) {
-                            Object.values(res.carts).forEach(cart => {
-                                const cartItemElement = document.querySelector(`.cart-item[data-pd="${cart.id}"]`);
-                                let discount = 0;
-                                if (cart.options.voucher) {
-                                    discount = cart.options.voucher.discount * cart.qty;
-                                }
-                                if (cart.options && cart.options.voucher) {
-                                    const voucher_discount = cartItemElement.querySelector('.voucher-discount');
-                                    const discount = Number(cart.options.voucher.discount) * Number(cart.qty) || 0;
-
-                                    if (voucher_discount) {
-                                        voucher_discount.textContent = '-' + new Intl.NumberFormat('vi-VN').format(discount) + '₫';
-                                    }
-                                }
-
-                                if (cartItemElement) {
-                                    const priceElement = cartItemElement.querySelector('.cart-price-sale');
-                                    if (priceElement) {
-                                        const totalPrice = (Number(cart.price) * Number(cart.qty)) - (Number(discount) || 0);
-                                        priceElement.textContent = new Intl.NumberFormat('vi-VN').format(totalPrice) + '₫';
-                                    }
-                                }
-                            })
-                        }
-                        if (res.response.voucher.product_scope == 'TOTAL_ORDERS') {
-                            $('.voucher-item').removeClass('use')
-                            _this.addClass('use')
-                            HT.changeCartTotalAfterApplyVoucher(res)
-                        } else if (res.response.voucher.product_scope == 'SHIPPING_ORDERS') {
-                            $('.voucher-item').removeClass('use')
-                            _this.addClass('use')
-                            HT.changeCartTotalAfterApplyVoucher(res)
-                        } else if (res.response.voucher.product_scope == 'ALL_PRODUCTS') {
-                            $('.voucher-item').removeClass('use')
-                            _this.addClass('use')
-                            $('.cart-total').html(addCommas(res.response.cartTotal) + 'đ')
-                            $('.voucher-value').html('-' + addCommas(res.response.voucherDiscount) + 'đ')
-                            $('.discount-value').html('-' + addCommas(res.response.cartDiscount) + 'đ')
-                        } else if (res.response.voucher.product_scope == 'SPECIFIC_PRODUCTS') {
-                            $('.voucher-item').removeClass('use')
-                            _this.addClass('use')
-                            $('.cart-total').html(addCommas(res.response.cartTotal) + 'đ')
-                            $('.voucher-value').html('-' + addCommas(res.response.voucherDiscount) + 'đ')
-                            $('.discount-value').html('-' + addCommas(res.response.cartDiscount) + 'đ')
-                        }
-                    }
-                },
-            });
+        // Go ma vao o nhap
+        $(document).on('click', '#cart-voucher-box .voucher-code-apply', function () {
+            let code = $.trim($('#cart-voucher-box .voucher-code-input').val())
+            if (!code) {
+                toastr.error('Bạn chưa nhập mã giảm giá', 'Thông báo từ hệ thống!')
+                return
+            }
+            HT.voucherRequest('ajax/cart/applyCartVoucher', { code: code })
+        })
+        $(document).on('keydown', '#cart-voucher-box .voucher-code-input', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault() // khong submit form dat hang
+                $('#cart-voucher-box .voucher-code-apply').trigger('click')
+            }
         })
     }
 
-    HT.changeCartTotalAfterApplyVoucher = (res) => {
-        $('.cart-total').html(addCommas(res.response.cartTotal) + 'đ')
-        $('.discount-value').html('-' + addCommas(res.response.cartDiscount) + 'đ')
-        $('.voucher-value').html('-' + addCommas(res.response.voucher.discount) + 'đ')
-        $('.ship-value').html(addCommas(res.response.ship) + 'đ')
-        $('.voucher-discount').html('-' + addCommas(0) + 'đ')
-    }
-
     HT.unUseVoucher = () => {
-        $(document).on('click', '.use', function () {
-            let _this = $(this)
-            const voucher_id = _this.data('id')
-            $.ajax({
-                url: 'ajax/cart/unUseVoucher',
-                type: 'GET',
-                data: {
-                    voucher_id: voucher_id
-                },
-                dataType: 'json',
-                beforeSend: function () {
-
-                },
-                success: function (res) {
-                    if (res.code == 10) {
-                        _this.removeClass('use')
-                        $('.cart-total').html(addCommas(res.response.cartTotal) + 'đ')
-                        $('.voucher-value').html('-' + addCommas(0) + 'đ')
-                        $('.voucher-discount').html('-' + addCommas(0) + 'đ')
-                        if (res.carts) {
-                            Object.values(res.carts).forEach(cart => {
-                                const cartItemElement = document.querySelector(`.cart-item[data-pd="${cart.id}"]`);
-                                let discount = 0;
-                                if (cart.options.voucher) {
-                                    discount = cart.options.voucher.discount * cart.qty;
-                                }
-                                if (cart.options && cart.options.voucher) {
-                                    const voucher_discount = cartItemElement.querySelector('.voucher-discount');
-                                    const discount = Number(cart.options.voucher.discount) * Number(cart.qty) || 0;
-
-                                    if (voucher_discount) {
-                                        voucher_discount.textContent = '-' + new Intl.NumberFormat('vi-VN').format(discount) + '₫';
-                                    }
-                                }
-
-                                if (cartItemElement) {
-                                    const priceElement = cartItemElement.querySelector('.cart-price-sale');
-                                    if (priceElement) {
-                                        const totalPrice = (Number(cart.price) * Number(cart.qty)) - (Number(discount) || 0);
-                                        priceElement.textContent = new Intl.NumberFormat('vi-VN').format(totalPrice) + '₫';
-                                    }
-                                }
-                            })
-                        }
-                    }
-                },
-            });
+        $(document).on('click', '#cart-voucher-box .voucher-remove', function () {
+            HT.voucherRequest('ajax/cart/unUseVoucher', {})
         })
     }
 

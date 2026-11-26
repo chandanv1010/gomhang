@@ -49,7 +49,6 @@
                                                 <th style="min-width: 200px;">Khách Hàng</th>
                                                 <th style="min-width: 120px;">Email</th>
                                                 <th style="min-width: 100px;">Tỉnh/TP</th>
-                                                <th style="min-width: 100px;">Quận/Huyện</th>
                                                 <th style="min-width: 100px;">Phường/Xã</th>
                                                 <th style="min-width: 100px;" class="uk-text-right">Giảm giá</th>
                                                 <th style="min-width: 100px;" class="uk-text-right">Phí ship</th>
@@ -70,7 +69,8 @@
                                                     $cart = is_array($order->cart) ? $order->cart : [];
                                                     $promotion = is_array($order->promotion) ? $order->promotion : [];
                                                     $cartTotal = $cart['cartTotal'] ?? 0;
-                                                    $promotionDiscount = $promotion['discount'] ?? 0;
+                                                    // Giam gia = khuyen mai + voucher (cartVoucher luu trong orders.cart).
+                                                    $promotionDiscount = (float) ($promotion['discount'] ?? 0) + (float) ($cart['cartVoucher'] ?? 0);
                                                     $shipping = $order->shipping ?? 0;
                                                     $finalTotal = $cartTotal - $promotionDiscount + $shipping;
                                                     $detailUrl = route('customer.order.detail', $order->code);
@@ -90,7 +90,6 @@
                                                     </td>
                                                     <td>{{ $order->email ?? '-' }}</td>
                                                     <td>{{ $order->province_name ?? '-' }}</td>
-                                                    <td>{{ $order->district_name ?? '-' }}</td>
                                                     <td>{{ $order->ward_name ?? '-' }}</td>
                                                     <td class="uk-text-right">
                                                         @if ($promotionDiscount > 0)

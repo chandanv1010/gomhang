@@ -567,7 +567,69 @@ class CartService
         }
     }
 
-    public function order($request, $system, $buyer = null)
+    /**
+     * Toan bo du lieu trang gio hang/thanh toan (cac partial item, voucher, summary).
+     */
+    public function checkoutData($buyer = null): array
+    {
+        $carts = $this->remakeCart(Cart::instance('shopping')->content());
+        $cartCaculate = $this->reCaculateCart();
+        $cartPromotion = $this->cartPromotion($cartCaculate['cartTotal']);
+
+        $discountTotalProduct = 0;
+        foreach ($carts as $cart) {
+            $discountTotalProduct += ((float) $cart->priceOriginal - (float) $cart->price) * $cart->qty;
+        }
+
+        $shipping = $this->totalShipping($buyer);
+
+        $voucherService = app(CartVoucherService::class);
+        $voucherCtx = $voucherService->context(
+            $carts,
+            (float) ($cartPromotion['discount'] ?? 0),
+            (float) ($shipping['totalShippingCost'] ?? 0)
+        );
+        $appliedVoucher = $voucherService->current($buyer, $voucherCtx);
+
+        return [
+            'carts' => $carts,
+            'cartCaculate' => $cartCaculate,
+            'cartPromotion' => $cartPromotion,
+            'discountTotalProduct' => $discountTotalProduct,
+            'shipping' => $shipping,
+            'appliedVoucher' => $appliedVoucher,
+            'voucherDiscount' => (float) ($appliedVoucher['discount'] ?? 0),
+            'voucherDropReason' => $voucherService->lastDropReason,
+            'allVoucherTotal' => $voucherService->listForCart($buyer, $voucherCtx),
+            // Bien cu cac view con tham chieu; giam gia voucher nam o voucherDiscount.
+            'totalVoucherProduct' => 0,
+            'voucher' => null,
+            'buyer' => $buyer,
+        ];
+    }
+
+    /**
+     * Ngu canh tinh voucher cho gio hang hien tai (xem CartVoucherService).
+     */
+    public function voucherContext($buyer = null): array
+    {
+        $carts = $this->remakeCart(Cart::instance('shopping')->content());
+        $cartCaculate = $this->reCaculateCart();
+        $cartPromotion = $this->cartPromotion($cartCaculate['cartTotal']);
+        $shipping = $this->totalShipping($buyer);
+
+        return app(CartVoucherService::class)->context(
+            $carts,
+            (float) ($cartPromotion['discount'] ?? 0),
+            (float) ($shipping['totalShippingCost'] ?? 0)
+        );
+    }
+
+    /**
+     * @param array|null $appliedVoucher ['voucher' => Voucher, 'discount' => float]
+     *        lay tu CartVoucherService::current() ngay truoc khi tao don.
+     */
+    public function order($request, $system, $buyer = null, ?array $appliedVoucher = null)
     {
         DB::beginTransaction();
         try {
@@ -589,13 +651,18 @@ class CartService
                         $payload['customer_id'] = $buyer->id;
                     }
                     $shipping = $this->totalShipping($buyer);
-                    $payload['cart']['cartVoucher'] = $this->handleTotalVoucher($carts);
+                    // Voucher tinh tren ca gio hang, chi gan vao don dau tien
+                    // (neu gio hang tach thanh nhieu don theo nguoi ban).
+                    $voucherForThisOrder = (!is_null($appliedVoucher) && empty($orders)) ? $appliedVoucher : null;
+                    $payload['cart']['cartVoucher'] = $voucherForThisOrder ? (float) $voucherForThisOrder['discount'] : 0;
+                    $payload['cart']['voucherCode'] = $voucherForThisOrder ? $voucherForThisOrder['voucher']->code : null;
+                    $payload['cart']['voucherScope'] = $voucherForThisOrder ? $voucherForThisOrder['voucher']->product_scope : null;
                     $payload['shipping'] = $shipping['sellerShippingCost'][$sellerOrder['seller_id']]['cost'] ?? 0;
                     $order = $this->orderRepository->create($payload, ['products']);
                     if ($order->id > 0) {
                         $this->createOrderProduct($payload, $order, $sellerOrder, $request);
-                        if ($payload['cart']['cartVoucher'] !== 0) {
-                            $this->createOrderVoucher($order, $carts);
+                        if ($voucherForThisOrder) {
+                            app(CartVoucherService::class)->recordUsage($order, $voucherForThisOrder['voucher'], $buyer);
                         }
                         $orders[] = $order;
                         $totalAmount += $order['cart']['cartTotal'];
@@ -617,14 +684,14 @@ class CartService
             Cart::instance('shopping')->destroy();
             DB::commit();
             return $orderSummary;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
+            Log::error('Dat hang that bai: ' . $e->getMessage(), ['exception' => $e]);
+            // Loi nghiep vu (vd. voucher vua het luot) thi bao nguyen van cho khach.
             return [
                 'order' => null,
                 'flag' => false,
+                'message' => $e instanceof \RuntimeException ? $e->getMessage() : null,
             ];
         }
     }
@@ -650,14 +717,12 @@ class CartService
                         $payload['customer_id'] = $buyer->id;
                     }
                     $shipping = $this->totalShipping($buyer);
-                    $payload['cart']['cartVoucher'] = $this->handleTotalVoucher($carts);
+                    // Luong "mua ngay" (gio 'pay') khong ho tro voucher.
+                    $payload['cart']['cartVoucher'] = 0;
                     $payload['shipping'] = $shipping['sellerShippingCost'][$sellerOrder['seller_id']]['cost'] ?? 0;
                     $order = $this->orderRepository->create($payload, ['products']);
                     if ($order->id > 0) {
                         $this->createOrderProduct($payload, $order, $sellerOrder, $request);
-                        if ($payload['cart']['cartVoucher'] !== 0) {
-                            $this->createOrderVoucher($order, $carts);
-                        }
                         $orders[] = $order;
                         $totalAmount += $order['cart']['cartTotal'];
                         $totalItems += $order['cart']['cartTotalItems'];

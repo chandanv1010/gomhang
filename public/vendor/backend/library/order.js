@@ -56,7 +56,6 @@
             phone: $('.phone').text(),
             address: $('.address').text(),
             ward_id: $('.ward_id').val(),
-            district_id: $('.district_id').val(),
             province_id: $('.province_id').val(),
         }
 
@@ -96,9 +95,9 @@
             <div class="row mb15">
                 <div class="col-lg-12">
                     <div class="form-row">
-                        <label for="">Thành Phố</label>
-                        <select name="province_id" class="setupSelect2 province location" data-target="districts">
-                            <option>[Chọn Thành Phố]</option>
+                        <label for="">Tỉnh/Thành phố</label>
+                        <select name="province_id" class="setupSelect2 province location" data-target="wards">
+                            <option value="">[Chọn Tỉnh/Thành phố]</option>
                             ${HT.provincesList(data.province_id)}
                         </select>
                     </div>
@@ -107,19 +106,9 @@
             <div class="row mb15">
                 <div class="col-lg-12">
                     <div class="form-row">
-                        <label for="">Quận/Huyện</label>
-                        <select name="district_id" class="setupSelect2 districts location" data-target="wards">
-                            <option>[Chọn Quận/Huyện]</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb15">
-                <div class="col-lg-12">
-                    <div class="form-row">
-                        <label for="">Phường Xã</label>
-                        <select name="province_id" class="setupSelect2 wards">
-                            <option>[Chọn Phường/Xã]</option>
+                        <label for="">Phường/Xã</label>
+                        <select name="ward_id" class="setupSelect2 wards">
+                            <option value="">[Chọn Phường/Xã]</option>
                         </select>
                     </div>
                 </div>
@@ -190,7 +179,6 @@
 
     HT.sendDataTogetLocation = (option) => {
 
-        let district_id = $('.district_id').val()
         let ward_id = $('.ward_id').val()
         $.ajax({
             url: 'ajax/location/getLocation', 
@@ -201,10 +189,6 @@
 
                $('.'+option.target).html(res.html)
 
-                if(district_id != '' && option.target == 'districts'){
-                    $('.districts').val(district_id).trigger('change')
-                }
-        
                 if(ward_id != '' && option.target == 'wards'){
                     $('.wards').val(ward_id).trigger('change')
                 }
@@ -252,23 +236,16 @@
                 <span class="address">${res.order.address}</span>
             </div>
             <div class="customer-line">
-                <strong>P:</strong>
-                ${res.order.ward_name}
-                
+                <strong>Phường/Xã:</strong>
+                ${res.order.ward_name ?? ''}
             </div>
             <div class="customer-line">
-                <strong>Q:</strong>
-                ${res.order.district_name}
-                
-            </div>
-            <div class="customer-line">
-                <strong>T:</strong>
-                ${res.order.province_name}
+                <strong>Tỉnh/TP:</strong>
+                ${res.order.province_name ?? ''}
             </div>
         `
         $('.order-customer-information').html(html)
         $('.ward_id').val(res.order.ward_id)
-        $('.district_id').val(res.order.district_id)
         $('.province_id').val(res.order.province_id)
 
         $('.order-customer-information').parents('.ibox').find('.cancle-edit').removeClass('cancle-edit').addClass('edit-order').attr('data-html','').html('Sửa')
@@ -291,7 +268,7 @@
                     phone: $('input[name=phone]').val(),
                     address: $('input[name=address]').val(),
                     ward_id: $('.wards').val(),
-                    district_id: $('.districts').val(),
+                    district_id: null,
                     province_id: $('.province').val(),
                 },
                 _token: _token
@@ -321,7 +298,13 @@
                 success: function(res) {
                     if(res.error == 10){
                         HT.createOrderConfirmSection(_this)
+                        toastr.success(res.messages || 'Cập nhật đơn hàng thành công', 'Thông báo từ hệ thống!')
+                    }else{
+                        toastr.error(res.messages || 'Có vấn đề xảy ra! Hãy thử lại', 'Thông báo từ hệ thống!')
                     }
+                },
+                error: function(){
+                    toastr.error('Không kết nối được máy chủ, hãy tải lại trang và thử lại', 'Thông báo từ hệ thống!')
                 },
             });
         })

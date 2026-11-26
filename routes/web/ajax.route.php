@@ -67,6 +67,7 @@ Route::group(['middleware' => ['locale']], function () {
     Route::post('ajax/cart/delete', [AjaxCartController::class, 'delete'])->name('ajax.cart.delete');
     Route::get('ajax/cart/applyCartVoucher', [AjaxCartController::class, 'applyCartVoucher'])->name('ajax.cart.applyCartVoucher');
     Route::get('ajax/cart/unUseVoucher', [AjaxCartController::class, 'unUseVoucher'])->name('ajax.cart.unUseVoucher');
+    Route::get('ajax/cart/voucherBlocks', [AjaxCartController::class, 'voucherBlocks'])->name('ajax.cart.voucherBlocks');
     Route::get('ajax/location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.index');
     Route::get('ajax/post/video', [AjaxPostController::class, 'video'])->name('post.video');
     Route::post('ajax/product/wishlist', [AjaxProductController::class, 'wishlist'])->name('product.wishlist');

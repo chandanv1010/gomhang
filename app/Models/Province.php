@@ -23,6 +23,12 @@ class Province extends Model
         return $this->hasMany(District::class, 'province_code', 'code');
     }
 
+    // Bo dia gioi sau sap nhap (2025): tinh -> phuong/xa, khong con cap huyen.
+    public function wards()
+    {
+        return $this->hasMany(Ward::class, 'province_code', 'code')->orderBy('name');
+    }
+
     public function provinces(){
         return $this->hasMany(Order::class, 'province_id', 'code');
     }

@@ -254,7 +254,8 @@
                                         $cart = is_array($order->cart) ? $order->cart : [];
                                         $promotion = is_array($order->promotion) ? $order->promotion : [];
                                         $cartTotal = $cart['cartTotal'] ?? 0;
-                                        $promotionDiscount = $promotion['discount'] ?? 0;
+                                        // Giam gia = khuyen mai + voucher (cartVoucher luu trong orders.cart).
+                                        $promotionDiscount = (float) ($promotion['discount'] ?? 0) + (float) ($cart['cartVoucher'] ?? 0);
                                         $shipping = $order->shipping ?? 0;
                                         $subTotal = $cartTotal - $promotionDiscount;
                                         $finalTotal = $subTotal + $shipping;

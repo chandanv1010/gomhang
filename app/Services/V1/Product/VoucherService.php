@@ -66,6 +66,10 @@ class VoucherService extends BaseService
         }
         if($type == VoucherEnum::PRODUCT_VOUCHER){
             $payload['product_scope'] = $request->input('product_scope');
+        }else{
+            // Voucher giam tong don / giam phi ship: form khong gui product_scope,
+            // truoc day luu thanh '' nen voucher khong bao gio hien o gio hang.
+            $payload['product_scope'] = $type;
         }
         return $payload;
     }

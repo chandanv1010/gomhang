@@ -43,7 +43,6 @@
                                 </td>
                                 <td style="width:285px;">
                                     <div class="order-item-name" title=""{{ $name }}">{{ $name }}</div>
-                                    <div class="order-item-voucher">Mã giảm giá: Không có</div>
                                 </td>
                                 <td>
                                     <div class="order-item-price">{{ $price }} đ</div>
@@ -73,7 +72,7 @@
                                 $voucher_discount = isset($order->cart['cartVoucher']) ? $order->cart['cartVoucher'] : 0;
                             @endphp
                             <tr>
-                                <td colspan="5" class="text-right">Giảm giá Voucher</td>
+                                <td colspan="5" class="text-right">Giảm giá Voucher{{ !empty($order->cart['voucherCode']) ? ' (mã '.$order->cart['voucherCode'].')' : '' }}</td>
                                 <td class="text-right">- {{ convert_price($voucher_discount, true) }} đ</td>
                             </tr>
                             <tr>
@@ -95,7 +94,7 @@
                             <div class="payment-title">
                                 <div class="text_1">
                                     <span class="isConfirm">{{ __('order.confirm')[$order->confirm] }}</span>
-                                    {{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) }}đ
+                                    {{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'] - ($order->cart['cartVoucher'] ?? 0) + $order->shipping, true) }}đ
                                 </div>
                                 <div class="text_2">{{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? '-' }}</div>
                             </div>
@@ -173,19 +172,12 @@
                         <span class="address">{{ $order->address }}</span>
                     </div>
                     <div class="customer-line">
-                        <strong>P:</strong>
+                        <strong>Phường/Xã:</strong>
                         {{ $order->ward_name }}
-                        
                     </div>
                     <div class="customer-line">
-                        <strong>Q:</strong>
-                        {{ $order->district_name }}
-                        
-                    </div>
-                    <div class="customer-line">
-                        <strong>T:</strong>
+                        <strong>Tỉnh/TP:</strong>
                         {{ $order->province_name }}
-                        
                     </div>
                 </div>
             </div>
@@ -194,7 +186,6 @@
 </div>
 <input type="hidden" class="orderId" value="{{ $order->id }}">
 <input type="hidden" class="ward_id" value="{{ $order->ward_id }}">
-<input type="hidden" class="district_id" value="{{ $order->district_id }}">
 <input type="hidden" class="province_id" value="{{ $order->province_id }}">
 <script>
     var provinces = @json($provinces->map(function($item){

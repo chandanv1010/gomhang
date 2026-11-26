@@ -18,6 +18,10 @@ class Ward extends Model
     public $incrementing = false; 
 
 
+    public function province(){
+        return $this->belongsTo(Province::class, 'province_code', 'code');
+    }
+
     public function districts(){
         return $this->belongsTo(District::class, 'district_code', 'code');
     }

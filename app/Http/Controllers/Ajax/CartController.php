@@ -8,6 +8,7 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 
 use App\Repositories\Product\ProductRepository;
 use App\Services\V1\Core\CartService;
+use App\Services\V1\Core\CartVoucherService;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -77,26 +78,44 @@ class CartController extends FrontendController
     }
 
 
+    /**
+     * Ap voucher: bam vao danh sach (voucher_id) hoac go ma (code).
+     * Tra ve HTML moi cua khoi voucher + khoi tong tien de JS thay vao trang,
+     * khong phai tai lai trang (khach khong mat thong tin da nhap).
+     */
     public function applyCartVoucher(Request $request){
-        $voucher_id = $request->input('voucher_id');
-        $response = $this->cartService->handleApplyCartVoucher($voucher_id);
-        $carts = Cart::instance('shopping')->content()->toArray();
-        return response()->json([
-            'response' => $response, 
-            'carts' => $carts,
-            'code' => (!$response) ? 11 : 10,
-        ]);
+        $buyer = Auth::guard('customer')->user();
+        $value = $request->input('code', $request->input('voucher_id'));
+
+        try {
+            $voucherService = app(CartVoucherService::class);
+            $result = $voucherService->apply($value, $buyer, $this->cartService->voucherContext($buyer));
+            $message = 'Đã áp dụng mã ' . $result['voucher']->code . ', giảm ' . number_format($result['discount'], 0, ',', '.') . 'đ';
+            return response()->json(array_merge(['code' => 10, 'message' => $message], $this->renderVoucherBlocks($buyer)));
+        } catch (\RuntimeException $e) {
+            return response()->json(array_merge(['code' => 11, 'message' => $e->getMessage()], $this->renderVoucherBlocks($buyer)));
+        }
     }
 
     public function unUseVoucher(Request $request){
-        $voucher_id = $request->input('voucher_id');
-        $response = $this->cartService->handleUnUseVoucher($voucher_id);
-        $carts = Cart::instance('shopping')->content()->toArray();
-        return response()->json([
-            'response' => $response, 
-            'carts' => $carts,
-            'code' => (!$response) ? 11 : 10,
-        ]);
+        $buyer = Auth::guard('customer')->user();
+        app(CartVoucherService::class)->forget();
+        return response()->json(array_merge(['code' => 10, 'message' => 'Đã bỏ mã giảm giá'], $this->renderVoucherBlocks($buyer)));
+    }
+
+    /** Lam moi khoi voucher + tong tien sau khi doi so luong / xoa san pham. */
+    public function voucherBlocks(Request $request){
+        $buyer = Auth::guard('customer')->user();
+        return response()->json(array_merge(['code' => 10], $this->renderVoucherBlocks($buyer)));
+    }
+
+    private function renderVoucherBlocks($buyer): array
+    {
+        $data = $this->cartService->checkoutData($buyer);
+        return [
+            'voucherHtml' => view('frontend.cart.component.voucher', $data)->render(),
+            'summaryHtml' => view('frontend.cart.component.summary', $data)->render(),
+        ];
     }
 
     public function checkPoint(Request $request)

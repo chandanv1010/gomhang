@@ -84,28 +84,11 @@ class CartController extends FrontendController
 
         $provinces = $this->provinceRepository->all();
 
-        $carts = Cart::instance('shopping')->content();
-
-        $carts = $this->cartService->remakeCart($carts);
-
-        $cartCaculate = $this->cartService->reCaculateCart();
-
-        $cartPromotion = $this->cartService->cartPromotion($cartCaculate['cartTotal']);
-
-        $discountTotalProduct = 0;
-
-        foreach ($carts as $cart) {
-            $discountTotalProduct += ($cart->priceOriginal - $cart->price) * $cart->qty;
-        }
- 
         $buyer = $this->getBuyer();
-        $shipping = $this->cartService->totalShipping($buyer);
-        $totalVoucherProduct = $this->cartService->totalDiscountVoucher($carts);
-        $voucher= Session::get('voucher') ?? null;
-        $allVoucherTotal = null;
-        if(!is_null($shipping) && !is_null($buyer)){
-            $allVoucherTotal = $this->voucherService->listVoucher(($cartCaculate['cartTotal'] - $totalVoucherProduct - $cartPromotion['discount']), $shipping['totalShippingCost'], $carts);
-        }
+
+        // Gio hang, khuyen mai, phi ship, voucher - dung chung voi ajax voucher
+        // (CartService::checkoutData) de so tren trang va so khi ap ma luon khop.
+        extract($this->cartService->checkoutData($buyer));
 
         $seo = [
             'meta_title' => 'Trang thanh toán đơn hàng',
@@ -133,6 +116,9 @@ class CartController extends FrontendController
             'cartPromotion',
             'cartCaculate',
             'allVoucherTotal',
+            'appliedVoucher',
+            'voucherDiscount',
+            'voucherDropReason',
             'totalVoucherProduct',
             'voucher',
             'shipping',
@@ -210,11 +196,21 @@ class CartController extends FrontendController
     public function store(StoreCartRequest $request){
         $buyer = $this->getBuyer();
         $system = $this->system;
-        $orders = $this->cartService->order($request, $system, $buyer);
+        // Tinh lai voucher dang ap voi gio hang luc bam dat hang; neu khong con
+        // hop le thi khong dat hang ma quay lai bao ly do de khach thay so tien moi.
+        $voucherService = app(\App\Services\V1\Core\CartVoucherService::class);
+        $appliedVoucher = $voucherService->current($buyer, $this->cartService->voucherContext($buyer));
+        if(is_null($appliedVoucher) && $voucherService->lastDropReason){
+            return redirect()->route('cart.checkout')->withInput()
+                ->withErrors(['voucher' => 'Mã giảm giá đã được gỡ: ' . $voucherService->lastDropReason . ' Vui lòng kiểm tra lại tổng tiền.']);
+        }
+
+        $orders = $this->cartService->order($request, $system, $buyer, $appliedVoucher);
         if($orders['flag']){
             return redirect()->route('cart.success')->with('success','Đặt hàng thành công');
         }
-        return redirect()->route('cart.checkout')->with('error','Đặt hàng không thành công. Hãy thử lại');
+        return redirect()->route('cart.checkout')->withInput()
+            ->withErrors(['order' => $orders['message'] ?? 'Đặt hàng không thành công. Hãy thử lại']);
     }
 
     public function success(){

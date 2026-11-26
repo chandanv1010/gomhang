@@ -170,22 +170,14 @@
                         <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Thành Phố</label>
-                                    <select name="province_id" class="form-control setupSelect2 province location" data-target="districts">
-                                        <option value="0">[Chọn Thành Phố]</option>
+                                    <label for="" class="control-label text-left">Tỉnh/Thành phố</label>
+                                    <select name="province_id" class="form-control setupSelect2 province location" data-target="wards">
+                                        <option value="">[Chọn Tỉnh/Thành phố]</option>
                                         @if(isset($provinces))
                                             @foreach($provinces as $province)
                                             <option @if(old('province_id') == $province->code) selected @endif value="{{ $province->code }}">{{ $province->name }}</option>
                                             @endforeach
                                         @endif
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-row">
-                                    <label for="" class="control-label text-left">Quận/Huyện </label>
-                                    <select name="district_id" class="form-control districts setupSelect2 location" data-target="wards">
-                                        <option value="0">[Chọn Quận/Huyện]</option>
                                     </select>
                                 </div>
                             </div>
@@ -195,7 +187,7 @@
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">Phường/Xã </label>
                                     <select name="ward_id" class="form-control setupSelect2 wards">
-                                        <option value="0">[Chọn Phường/Xã]</option>
+                                        <option value="">[Chọn Phường/Xã]</option>
                                     </select>
                                 </div>
                             </div>

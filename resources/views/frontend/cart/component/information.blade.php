@@ -37,30 +37,30 @@
                 type="text"
                 name="address"
                 value="{{ old('address', $customerAuth->address ?? '') }}"
-                placeholder="Nhập vào địa chỉ: ví dụ đường Lạc Long Quân..."
+                placeholder="Số nhà, tên đường (ví dụ: 226 Quang Trung)"
                 class="input-text"
             >
         </div>
-        {{-- <div class="uk-grid uk-grid-medium mb20">
-            <div class="uk-width-large-1-3">
-                <select readonly disabled name="province_id" id="" class="province city location setupSelect2" data-target="districts">
-                    <option value="0">[Chọn Thành Phố]</option>
-                    @foreach($provinces as $city)
-                        <option value="{{ $city->id }}">{{ $city->name }}</option>
-                    @endforeach
-                </select>
+        {{-- Dia gioi sau sap nhap (01/07/2025): chi con Tinh/Thanh pho -> Phuong/Xa. --}}
+        <div class="uk-grid uk-grid-medium mb20">
+            <div class="uk-width-large-1-2">
+                <div class="form-row">
+                    <select name="province_id" class="input-text cart-province" required>
+                        <option value="">[Chọn Tỉnh/Thành phố]</option>
+                        @foreach($provinces as $city)
+                            <option value="{{ $city->code }}">{{ $city->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-            <div class="uk-width-large-1-3">
-                <select readonly disabled name="district_id" id="" class="setupSelect2 district location" data-target="wards">
-                    <option value="0">Chọn Quận Huyện</option>
-                </select>
+            <div class="uk-width-large-1-2">
+                <div class="form-row">
+                    <select name="ward_id" class="input-text cart-ward" required>
+                        <option value="">[Chọn Phường/Xã]</option>
+                    </select>
+                </div>
             </div>
-            <div class="uk-width-large-1-3">
-                <select readonly disabled name="ward_id" id="" class="setupSelect2 ward">
-                    <option value="0">Chọn Phường Xã</option>
-                </select>
-            </div>
-        </div> --}}
+        </div>
         <div class="form-row">
             <input 
                 type="text"
@@ -74,8 +74,33 @@
 </div>
 
 <script>
-    var province_id = '{{ (isset($customerAuth->province_id)) ? $customerAuth->province_id : old('province_id') }}'
-    var district_id = '{{ (isset($customerAuth->district_id)) ? $customerAuth->district_id : old('district_id') }}'
-    var ward_id = '{{ (isset($customerAuth->ward_id)) ? $customerAuth->ward_id : old('ward_id') }}'
-</script>
+    (function () {
+        var provinceId = @json((string) old('province_id', $customerAuth->province_id ?? ''));
+        var wardId = @json((string) old('ward_id', $customerAuth->ward_id ?? ''));
+        var provinceSelect = document.querySelector('.cart-province');
+        var wardSelect = document.querySelector('.cart-ward');
+        if (!provinceSelect || !wardSelect) return;
 
+        function loadWards(code, selected) {
+            wardSelect.innerHTML = '<option value="">[Chọn Phường/Xã]</option>';
+            if (!code) return;
+            wardSelect.disabled = true;
+            var url = @json(url('ajax/location/getLocation')) + '?target=wards&data%5Blocation_id%5D=' + encodeURIComponent(code);
+            fetch(url, { headers: { 'Accept': 'application/json' } })
+                .then(function (r) { return r.json(); })
+                .then(function (res) {
+                    wardSelect.innerHTML = res.html;
+                    if (selected) wardSelect.value = selected;
+                })
+                .catch(function () {})
+                .finally(function () { wardSelect.disabled = false; });
+        }
+
+        provinceSelect.addEventListener('change', function () { loadWards(this.value, ''); });
+
+        if (provinceId) {
+            provinceSelect.value = provinceId;
+            if (provinceSelect.value === provinceId) loadWards(provinceId, wardId);
+        }
+    })();
+</script>

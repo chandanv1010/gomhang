@@ -47,10 +47,18 @@ class OrderController extends Controller
                 ['buyers.customer_catalogues']
             );
 
-            $customer = Customer::find($order->customer_id);
+            // Don cua khach vang lai (chua dang nhap) co customer_id = NULL:
+            // khong co tai khoan de cong/tru diem, chi cap nhat trang thai don.
+            $customer = $order->customer_id ? Customer::find($order->customer_id) : null;
 
             if (!$customer) {
-                throw new \Exception("Không tìm thấy khách hàng.");
+                DB::commit();
+
+                return response()->json([
+                    'error' => 10,
+                    'messages' => 'Cập nhật đơn hàng thành công',
+                    'order' => $order
+                ]);
             }
 
             $cart = $order->cart;
