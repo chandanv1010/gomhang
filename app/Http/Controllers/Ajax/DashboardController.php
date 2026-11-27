@@ -54,7 +54,7 @@ class DashboardController extends Controller
         $flag = $serviceInstance->updateStatusAll($post);
         // Đổi trạng thái hàng loạt dùng whereIn()->update(), không phát sự kiện
         // model, nên sitemap không tự cập nhật; ghi lại ở đây.
-        if (in_array(ucfirst($post['model'] ?? ''), ['Product', 'ProductCatalogue', 'Post', 'PostCatalogue'], true)) {
+        if (in_array(ucfirst($post['model'] ?? ''), ['Product', 'ProductCatalogue', 'Post', 'PostCatalogue', 'Attribute'], true)) {
             app(\App\Services\V1\Core\SitemapService::class)->generateQuietly();
         }
         return response()->json(['flag' => $flag]);

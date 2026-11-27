@@ -230,6 +230,10 @@ class ProductController extends FrontendController
             $brandName = optional(collect($attributeCatalogue->attributes ?? [])->first())->name ?? '';
             break;
         }
+        if ($brandName === '') {
+            // Thương hiệu chọn ở ô "Thương hiệu" trong form sản phẩm.
+            $brandName = app(\App\Services\V1\Product\BrandService::class)->nameOf($product, $this->language);
+        }
 
         return Schema::script([
             Schema::organization($this->system),

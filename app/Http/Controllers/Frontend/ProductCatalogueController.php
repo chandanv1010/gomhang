@@ -94,48 +94,50 @@ class ProductCatalogueController extends FrontendController
         $allCategories = $allCatalogues->filter(function($cat) { return $cat->publish == 2; })->sortBy('order')->values();
 
         // Dynamic Brand count for the current category
+        // Đếm theo products.brand_id (ô "Thương hiệu" trong form sản phẩm) và cả
+        // dữ liệu cũ trong products.attribute; thương hiệu trùng canonical gộp
+        // làm một, chỉ đếm sản phẩm đang hiển thị.
         $brands = collect();
-        $brandCat = \Illuminate\Support\Facades\DB::table('attribute_catalogues as ac')
-            ->join('attribute_catalogue_language as acl', 'ac.id', '=', 'acl.attribute_catalogue_id')
-            ->where('acl.name', 'LIKE', '%Thương hiệu%')
-            ->orWhere('acl.name', 'LIKE', '%Brand%')
-            ->orWhere('ac.id', (int) config('apps.general.brandAttributeCatalogueId'))
-            ->select('ac.id')
-            ->first();
+        $brandService = app(\App\Services\V1\Product\BrandService::class);
+        $brandAttrs = \Illuminate\Support\Facades\DB::table('attributes as a')
+            ->join('attribute_language as al', 'a.id', '=', 'al.attribute_id')
+            ->where('al.language_id', $this->language)
+            ->where('a.attribute_catalogue_id', $brandService->catalogueId())
+            ->where('a.publish', 2)
+            ->whereNull('a.deleted_at')
+            ->select('a.id', 'a.image', 'al.name', 'al.canonical')
+            ->orderBy('a.id')
+            ->get()
+            ->groupBy(function ($attr) {
+                return $attr->canonical ?: mb_strtolower($attr->name);
+            });
 
-        if ($brandCat) {
-            $brandCatId = $brandCat->id;
-            $brandAttrs = \Illuminate\Support\Facades\DB::table('attributes as a')
-                ->join('attribute_language as al', 'a.id', '=', 'al.attribute_id')
-                ->where('al.language_id', $this->language)
-                ->where('a.attribute_catalogue_id', $brandCatId)
-                ->select('a.id', 'a.image', 'al.name', 'al.canonical')
-                ->get();
+        $descendantIds = $allCatalogues->filter(function($item) use ($productCatalogue) {
+            return $item->lft >= $productCatalogue->lft && $item->rgt <= $productCatalogue->rgt;
+        })->pluck('id')->toArray();
 
-            $descendantIds = $allCatalogues->filter(function($item) use ($productCatalogue) {
-                return $item->lft >= $productCatalogue->lft && $item->rgt <= $productCatalogue->rgt;
-            })->pluck('id')->toArray();
+        foreach ($brandAttrs as $group) {
+            // Ưu tiên bản có logo để hiển thị.
+            $bAttr = $group->first(fn ($attr) => !empty($attr->image)) ?? $group->first();
+            [$brandSql, $brandBindings] = $brandService->productCondition($group->pluck('id')->all(), 'p');
+            $prodCount = \Illuminate\Support\Facades\DB::table('products as p')
+                ->join('product_catalogue_product as pcp', 'p.id', '=', 'pcp.product_id')
+                ->whereIn('pcp.product_catalogue_id', $descendantIds)
+                ->where('p.publish', 2)
+                ->whereNull('p.deleted_at')
+                ->whereRaw($brandSql, $brandBindings)
+                ->distinct()
+                ->count('p.id');
 
-            foreach ($brandAttrs as $bAttr) {
-                $prodCount = \Illuminate\Support\Facades\DB::table('products as p')
-                    ->join('product_catalogue_product as pcp', 'p.id', '=', 'pcp.product_id')
-                    ->whereIn('pcp.product_catalogue_id', $descendantIds)
-                    ->where(function($query) use ($brandCatId, $bAttr) {
-                        $query->whereJsonContains('p.attribute->' . $brandCatId, (string)$bAttr->id)
-                              ->orWhereJsonContains('p.attribute->' . $brandCatId, (int)$bAttr->id);
-                    })
-                    ->count();
-
-                if ($prodCount > 0) {
-                    $brands->push((object)[
-                        'id' => $bAttr->id,
-                        'name' => $bAttr->name,
-                        'canonical' => $bAttr->canonical,
-                        'image' => $bAttr->image,
-                        'logo' => brand_logo($bAttr),
-                        'count' => $prodCount
-                    ]);
-                }
+            if ($prodCount > 0) {
+                $brands->push((object)[
+                    'id' => $bAttr->id,
+                    'name' => $bAttr->name,
+                    'canonical' => $bAttr->canonical,
+                    'image' => $bAttr->image,
+                    'logo' => brand_logo($bAttr),
+                    'count' => $prodCount
+                ]);
             }
         }
 

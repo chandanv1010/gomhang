@@ -87,34 +87,11 @@ class ProductService extends BaseService
         }
 
         if ($request->filled('brand')) {
-            $brandVal = $request->input('brand');
-            $brandId = null;
-            if (is_numeric($brandVal)) {
-                $brandId = (int)$brandVal;
-            } else {
-                $brandAttr = \Illuminate\Support\Facades\DB::table('attributes as a')
-                    ->join('attribute_language as al', 'a.id', '=', 'al.attribute_id')
-                    ->where('al.canonical', $brandVal)
-                    ->orWhere('al.name', $brandVal)
-                    ->select('a.id')
-                    ->first();
-                if ($brandAttr) {
-                    $brandId = $brandAttr->id;
-                }
-            }
-
-            if ($brandId) {
-                $brandPath = '$."' . (int) config('apps.general.brandAttributeCatalogueId') . '"';
-
-                // Both candidates must be bound as strings so PDO sends them as
-                // text: '"25"' parses as a JSON string (how the seeder writes
-                // brands), '25' parses as a JSON number. Binding an int makes
-                // MySQL reject the argument with SQLSTATE[22032] 3146.
-                $rawCondition['whereRaw'][] = [
-                    "(JSON_CONTAINS(products.attribute, ?, '{$brandPath}') OR JSON_CONTAINS(products.attribute, ?, '{$brandPath}'))",
-                    ['"' . $brandId . '"', (string)$brandId]
-                ];
-            }
+            // Lọc theo brand_id và cả thương hiệu cũ lưu trong products.attribute;
+            // gộp các thuộc tính trùng canonical (xem BrandService).
+            $brandService = app(BrandService::class);
+            $brandIds = $brandService->sameBrandIds($request->input('brand'));
+            $rawCondition['whereRaw'][] = $brandService->productCondition($brandIds, 'products');
         }
 
         $priceCondition = $this->priceRangeCondition($request);
@@ -420,6 +397,7 @@ class ProductService extends BaseService
         $payload['attribute'] = $request->input('attribute');
         $payload['variant'] = $this->formatJson($request, 'variant');
         $payload['qrcode'] = $this->qrCode($request);
+        $payload['brand_id'] = $request->integer('brand_id') ?: null;
         if (!is_null($sellerId)) {
             $payload['seller_id'] = $sellerId;
         }
@@ -441,6 +419,7 @@ class ProductService extends BaseService
             $payload['attribute'] = null;
         }
         $payload['qrcode'] = $this->qrCode($request);
+        $payload['brand_id'] = $request->integer('brand_id') ?: null;
         return $this->productRepository->update($id, $payload);
     }
 

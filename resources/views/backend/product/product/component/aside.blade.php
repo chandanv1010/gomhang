@@ -98,6 +98,29 @@
                 </div>
             </div>
         </div>
+        @php
+            $brandOptions = app(\App\Services\V1\Product\BrandService::class)->options();
+            $currentBrand = (int) old('brand_id', $product->brand_id ?? 0);
+            // Sản phẩm đang gắn một bản trùng tên đã bị gộp khỏi danh sách: vẫn hiện để không mất.
+            if ($currentBrand && !isset($brandOptions[$currentBrand])) {
+                $brandOptions[$currentBrand] = \Illuminate\Support\Facades\DB::table('attribute_language')
+                    ->where('attribute_id', $currentBrand)->value('name') ?? ('#' . $currentBrand);
+            }
+        @endphp
+        <div class="row mb15">
+            <div class="col-lg-12">
+                <div class="form-row">
+                    <label for="">Thương hiệu</label>
+                    <select name="brand_id" class="form-control setupSelect2">
+                        <option value="">[Chọn thương hiệu]</option>
+                        @foreach ($brandOptions as $brandId => $brandName)
+                            <option value="{{ $brandId }}" @if ($brandId == $currentBrand) selected @endif>{{ $brandName }}</option>
+                        @endforeach
+                    </select>
+                    <small class="text-muted">Sản phẩm sẽ hiện ở trang thương hiệu (vd /xiaomi.html) và bộ lọc thương hiệu trong danh mục. Thêm thương hiệu mới ở Thuộc tính → nhóm "Thương hiệu".</small>
+                </div>
+            </div>
+        </div>
         <div class="row mb15">
             <div class="col-lg-12">
                 <div class="form-row">

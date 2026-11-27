@@ -167,6 +167,7 @@ class ProductRepository extends BaseRepository
                 'products.warranty',
                 'products.iframe',
                 'products.seller_id',
+                'products.brand_id',
                 // 'products.total_lesson',
                 // 'products.duration',
                 // 'products.lecturer_id',

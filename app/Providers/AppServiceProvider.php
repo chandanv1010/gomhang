@@ -107,6 +107,7 @@ class AppServiceProvider extends ServiceProvider
             \App\Models\ProductCatalogue::class,
             \App\Models\Post::class,
             \App\Models\PostCatalogue::class,
+            \App\Models\Attribute::class,
             \App\Models\Router::class,
         ];
         $events = [];

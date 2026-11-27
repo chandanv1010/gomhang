@@ -36,7 +36,8 @@ class Product extends Model
         'lecturer_id',
         'lession_content',
         'chapter',
-        'iframe'
+        'iframe',
+        'brand_id'
     ];
 
     protected $casts = [

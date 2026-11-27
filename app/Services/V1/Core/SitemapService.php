@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Core;
 
+use App\Services\V1\Product\BrandService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -22,11 +23,10 @@ class SitemapService
     private const LANGUAGE_ID = 1;
 
     // Controller trong bảng routers => bảng dữ liệu tương ứng, độ ưu tiên.
-    // Chỉ liệt kê loại trang thực sự hiển thị được. AttributeController (trang
-    // thương hiệu) chưa tồn tại nên các URL đó đang lỗi 500, không đưa vào.
     private const MODULES = [
         'App\Http\Controllers\Frontend\ProductCatalogueController' => ['product_catalogues', '0.8', 'daily'],
         'App\Http\Controllers\Frontend\ProductController' => ['products', '0.8', 'weekly'],
+        'App\Http\Controllers\Frontend\AttributeController' => ['attributes', '0.7', 'weekly'],
         'App\Http\Controllers\Frontend\PostCatalogueController' => ['post_catalogues', '0.6', 'weekly'],
         'App\Http\Controllers\Frontend\PostController' => ['posts', '0.6', 'monthly'],
     ];
@@ -53,13 +53,18 @@ class SitemapService
         }
 
         foreach (self::MODULES as $controller => [$table, $priority, $changefreq]) {
-            $rows = DB::table('routers as r')
+            $query = DB::table('routers as r')
                 ->join($table . ' as m', 'm.id', '=', 'r.module_id')
                 ->where('r.controllers', $controller)
                 ->where('r.language_id', self::LANGUAGE_ID)
                 ->where('m.publish', 2)
-                ->whereNull('m.deleted_at')
-                ->orderByDesc('m.updated_at')
+                ->whereNull('m.deleted_at');
+
+            if ($table === 'attributes') {
+                $this->onlyBrandsWithProducts($query);
+            }
+
+            $rows = $query->orderByDesc('m.updated_at')
                 ->select('r.canonical', 'm.updated_at')
                 ->get();
 
@@ -119,6 +124,37 @@ class SitemapService
         } catch (\Throwable $e) {
             Log::error('Sitemap generate failed: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Trang thương hiệu (AttributeController) chỉ có với thuộc tính nhóm thương
+     * hiệu; trang không có sản phẩm nào đang bán thì không đưa vào sitemap.
+     * Đếm giống hệt trang thương hiệu (BrandService), số thương hiệu ít nên
+     * kiểm tra từng cái.
+     */
+    private function onlyBrandsWithProducts($query): void
+    {
+        $brandService = app(BrandService::class);
+        $withProducts = [];
+        $candidates = DB::table('attributes')
+            ->where('attribute_catalogue_id', $brandService->catalogueId())
+            ->where('publish', 2)
+            ->whereNull('deleted_at')
+            ->pluck('id');
+
+        foreach ($candidates as $id) {
+            [$sql, $bindings] = $brandService->productCondition($brandService->sameBrandIds($id), 'p');
+            $exists = DB::table('products as p')
+                ->where('p.publish', 2)
+                ->whereNull('p.deleted_at')
+                ->whereRaw($sql, $bindings)
+                ->exists();
+            if ($exists) {
+                $withProducts[] = $id;
+            }
+        }
+
+        $query->whereIn('m.id', $withProducts ?: [0]);
     }
 
     // Bỏ URL trùng, giữ bản xuất hiện đầu tiên.
