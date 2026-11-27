@@ -9,7 +9,7 @@ class Introduce{
             'description' => 'Cài đặt hình nền, tiêu đề chính, các con số thống kê và liên kết nút hành động',
             'value' => [
                 'banner_bg' => ['type' => 'images', 'label' => 'Ảnh Banner nền (Vector.png)'],
-                'banner_title' => ['type' => 'text', 'label' => 'Tiêu đề lớn trên banner (VIREX VIỆT NAM)'],
+                'banner_title' => ['type' => 'text', 'label' => 'Tiêu đề lớn trên banner (vd: NKC VIỆT NAM)'],
                 
                 'stat_num_1' => ['type' => 'text', 'label' => 'Thống kê 1 - Số (100+)'],
                 'stat_lbl_1' => ['type' => 'text', 'label' => 'Thống kê 1 - Nhãn (Chuyên gia)'],
@@ -47,10 +47,10 @@ class Introduce{
         ];
 
         $data['block_3'] = [
-            'label' => 'Khối 3: Tại sao nên lựa chọn VIREX',
+            'label' => 'Khối 3: Tại sao nên lựa chọn chúng tôi',
             'description' => 'Cấu hình tiêu đề khối và 4 thẻ thông tin lý do lựa chọn',
             'value' => [
-                'why_title' => ['type' => 'text', 'label' => 'Tiêu đề khối (TẠI SAO NÊN LỰA CHỌN VIREX)'],
+                'why_title' => ['type' => 'text', 'label' => 'Tiêu đề khối (vd: TẠI SAO NÊN LỰA CHỌN NKC)'],
                 
                 // Card 1
                 'why_icon_1' => ['type' => 'images', 'label' => 'Mục 1 - Icon'],

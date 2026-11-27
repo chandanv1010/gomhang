@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('sitemap:generate', function () {
+    $count = app(\App\Services\V1\Core\SitemapService::class)->generate();
+    $this->info("Đã ghi public/sitemap.xml: {$count} URL");
+})->purpose('Sinh lại sitemap.xml từ sản phẩm, danh mục, bài viết đang hiển thị');

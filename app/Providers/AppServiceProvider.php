@@ -90,5 +90,40 @@ class AppServiceProvider extends ServiceProvider
      
 
         Schema::defaultStringLength(191);
+
+        $this->regenerateSitemapOnContentChange();
+    }
+
+    /**
+     * Ghi lại public/sitemap.xml khi sản phẩm, danh mục, bài viết hay đường dẫn
+     * thay đổi. Chỉ đánh dấu trong lúc xử lý, ghi một lần sau khi đã trả response
+     * (lúc đó transaction đã commit và router của bản ghi mới đã được tạo).
+     */
+    private function regenerateSitemapOnContentChange(): void
+    {
+        $dirty = false;
+        $models = [
+            \App\Models\Product::class,
+            \App\Models\ProductCatalogue::class,
+            \App\Models\Post::class,
+            \App\Models\PostCatalogue::class,
+            \App\Models\Router::class,
+        ];
+        $events = [];
+        foreach ($models as $model) {
+            foreach (['saved', 'deleted', 'restored'] as $event) {
+                $events[] = "eloquent.{$event}: {$model}";
+            }
+        }
+
+        \Illuminate\Support\Facades\Event::listen($events, function () use (&$dirty) {
+            $dirty = true;
+        });
+
+        $this->app->terminating(function () use (&$dirty) {
+            if ($dirty) {
+                app(\App\Services\V1\Core\SitemapService::class)->generateQuietly();
+            }
+        });
     }
 }
